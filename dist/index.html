@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" style="height: 100%; display: block">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<!--    <link rel = "apple-touch-icon" href="jrnaver_192X192.png">-->
+    <meta name="mobile-web-app-capable" content="yes">
+<!--    <link rel="manifest" href="./manifest.json">-->
+    <meta name="viewport" content="minimal-ui, user-scalable=0, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta property="og:title" content="쥬니어네이버 스케치북">
+    <meta property="og:image" content="jrnaver_192X192.png">
+    <title>Jr-SketchBook</title>
+
+    <style >
+        body{
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: block;
+            background-color: #ffffff;
+            overflow:hidden;
+            touch-action: none;
+        }
+
+        #container {
+            /*position: absolute;*/
+            margin: 0;
+            padding: 0;
+            width:500px;
+            height:400px;
+            border:1px solid #9e7261;
+            background-repeat: no-repeat;
+            background-size: contain;
+            text-align: center;
+            vertical-align:middle;
+            background-color: aqua;
+        }
+        .controls {
+            display: inline-block;
+        }
+
+
+    </style>
+</head>
+<body scroll="no">
+<div id="container"></div>
+<div class="controls" >
+    <p>
+        <button id="brush" >brush</button>
+<!--        <button id="airBrush" >airBrush</button>-->
+<!--        <button id="crayon" >crayon</button>-->
+        <!--        <button id="fill" >fill</button>-->
+        <button id="line" >line</button>
+        <!--        <button id="screenTone" >screenTone</button>-->
+        <button id="eraser" >eraser</button>
+        <!--        <button id="text" >text</button>-->
+        <button id="zoom" >zoom</button>
+        <!--        <button id="move" >move</button>-->
+        <button id="clear" >clear</button>
+        <button id="move" >move</button>
+    <div id="option" >
+        <span id="_colorSpan">color</span><input id="_color" type="color"><br>
+        <span id="_sizeSpan">size</span><input min="1" max="50" step="1" id="_size" type="range"><br>
+        <span id="_opacitySpan">opacity</span><input min="10" max="100" step="1" id="_opacity" type="range">
+        <span id="_zoomSpan">zoom</span><input min="50" max="200" step="10" id="_zoom" type="range">
+    </div>
+    </p>
+
+</div>
+
+
+
+
+<script src="https://unpkg.com/konva@7.0.3/konva.min.js"></script>
+<script>
+    let gameScript = document.createElement('script');
+    gameScript.setAttribute('src', 'index.bundle.js');
+    document.body.appendChild(gameScript);
+</script>
+
+</body>
+</html>
