@@ -191,15 +191,22 @@ export default class SketchBookKonva {
 
             _stage.remove(GameConfig.MAIN_LAYER);
             // GameConfig.MAIN_LAYER.clear();
-            GameConfig.MAIN_LAYER.remove();
-            GameConfig.MAIN_LAYER.destroy();
-            GameConfig.MAIN_LAYER = null;
+            if(GameConfig.MAIN_LAYER)
+            {
+                GameConfig.MAIN_LAYER.remove();
+                GameConfig.MAIN_LAYER.destroy();
+                GameConfig.MAIN_LAYER = null;
+            }
 
-            _stage.remove(GameConfig.CURRENT_LAYER);
-            GameConfig.CURRENT_LAYER.clear();
-            GameConfig.CURRENT_LAYER.remove();
-            GameConfig.CURRENT_LAYER.destroy();
-            GameConfig.CURRENT_LAYER = null;
+            if(GameConfig.CURRENT_LAYER)
+            {
+                _stage.remove(GameConfig.CURRENT_LAYER);
+                GameConfig.CURRENT_LAYER.clear();
+                GameConfig.CURRENT_LAYER.remove();
+                GameConfig.CURRENT_LAYER.destroy();
+                GameConfig.CURRENT_LAYER = null;
+            }
+
 
             _mainLayer = new Konva.Layer();
             _stage.add(_mainLayer);
