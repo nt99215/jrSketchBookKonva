@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,7 +82,33 @@ const _defaultEraserSize = 15;
 const _defaultColor = '#000000';
 const _defaultOpacity = 100;
 
+let _mainStage = null;
+let _mainDrawLayer = null;
+let _currentLayer = null;
+
 class GameConfig {
+
+    static get MAIN_STAGE() {
+        return _mainStage;
+    }
+    static set MAIN_STAGE(obj) {
+        _mainStage = obj;
+    }
+
+    static get MAIN_LAYER() {
+        return _mainDrawLayer;
+    }
+    static set MAIN_LAYER(obj) {
+        _mainDrawLayer = obj;
+    }
+
+    static get CURRENT_LAYER() {
+        return _currentLayer;
+    }
+    static set CURRENT_LAYER(obj) {
+        _currentLayer = obj;
+    }
+
     static get CURRENT_TOOL() {
         return _tool;
     }
@@ -149,25 +175,52 @@ class GameConfig {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 
-let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* default */]('container');
+
+class LayerManager {
+    init(currentLayer) {
+        let _currentLayer = currentLayer;
+        let img = new Konva.Image({
+            image: _currentLayer.canvas._canvas
+        });
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
+        // _currentLayer.destroy();
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
+        // _currentLayer.clear();
+        _currentLayer.remove();
+        _currentLayer = null;
+        console.log("GameConfig.MAIN_LAYER", __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = LayerManager;
+
 
 /***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__module_Brush__ = __webpack_require__(4);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__ = __webpack_require__(3);
+
+let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* default */]('container');
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__module_Brush__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__module_Crayon__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__module_Eraser__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__module_Zoom__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__module_ClearCanvas__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__module_Move__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__module_Crayon__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__module_Eraser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__module_Zoom__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__module_ClearCanvas__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__module_Move__ = __webpack_require__(11);
 
 
 
@@ -178,7 +231,7 @@ let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* def
 
 
 
-let _id, _stage, _layer, _drawLayer;
+let _id, _stage, _layer, _mainLayer;
 let _colorArr = ['#ff00c8', '#59ff00', '#ffa200', '#0073ff'];
 let _sizeArr = [5, 7, 10, 20, 30];
 
@@ -231,13 +284,16 @@ class SketchBookKonva {
             height: 400
         });
 
+        __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_STAGE = _stage;
+
         this._createImg();
 
-        _drawLayer = new Konva.Layer();
-        _stage.add(_drawLayer);
+        _mainLayer = new Konva.Layer();
+        __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER = _mainLayer;
+        _stage.add(_mainLayer);
 
         // this.LineDraw = LineDraw.prototype.draw(_stage);
-        // this.Brush = Brush.prototype.draw(_stage, _drawLayer);
+        // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
         zoomSlider.style.display = 'none';
         $('_zoomSpan').style.display = 'none';
@@ -270,7 +326,7 @@ class SketchBookKonva {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
             this._toolsDestroy();
-            __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.draw(_stage, _drawLayer);
+            __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
 
             colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
@@ -291,7 +347,7 @@ class SketchBookKonva {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = true;
             this._toolsDestroy();
-            __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.draw(_stage, _drawLayer);
+            __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.init(_stage);
 
             colorEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getSize();
@@ -312,7 +368,7 @@ class SketchBookKonva {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
             this._toolsDestroy();
-            __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.draw(_stage, _drawLayer);
+            __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.init(_stage, _mainLayer);
 
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.getOpacity();
@@ -328,7 +384,8 @@ class SketchBookKonva {
         };
 
         zoomEl.onclick = () => {
-            __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */].prototype.draw(_stage, _drawLayer);
+            // this._toolsDestroy();
+            __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */].prototype.init(_stage);
             zoomSlider.value = __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */].prototype.getSize();
 
             colorEl.style.display = 'none';
@@ -344,27 +401,51 @@ class SketchBookKonva {
 
         clearEl.onclick = () => {
             // ClearCanvas.prototype.canvasClear(_canvas);
-            // _drawLayer.clear();
-            _drawLayer.find('Line').destroy();
-            _drawLayer.draw();
+            // _mainLayer.clear();
+            // this._toolsDestroy();
+            // GameConfig.MAIN_LAYER.find('Line').destroy();
+            // GameConfig.MAIN_LAYER.draw();
+            // _stage.remove(_mainLayer);
+
+            this._toolsDestroy();
+
+            _stage.remove(__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER);
+            // GameConfig.MAIN_LAYER.clear();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER.remove();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER.destroy();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER = null;
+
+            _stage.remove(__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_LAYER);
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_LAYER.clear();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_LAYER.remove();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_LAYER.destroy();
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_LAYER = null;
+
+            _mainLayer = new Konva.Layer();
+            _stage.add(_mainLayer);
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER = _mainLayer;
+            _mainLayer.draw();
+            // console.log(_mainLayer)
+            // _stage.remove(_mainLayer)
+            // GameConfig.MAIN_LAYER.visible(false);
+
+            // GameConfig.MAIN_LAYER.destroy();
+            // console.log("clear", _stage, GameConfig.MAIN_LAYER)
         };
 
         moveEl.onclick = () => {
             this._toolsDestroy();
-            __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage, _drawLayer);
+            __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage);
         };
+
+        this._default();
     }
 
     _default() {
-        __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.draw(_stage, _drawLayer);
+        __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
         colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
         sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
         opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
-    }
-
-    _clearCanvas(canvas) {
-        let a = new __WEBPACK_IMPORTED_MODULE_7__module_ClearCanvas__["a" /* default */](canvas);
-        this.hexToRgb("ffcc00");
     }
 
     _toolsDestroy() {
@@ -393,26 +474,34 @@ class SketchBookKonva {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
 
 
-let _stage, _layer, _this, isPaint, _line;
+
+let _stage, _drawLayer, _this, isPaint, _line;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
 class LineDraw {
 
-    draw(stage, layer) {
+    init(stage) {
 
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
-        _layer = layer;
+        _drawLayer = new Konva.Layer();
+        _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
 
+        this.useTool();
+    }
+
+    useTool() {
         _stage.on('contentMousedown', function () {
             isPaint = true;
             let pos = _stage.getPointerPosition();
@@ -426,7 +515,7 @@ class LineDraw {
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize()
             });
-            layer.add(_line);
+            _drawLayer.add(_line);
         });
 
         _stage.on('contentMouseup', function () {
@@ -442,11 +531,12 @@ class LineDraw {
             let pos = _stage.getPointerPosition();
             let oldPoints = _line.points();
             _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y]);
-            layer.draw();
+            _drawLayer.draw();
         });
     }
 
     destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
         isPaint = false;
         if (_stage) _stage.off('mousedown');
         if (_stage) _stage.off('mousemove');
@@ -491,11 +581,13 @@ class LineDraw {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
+
 
 
 let _stage, _drawLayer, _this;
@@ -505,30 +597,19 @@ let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */]
 
 class Brush {
 
-    draw(stage, drawLayer) {
+    init(stage) {
 
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
-        _drawLayer = drawLayer;
+        _drawLayer = new Konva.Layer();
+        _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        this.usePen();
+        this.useTool();
     }
 
-    getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
-        var transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
-        transform.invert();
-
-        // get pointer (say mouse or touch) position
-        var pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
-        return transform.point(pos);
-    }
-
-    usePen() {
+    useTool() {
 
         let isDrawing = false;
         let currentLine;
@@ -570,10 +651,26 @@ class Brush {
         });
     }
 
+    getRelativePointerPosition(node) {
+        // the function will return pointer position relative to the passed node
+        let transform = node.getAbsoluteTransform().copy();
+        // to detect relative position we need to invert transform
+        transform.invert();
+
+        // get pointer (say mouse or touch) position
+        let pos = node.getStage().getPointerPosition();
+
+        // now we find relative point
+        return transform.point(pos);
+    }
+
     destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
         if (_stage) _stage.off('mousedown');
         if (_stage) _stage.off('mousemove');
         if (_stage) _stage.off('mouseup');
+
+        // console.log('brush', _drawLayer);
     }
 
     /**
@@ -627,7 +724,7 @@ class Brush {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -688,7 +785,7 @@ class Airbrush {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -749,7 +846,7 @@ class Crayon {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -764,7 +861,7 @@ let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */]
 
 class Eraser {
 
-    draw(stage, drawLayer) {
+    init(stage, drawLayer) {
 
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
@@ -772,23 +869,10 @@ class Eraser {
         _this = this;
 
         // _stage.add(_drawLayer);
-        this.usePen();
+        this.useTool();
     }
 
-    getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
-        let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
-        transform.invert();
-
-        // get pointer (say mouse or touch) position
-        let pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
-        return transform.point(pos);
-    }
-
-    usePen() {
+    useTool() {
         isDrawing = false;
         let currentLine;
         _stage.on('mousedown', evt => {
@@ -808,7 +892,7 @@ class Eraser {
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('mousemove', evt => {
+        _stage.on('mousemove', () => {
             if (!isDrawing) {
                 return;
             }
@@ -824,6 +908,19 @@ class Eraser {
             // End drawing
             isDrawing = false;
         });
+    }
+
+    getRelativePointerPosition(node) {
+        // the function will return pointer position relative to the passed node
+        let transform = node.getAbsoluteTransform().copy();
+        // to detect relative position we need to invert transform
+        transform.invert();
+
+        // get pointer (say mouse or touch) position
+        let pos = node.getStage().getPointerPosition();
+
+        // now we find relative point
+        return transform.point(pos);
     }
 
     destroy() {
@@ -871,7 +968,7 @@ class Eraser {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -885,7 +982,7 @@ let _currentViewPort = 100;
 let _canvas, _stage, _drawLayer, _this;
 class Zoom {
 
-    draw(stage, drawLayer) {
+    init(stage, drawLayer) {
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
         _drawLayer = drawLayer;
@@ -956,7 +1053,7 @@ class Zoom {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -967,11 +1064,11 @@ class ClearCanvas {
     }
 
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = ClearCanvas;
+/* unused harmony export default */
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -980,7 +1077,7 @@ class ClearCanvas {
 
 let _canvas, _stage;
 class Move {
-    move(stage, layer) {
+    move(stage) {
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
         _stage = stage;
         _stage.draggable(true);
