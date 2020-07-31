@@ -8,7 +8,6 @@ let _opacity = GameConfig.DEFAULT_OPACITY;
 export default class LineDraw {
 
     init(stage) {
-
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
         _drawLayer = new Konva.Layer;

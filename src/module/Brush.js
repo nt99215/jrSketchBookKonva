@@ -27,7 +27,7 @@ export default class Brush {
 
         let isDrawing = false;
         let currentLine;
-        _stage.on('mousedown', (evt) => {
+        _stage.on('touchstart', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
@@ -40,13 +40,18 @@ export default class Brush {
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
                 lineCap:'round',
-                tension:0.5,
+                tension:GameConfig.DEFAULT_TENSION,
+                dash:[2,2,2],
+                dashEnabled:true,
+                fill:'#ffcc00',
+                fillPatternImage:'asset/image/starImg.png',
+                fillEnabled:true,
                 opacity:_this.getOpacity() / 100
             });
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('mousemove', (evt) => {
+        _stage.on('touchmove', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             if (!isDrawing) {
                 return;
@@ -59,9 +64,11 @@ export default class Brush {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('mouseup', (evt) => {
+        _stage.on('touchend', (evt) => {
             // End drawing
             isDrawing = false;
+            // currentLine.node.destroy();
+            console.log(currentLine)
         });
     }
 

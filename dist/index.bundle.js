@@ -76,6 +76,7 @@ let _selectedSize = 0;
 let _drawingHistory = [];
 const _historyLimit = 30;
 
+const _defaultTension = 0.3;
 const _defaultBrushSize = 10;
 const _defaultLineSize = 5;
 const _defaultEraserSize = 15;
@@ -114,6 +115,10 @@ class GameConfig {
     }
     static set CURRENT_TOOL(obj) {
         _tool = obj;
+    }
+
+    static get DEFAULT_TENSION() {
+        return _defaultTension;
     }
 
     static get IS_DRAWING_MODE() {
@@ -494,7 +499,6 @@ let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */]
 class LineDraw {
 
     init(stage) {
-
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
         _drawLayer = new Konva.Layer();
@@ -617,7 +621,7 @@ class Brush {
 
         let isDrawing = false;
         let currentLine;
-        _stage.on('mousedown', evt => {
+        _stage.on('touchstart', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
@@ -630,13 +634,18 @@ class Brush {
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
                 lineCap: 'round',
-                tension: 0.5,
+                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
+                dash: [2, 2, 2],
+                dashEnabled: true,
+                fill: '#ffcc00',
+                fillPatternImage: 'asset/image/starImg.png',
+                fillEnabled: true,
                 opacity: _this.getOpacity() / 100
             });
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('mousemove', evt => {
+        _stage.on('touchmove', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             if (!isDrawing) {
                 return;
@@ -649,9 +658,11 @@ class Brush {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('mouseup', evt => {
+        _stage.on('touchend', evt => {
             // End drawing
             isDrawing = false;
+            // currentLine.node.destroy();
+            console.log(currentLine);
         });
     }
 
@@ -889,7 +900,7 @@ class Eraser {
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
                 lineCap: 'round',
-                tension: 0.5,
+                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
                 opacity: _this.getOpacity() / 100,
                 globalCompositeOperation: 'destination-out'
             });

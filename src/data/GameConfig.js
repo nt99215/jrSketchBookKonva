@@ -6,6 +6,7 @@ let _selectedSize = 0;
 let _drawingHistory = [];
 const _historyLimit = 30;
 
+const _defaultTension = 0.3;
 const _defaultBrushSize = 10;
 const _defaultLineSize = 5;
 const _defaultEraserSize = 15;
@@ -29,6 +30,8 @@ export default class GameConfig {
 
     static get CURRENT_TOOL() { return _tool};
     static set CURRENT_TOOL(obj) { _tool = obj};
+
+    static get DEFAULT_TENSION() { return _defaultTension};
 
     static get IS_DRAWING_MODE() { return _isDrawingMode};
     static set IS_DRAWING_MODE(bool) { _isDrawingMode = bool};

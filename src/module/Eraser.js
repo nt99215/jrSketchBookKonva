@@ -34,7 +34,7 @@ export default class Eraser {
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
                 lineCap:'round',
-                tension:0.5,
+                tension:GameConfig.DEFAULT_TENSION,
                 opacity:_this.getOpacity() / 100,
                 globalCompositeOperation:'destination-out'
             });
