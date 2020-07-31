@@ -73,6 +73,14 @@ let _isDrawingMode = false;
 let _isLineDrawing = false;
 let _selectedColor = '';
 let _selectedSize = 0;
+let _drawingHistory = [];
+const _historyLimit = 30;
+
+const _defaultBrushSize = 10;
+const _defaultLineSize = 5;
+const _defaultEraserSize = 15;
+const _defaultColor = '#000000';
+const _defaultOpacity = 100;
 
 class GameConfig {
     static get CURRENT_TOOL() {
@@ -108,6 +116,29 @@ class GameConfig {
     }
     static set SELECTED_SIZE(num) {
         _selectedSize = num;
+    }
+
+    static get SELECTED_SIZE() {
+        return _drawingHistory;
+    }
+    static set SELECTED_SIZE(obj) {
+        _drawingHistory.push(obj);
+    }
+
+    static get DEFAULT_BRUSH_SIZE() {
+        return _defaultBrushSize;
+    }
+    static get DEFAULT_LINE_SIZE() {
+        return _defaultLineSize;
+    }
+    static get DEFAULT_ERASER_SIZE() {
+        return _defaultEraserSize;
+    }
+    static get DEFAULT_COLOR() {
+        return _defaultColor;
+    }
+    static get DEFAULT_OPACITY() {
+        return _defaultOpacity;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = GameConfig;
@@ -200,7 +231,7 @@ class SketchBookKonva {
             height: 400
         });
 
-        this._createImg(_drawLayer);
+        this._createImg();
 
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
@@ -212,17 +243,11 @@ class SketchBookKonva {
         $('_zoomSpan').style.display = 'none';
 
         colorEl.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) {
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setColor(this.value);
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.colorChange();
-            }
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setColor(this.value);
         };
 
         sizeEl.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) {
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.sizeChange();
-            }
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
         };
 
         opacityEl.onchange = function () {
@@ -233,10 +258,7 @@ class SketchBookKonva {
         };
 
         zoomSlider.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) {
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
-                __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.sizeChange();
-            }
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
         };
 
         /**
@@ -247,13 +269,13 @@ class SketchBookKonva {
 
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
-            if (__WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.endHand();
-            // if(LineDraw.prototype) LineDraw.prototype.endLine();
-            // if(Eraser.prototype) Eraser.prototype.endPen();
+            this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.draw(_stage, _drawLayer);
+
             colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
+
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
@@ -268,13 +290,13 @@ class SketchBookKonva {
 
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = true;
-            if (__WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.endHand();
-            if (__WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.endPen();
-            if (__WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.endPen();
+            this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.draw(_stage, _drawLayer);
+
             colorEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getOpacity();
+
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
@@ -289,12 +311,12 @@ class SketchBookKonva {
 
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
-            if (__WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.endHand();
-            if (__WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype) __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.endLine();
-            // if(Brush.prototype) Brush.prototype.endLine();
+            this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.draw(_stage, _drawLayer);
+
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */].prototype.getOpacity();
+
             colorEl.style.display = 'none';
             $('_colorSpan').style.display = 'none';
             sizeEl.style.display = '';
@@ -308,6 +330,7 @@ class SketchBookKonva {
         zoomEl.onclick = () => {
             __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */].prototype.draw(_stage, _drawLayer);
             zoomSlider.value = __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */].prototype.getSize();
+
             colorEl.style.display = 'none';
             $('_colorSpan').style.display = 'none';
             sizeEl.style.display = 'none';
@@ -327,7 +350,7 @@ class SketchBookKonva {
         };
 
         moveEl.onclick = () => {
-            __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.endPen();
+            this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage, _drawLayer);
         };
     }
@@ -342,6 +365,10 @@ class SketchBookKonva {
     _clearCanvas(canvas) {
         let a = new __WEBPACK_IMPORTED_MODULE_7__module_ClearCanvas__["a" /* default */](canvas);
         this.hexToRgb("ffcc00");
+    }
+
+    _toolsDestroy() {
+        if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.destroy();
     }
 
     rgbToHex(r, g, b) {
@@ -373,10 +400,10 @@ class SketchBookKonva {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 
 
-let _canvas, _stage, _layer, _this, isPaint, _line;
-let _color = '#000000';
-let _size = 7;
-let _opacity = 100;
+let _stage, _layer, _this, isPaint, _line;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
 class LineDraw {
 
     draw(stage, layer) {
@@ -384,7 +411,6 @@ class LineDraw {
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         _stage = stage;
         _layer = layer;
-        // _stage.add(layer);
         _this = this;
 
         _stage.on('contentMousedown', function () {
@@ -420,7 +446,7 @@ class LineDraw {
         });
     }
 
-    endLine() {
+    destroy() {
         isPaint = false;
         if (_stage) _stage.off('mousedown');
         if (_stage) _stage.off('mousemove');
@@ -460,12 +486,6 @@ class LineDraw {
         return _opacity;
     }
 
-    colorChange() {
-        // _canvas.freeDrawingBrush.color = this.getColor();
-    }
-    sizeChange() {
-        // _canvas.freeDrawingBrush.width = this.getSize();
-    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LineDraw;
 
@@ -478,13 +498,10 @@ class LineDraw {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 
 
-let _canvas, _stage;
-let _color = '#000000';
-let _size = 10;
-let _opacity = 100;
-let _mode, _this;
-let _lineArr = [];
-let _currentNum, _drawLayer;
+let _stage, _drawLayer, _this;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
 
 class Brush {
 
@@ -494,18 +511,6 @@ class Brush {
         _stage = stage;
         _drawLayer = drawLayer;
         _this = this;
-
-        /* let backgroundLayer = new Konva.Layer();
-         let backgroundColor = new Konva.Image({
-             // width: window.innerWidth,
-             // height: window.innerHeight,
-             width:500,
-             height:400,
-             fill: 'rgb(242,233,226)'
-         })
-         backgroundLayer.add(backgroundColor);
-         stage.add(backgroundLayer);
-         backgroundLayer.draw();*/
 
         this.usePen();
     }
@@ -565,22 +570,11 @@ class Brush {
         });
     }
 
-    endPen() {
+    destroy() {
         if (_stage) _stage.off('mousedown');
         if (_stage) _stage.off('mousemove');
         if (_stage) _stage.off('mouseup');
     }
-
-    undo() {
-        /*for(let i = 0; i<_lineArr.length; i++)
-        {
-            // _lineArr[i]
-        }*/
-
-        _lineArr[_currentNum].visible = false;
-    }
-
-    eraseOn() {}
 
     /**
      *
@@ -612,7 +606,6 @@ class Brush {
         _opacity = opacity;
     }
     getOpacity() {
-        console.log(_opacity);
         return _opacity;
     }
 
@@ -629,15 +622,6 @@ class Brush {
         imageObj.src = 'path/to/image/jpg';
     }
 
-    colorChange() {
-        // _canvas.freeDrawingBrush.color = this.getColor();
-    }
-    sizeChange() {
-        // _canvas.freeDrawingBrush.width = this.getSize();
-    }
-    opacityeChange() {
-        // _canvas.freeDrawingBrush.color = this.getOpacity();
-    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Brush;
 
@@ -772,13 +756,11 @@ class Crayon {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 
 
-let _canvas, _stage;
-let _color = '#000000';
-let _size = 10;
-let _opacity = 100;
-let _mode, _this;
+let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing;
 let _lineArr = [];
-let _currentNum, _drawLayer, isDrawing;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
 
 class Eraser {
 
@@ -789,19 +771,7 @@ class Eraser {
         _drawLayer = drawLayer;
         _this = this;
 
-        /* let backgroundLayer = new Konva.Layer();
-         let backgroundColor = new Konva.Image({
-             // width: window.innerWidth,
-             // height: window.innerHeight,
-             width:500,
-             height:400,
-             fill: 'rgb(242,233,226)'
-         })
-         backgroundLayer.add(backgroundColor);
-         stage.add(backgroundLayer);
-         backgroundLayer.draw();*/
-
-        _stage.add(_drawLayer);
+        // _stage.add(_drawLayer);
         this.usePen();
     }
 
@@ -856,28 +826,11 @@ class Eraser {
         });
     }
 
-    endPen() {
+    destroy() {
         // console.log("eraseEND")
         if (_stage) _stage.off('mousedown');
         if (_stage) _stage.off('mousemove');
         if (_stage) _stage.off('mouseup');
-    }
-
-    undo() {
-        /*for(let i = 0; i<_lineArr.length; i++)
-        {
-            // _lineArr[i]
-        }*/
-
-        _lineArr[_currentNum].visible = false;
-    }
-
-    eraseOn() {
-        console.log("eraser");
-        _mode = 'eraser';
-        // console.log("eraser", _currentNum);
-        // console.log( _lineArr[_currentNum]);
-        // _lineArr[_currentNum]._id.visible(false);
     }
 
     /**
@@ -913,15 +866,6 @@ class Eraser {
         return _opacity;
     }
 
-    colorChange() {
-        // _canvas.freeDrawingBrush.color = this.getColor();
-    }
-    sizeChange() {
-        // _canvas.freeDrawingBrush.width = this.getSize();
-    }
-    opacityeChange() {
-        // _canvas.freeDrawingBrush.color = this.getOpacity();
-    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Eraser;
 
@@ -946,7 +890,7 @@ class Zoom {
         _stage = stage;
         _drawLayer = drawLayer;
         _this = this;
-        _stage.add(_drawLayer);
+        // _stage.add(_drawLayer);
     }
 
     sizeChange(num) {
@@ -977,19 +921,21 @@ class Zoom {
         _stage.batchDraw();
     }
 
-    sizeSetMouseWheel() {}
-    /*canvas.on('mouse:wheel', function(opt) {
-     let delta = opt.e.deltaY;
-     let zoom = canvas.getZoom();
-     zoom *= 0.999 ** delta;
-     if (zoom > 20) zoom = 20;
-     if (zoom < 0.01) zoom = 0.01;
-     canvas.setZoom(zoom);
-     opt.e.preventDefault();
-     opt.e.stopPropagation();
-    })*/
-    // _canvas.setZoom(this.getSize() * 0.01);
+    sizeSetMouseWheel() {
+        /*canvas.on('mouse:wheel', function(opt) {
+         let delta = opt.e.deltaY;
+         let zoom = canvas.getZoom();
+         zoom *= 0.999 ** delta;
+         if (zoom > 20) zoom = 20;
+         if (zoom < 0.01) zoom = 0.01;
+         canvas.setZoom(zoom);
+         opt.e.preventDefault();
+         opt.e.stopPropagation();
+        })*/
+        // _canvas.setZoom(this.getSize() * 0.01);
+    }
 
+    destroy() {}
 
     /**
      *
@@ -1061,7 +1007,7 @@ class Move {
         });
     }
 
-    endHand() {
+    destroy() {
         if (_stage) _stage.draggable(false);
         if (_stage) _stage.off('wheel');
     }
