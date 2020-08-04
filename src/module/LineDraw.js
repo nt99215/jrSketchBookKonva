@@ -25,12 +25,16 @@ export default class LineDraw {
 
             _line = new Konva.Line({
                 points: [pos.x, pos.y, pos.x, pos.y],
-                pointerLength: 20,
-                pointerWidth: 20,
-                // fill: 'black',
+                // pointerLength: 20,
+                // pointerWidth: 20,
+                lineCap:'round',
+                dashEnabled:`true`,
                 opacity:_this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
+                // dash:[_this.getSize()/10,_this.getSize()],
+                // dash:[29, 20, 0.001, 20],
+                dash:[0, 0, 15],
             });
             _drawLayer.add(_line);
         });
@@ -57,9 +61,9 @@ export default class LineDraw {
     destroy () {
         LayerManager.prototype.init(_drawLayer);
         isPaint = false;
-        if(_stage)_stage.off('mousedown');
-        if(_stage)_stage.off('mousemove');
-        if(_stage)_stage.off('mouseup');
+        if(_stage)_stage.off('mousedown touchstart');
+        if(_stage)_stage.off('mousemove touchmove');
+        if(_stage)_stage.off('mouseup touchend contentTouchend');
 
 
     }

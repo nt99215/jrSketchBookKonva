@@ -27,7 +27,7 @@ export default class Brush {
 
         let isDrawing = false;
         let currentLine;
-        _stage.on('touchstart', (evt) => {
+        _stage.on('mousedown touchstart', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
@@ -39,7 +39,8 @@ export default class Brush {
                 points: [pos.x, pos.y],
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
-                lineCap:'round',
+                // lineCap:'round',
+                lineCap:'square',
                 tension:GameConfig.DEFAULT_TENSION,
                 dash:[2,2,2],
                 dashEnabled:true,
@@ -51,7 +52,7 @@ export default class Brush {
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('touchmove', (evt) => {
+        _stage.on('mousemove touchmove', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             if (!isDrawing) {
                 return;
@@ -64,11 +65,11 @@ export default class Brush {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('touchend', (evt) => {
+        _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
             // currentLine.node.destroy();
-            console.log(currentLine)
+            // console.log(currentLine)
         });
     }
 
@@ -87,9 +88,9 @@ export default class Brush {
 
     destroy () {
         LayerManager.prototype.init(_drawLayer);
-        if(_stage)_stage.off('mousedown');
-        if(_stage)_stage.off('mousemove');
-        if(_stage)_stage.off('mouseup');
+        if(_stage)_stage.off('mousedown touchstart');
+        if(_stage)_stage.off('mousemove touchmove');
+        if(_stage)_stage.off('mouseup touchend contentTouchend');
 
         // console.log('brush', _drawLayer);
     }

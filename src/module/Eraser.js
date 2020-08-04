@@ -74,9 +74,9 @@ export default class Eraser {
 
     destroy() {
         // console.log("eraseEND")
-        if(_stage)_stage.off('mousedown');
-        if(_stage)_stage.off('mousemove');
-        if(_stage)_stage.off('mouseup');
+        if(_stage)_stage.off('mousedown touchstart');
+        if(_stage)_stage.off('mousemove touchmove');
+        if(_stage)_stage.off('mouseup touchend contentTouchend');
     }
 
     /**

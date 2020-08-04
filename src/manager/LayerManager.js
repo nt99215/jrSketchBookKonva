@@ -13,6 +13,6 @@ export default class LayerManager {
         // _currentLayer.clear();
         _currentLayer.remove();
         _currentLayer = null;
-        console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER)
+        // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
     }
 }
