@@ -260,7 +260,14 @@ clearEl = $('clear'),
     colorEl = $('_color'),
     sizeEl = $('_size'),
     opacityEl = $('_opacity'),
-    zoomSlider = $('_zoom');
+    zoomSlider = $('_zoom'),
+
+
+//LINE TYPE
+lineTypeEl = $('lineType'),
+    stokeEl = $('_stroke'),
+    dashEl = $('_dash'),
+    dotEl = $('_dot');
 
 class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -301,6 +308,7 @@ class SketchBookKonva {
         // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
         zoomSlider.style.display = 'none';
+        lineTypeEl.style.display = 'none';
         $('_zoomSpan').style.display = 'none';
 
         colorEl.onchange = function () {
@@ -320,6 +328,16 @@ class SketchBookKonva {
 
         zoomSlider.onchange = function () {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
+        };
+
+        stokeEl.onchange = function () {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(0);
+        };
+        dashEl.onchange = function () {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(1);
+        };
+        dotEl.onchange = function () {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(2);
         };
 
         /**
@@ -345,6 +363,7 @@ class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
+            lineTypeEl.style.display = 'none';
         };
 
         lineEl.onclick = () => {
@@ -357,6 +376,8 @@ class SketchBookKonva {
             colorEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getOpacity();
+
+            lineTypeEl.style.display = '';
 
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
@@ -386,6 +407,7 @@ class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
+            lineTypeEl.style.display = 'none';
         };
 
         zoomEl.onclick = () => {
@@ -402,6 +424,7 @@ class SketchBookKonva {
 
             zoomSlider.style.display = '';
             $('_zoomSpan').style.display = '';
+            lineTypeEl.style.display = 'none';
         };
 
         clearEl.onclick = () => {
@@ -411,6 +434,8 @@ class SketchBookKonva {
             // GameConfig.MAIN_LAYER.find('Line').destroy();
             // GameConfig.MAIN_LAYER.draw();
             // _stage.remove(_mainLayer);
+
+            lineTypeEl.style.display = 'none';
 
             this._toolsDestroy();
 
@@ -443,6 +468,7 @@ class SketchBookKonva {
         };
 
         moveEl.onclick = () => {
+            lineTypeEl.style.display = 'none';
             this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage);
         };
@@ -497,6 +523,7 @@ let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].D
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
 const _dashConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
+let _lineType = _dashConfigArr[0];
 class LineDraw {
 
     init(stage) {
@@ -523,10 +550,8 @@ class LineDraw {
                 opacity: _this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
-                // dash:[_this.getSize()/10,_this.getSize()],
-                // dash:[29, 20, 0.001, 20],
                 dashEnabled: `true`,
-                dash: _dashConfigArr[2]
+                dash: _this.getLineType()
             });
             _drawLayer.add(_line);
         });
@@ -589,6 +614,17 @@ class LineDraw {
         return _opacity;
     }
 
+    /**
+     *
+     * @param linType
+     */
+    setLineType(num) {
+        _lineType = _dashConfigArr[num];
+    }
+    getLineType() {
+        return _lineType;
+    }
+
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LineDraw;
 
@@ -638,16 +674,15 @@ class Brush {
                 points: [pos.x, pos.y],
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
-                // lineCap:'round',
-                lineCap: 'square',
+                // lineCap:'square',
+                lineCap: 'round',
                 tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
-                dash: [2, 2, 2],
-                dashEnabled: true,
-                fill: '#ffcc00',
-                fillPatternImage: 'asset/image/starImg.png',
-                fillEnabled: true,
+                // fill:'#ffcc00',
+                // fillPatternImage:'asset/image/starImg.png',
+                // fillEnabled:true,
                 opacity: _this.getOpacity() / 100
             });
+
             _drawLayer.add(currentLine);
         });
 
@@ -750,27 +785,117 @@ class Brush {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
 
 
-let _canvas;
-let _color = '#000000';
-let _size = 40;
+
+let _stage, _drawLayer, _this;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+
 class Airbrush {
 
-    draw(canvas) {
-        _canvas = canvas;
-        _canvas.isDrawingMode = true;
-        _canvas.freeDrawingBrush = new fabric.SprayBrush(_canvas);
-        _canvas.freeDrawingBrush.color = this.getColor();
-        _canvas.freeDrawingBrush.width = this.getSize();
-        _canvas.freeDrawingBrush.density = 7;
-        _canvas.freeDrawingBrush.dotWidth = 1;
-        _canvas.freeDrawingBrush.dotWidthVariance = 1;
-        _canvas.freeDrawingBrush.randomOpacity = false;
-        _canvas.freeDrawingBrush.optimizeOverlapping = true;
+    init(stage) {
 
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
+        _stage = stage;
+        _drawLayer = new Konva.Layer();
+        _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
+        _this = this;
+
+        this.useTool();
+    }
+
+    useTool() {
+
+        let isDrawing = false;
+        let currentLine;
+        _stage.on('mousedown touchstart', evt => {
+            // if(!GameConfig.IS_DRAWING_MODE) return;
+            // Start drawing
+            isDrawing = true;
+            // Create new line object
+            let pos = this.getRelativePointerPosition(_stage);
+            currentLine = new Konva.Line({
+                stroke: _this.getColor(),
+                strokeWidth: _this.getSize(),
+                points: [pos.x, pos.y],
+                // globalCompositeOperation:'source-over',
+                // globalCompositeOperation:'destination-out',
+                // lineCap:'square',
+                lineCap: 'round',
+                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
+                // fill:'#ffcc00',
+                // fillPatternImage:'asset/image/starImg.png',
+                // fillEnabled:true,
+                opacity: _this.getOpacity() / 100
+            });
+
+            _drawLayer.add(currentLine);
+        });
+
+        _stage.on('mousemove touchmove', evt => {
+            // if(!GameConfig.IS_DRAWING_MODE) return;
+            if (!isDrawing) {
+                return;
+            }
+
+            // If drawing, add new point to the current line object
+            let pos = this.getRelativePointerPosition(_stage);
+            let newPoints = currentLine.points().concat([pos.x, pos.y]);
+            currentLine.points(newPoints);
+            this.imageDraw(pos.x, pos.y);
+            _drawLayer.batchDraw();
+        });
+
+        _stage.on('mouseup touchend contentTouchend', evt => {
+            // End drawing
+            isDrawing = false;
+            // currentLine.node.destroy();
+            // console.log(currentLine)
+        });
+    }
+
+    getRelativePointerPosition(node) {
+        // the function will return pointer position relative to the passed node
+        let transform = node.getAbsoluteTransform().copy();
+        // to detect relative position we need to invert transform
+        transform.invert();
+
+        // get pointer (say mouse or touch) position
+        let pos = node.getStage().getPointerPosition();
+
+        // now we find relative point
+        return transform.point(pos);
+    }
+
+    imageDraw(x, y) {
+
+        let xPos = 0;
+        let currentLine = new Konva.RegularPolygon({
+            // x: stage.width() / 2,
+            // y: stage.height() / 2,
+            x: x,
+            y: y,
+            sides: 3,
+            radius: 10,
+            fill: 'red',
+            stroke: 'black',
+            strokeWidth: 20,
+            lineJoin: 'bevel'
+        });
+        _drawLayer.add(currentLine);
+        _drawLayer.batchDraw();
+    }
+    destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
+
+        // console.log('brush', _drawLayer);
     }
 
     /**
@@ -795,12 +920,30 @@ class Airbrush {
         return _size;
     }
 
-    colorChange() {
-        _canvas.freeDrawingBrush.color = this.getColor();
+    /**
+     *
+     * @param opacity
+     */
+    setOpacity(opacity) {
+        _opacity = opacity;
     }
-    sizeChange() {
-        _canvas.freeDrawingBrush.width = this.getSize();
+    getOpacity() {
+        return _opacity;
     }
+
+    pattern() {
+        // get fill pattern image
+        let shape;
+        let fillPatternImage = shape.fillPatternImage();
+
+        // set fill pattern image
+        let imageObj = new Image();
+        imageObj.onload = function () {
+            shape.fillPatternImage(imageObj);
+        };
+        imageObj.src = 'path/to/image/jpg';
+    }
+
 }
 /* unused harmony export default */
 
@@ -811,27 +954,117 @@ class Airbrush {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
 
 
-let _canvas;
-let _color = '#000000';
-let _size = 20;
+
+let _stage, _drawLayer, _this;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+
 class Crayon {
 
-    draw(canvas) {
-        _canvas = canvas;
-        _canvas.isDrawingMode = true;
-        _canvas.freeDrawingBrush = new fabric.SprayBrush(_canvas);
-        _canvas.freeDrawingBrush.color = this.getColor();
-        _canvas.freeDrawingBrush.width = this.getSize();
-        _canvas.freeDrawingBrush.density = 12;
-        _canvas.freeDrawingBrush.dotWidth = 2;
-        _canvas.freeDrawingBrush.dotWidthVariance = 2;
-        _canvas.freeDrawingBrush.randomOpacity = false;
-        _canvas.freeDrawingBrush.optimizeOverlapping = true;
+    init(stage) {
 
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
+        _stage = stage;
+        _drawLayer = new Konva.Layer();
+        _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
+        _this = this;
+
+        this.useTool();
+    }
+
+    useTool() {
+
+        let isDrawing = false;
+        let currentLine;
+        _stage.on('mousedown touchstart', evt => {
+            // if(!GameConfig.IS_DRAWING_MODE) return;
+            // Start drawing
+            isDrawing = true;
+            // Create new line object
+            let pos = this.getRelativePointerPosition(_stage);
+            currentLine = new Konva.Line({
+                stroke: _this.getColor(),
+                strokeWidth: _this.getSize(),
+                points: [pos.x, pos.y],
+                // globalCompositeOperation:'source-over',
+                // globalCompositeOperation:'destination-out',
+                // lineCap:'square',
+                lineCap: 'round',
+                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
+                // fill:'#ffcc00',
+                // fillPatternImage:'asset/image/starImg.png',
+                // fillEnabled:true,
+                opacity: _this.getOpacity() / 100
+            });
+
+            _drawLayer.add(currentLine);
+        });
+
+        _stage.on('mousemove touchmove', evt => {
+            // if(!GameConfig.IS_DRAWING_MODE) return;
+            if (!isDrawing) {
+                return;
+            }
+
+            // If drawing, add new point to the current line object
+            let pos = this.getRelativePointerPosition(_stage);
+            let newPoints = currentLine.points().concat([pos.x, pos.y]);
+            currentLine.points(newPoints);
+            this.imageDraw(pos.x, pos.y);
+            _drawLayer.batchDraw();
+        });
+
+        _stage.on('mouseup touchend contentTouchend', evt => {
+            // End drawing
+            isDrawing = false;
+            // currentLine.node.destroy();
+            // console.log(currentLine)
+        });
+    }
+
+    getRelativePointerPosition(node) {
+        // the function will return pointer position relative to the passed node
+        let transform = node.getAbsoluteTransform().copy();
+        // to detect relative position we need to invert transform
+        transform.invert();
+
+        // get pointer (say mouse or touch) position
+        let pos = node.getStage().getPointerPosition();
+
+        // now we find relative point
+        return transform.point(pos);
+    }
+
+    imageDraw(x, y) {
+
+        let xPos = 0;
+        let currentLine = new Konva.RegularPolygon({
+            // x: stage.width() / 2,
+            // y: stage.height() / 2,
+            x: x,
+            y: y,
+            sides: 3,
+            radius: 10,
+            fill: 'red',
+            stroke: 'black',
+            strokeWidth: 20,
+            lineJoin: 'bevel'
+        });
+        _drawLayer.add(currentLine);
+        _drawLayer.batchDraw();
+    }
+    destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
+
+        // console.log('brush', _drawLayer);
     }
 
     /**
@@ -856,12 +1089,30 @@ class Crayon {
         return _size;
     }
 
-    colorChange() {
-        _canvas.freeDrawingBrush.color = this.getColor();
+    /**
+     *
+     * @param opacity
+     */
+    setOpacity(opacity) {
+        _opacity = opacity;
     }
-    sizeChange() {
-        _canvas.freeDrawingBrush.width = this.getSize();
+    getOpacity() {
+        return _opacity;
     }
+
+    pattern() {
+        // get fill pattern image
+        let shape;
+        let fillPatternImage = shape.fillPatternImage();
+
+        // set fill pattern image
+        let imageObj = new Image();
+        imageObj.onload = function () {
+            shape.fillPatternImage(imageObj);
+        };
+        imageObj.src = 'path/to/image/jpg';
+    }
+
 }
 /* unused harmony export default */
 

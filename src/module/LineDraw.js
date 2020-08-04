@@ -6,6 +6,7 @@ let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
 const _dashConfigArr = [[0,0], [0, 0, 15], [0, 10]];
+let _lineType = _dashConfigArr[0];
 export default class LineDraw {
 
     init(stage) {
@@ -32,10 +33,8 @@ export default class LineDraw {
                 opacity:_this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
-                // dash:[_this.getSize()/10,_this.getSize()],
-                // dash:[29, 20, 0.001, 20],
                 dashEnabled:`true`,
-                dash:_dashConfigArr[2],
+                dash:_this.getLineType()
             });
             _drawLayer.add(_line);
         });
@@ -90,5 +89,12 @@ export default class LineDraw {
      */
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
+
+    /**
+     *
+     * @param linType
+     */
+    setLineType(num) { _lineType = _dashConfigArr[num];}
+    getLineType() { return _lineType;}
 
 }

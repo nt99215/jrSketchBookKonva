@@ -28,7 +28,13 @@ let brushEl = $('brush'),
     colorEl = $('_color'),
     sizeEl = $('_size'),
     opacityEl = $('_opacity'),
-    zoomSlider = $('_zoom');
+    zoomSlider = $('_zoom'),
+
+    //LINE TYPE
+    lineTypeEl = $('lineType'),
+    stokeEl = $('_stroke'),
+    dashEl = $('_dash'),
+    dotEl = $('_dot');
 
 export default class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -72,6 +78,7 @@ export default class SketchBookKonva {
         // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
         zoomSlider.style.display = 'none';
+        lineTypeEl.style.display = 'none';
         $('_zoomSpan').style.display ='none';
 
 
@@ -93,6 +100,16 @@ export default class SketchBookKonva {
 
         zoomSlider.onchange = function() {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setSize(this.value);
+        }
+
+        stokeEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(0);
+        }
+        dashEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
+        }
+        dotEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
         }
 
 
@@ -119,6 +136,7 @@ export default class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
+            lineTypeEl.style.display = 'none';
         }
 
         lineEl.onclick =()=> {
@@ -131,6 +149,8 @@ export default class SketchBookKonva {
             colorEl.value = LineDraw.prototype.getColor();
             sizeEl.value = LineDraw.prototype.getSize();
             opacityEl.value = LineDraw.prototype.getOpacity();
+
+            lineTypeEl.style.display = '';
 
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
@@ -160,6 +180,7 @@ export default class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
+            lineTypeEl.style.display = 'none';
         };
 
         zoomEl.onclick =()=> {
@@ -176,6 +197,7 @@ export default class SketchBookKonva {
 
             zoomSlider.style.display = '';
             $('_zoomSpan').style.display = '';
+            lineTypeEl.style.display = 'none';
 
         }
 
@@ -186,6 +208,8 @@ export default class SketchBookKonva {
             // GameConfig.MAIN_LAYER.find('Line').destroy();
             // GameConfig.MAIN_LAYER.draw();
             // _stage.remove(_mainLayer);
+
+            lineTypeEl.style.display = 'none';
 
             this._toolsDestroy();
 
@@ -221,6 +245,7 @@ export default class SketchBookKonva {
         };
 
         moveEl.onclick = ()=> {
+            lineTypeEl.style.display = 'none';
             this._toolsDestroy();
             Move.prototype.move(_stage);
         };

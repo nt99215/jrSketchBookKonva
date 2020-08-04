@@ -39,16 +39,15 @@ export default class Brush {
                 points: [pos.x, pos.y],
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
-                // lineCap:'round',
-                lineCap:'square',
+                // lineCap:'square',
+                lineCap:'round',
                 tension:GameConfig.DEFAULT_TENSION,
-                dash:[2,2,2],
-                dashEnabled:true,
-                fill:'#ffcc00',
-                fillPatternImage:'asset/image/starImg.png',
-                fillEnabled:true,
+                // fill:'#ffcc00',
+                // fillPatternImage:'asset/image/starImg.png',
+                // fillEnabled:true,
                 opacity:_this.getOpacity() / 100
             });
+
             _drawLayer.add(currentLine);
         });
 
@@ -63,6 +62,7 @@ export default class Brush {
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
             _drawLayer.batchDraw();
+
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
