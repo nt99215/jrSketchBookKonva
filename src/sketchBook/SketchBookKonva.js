@@ -30,6 +30,22 @@ let brushEl = $('brush'),
     opacityEl = $('_opacity'),
     zoomSlider = $('_zoom'),
 
+    //BRUSH TYPE
+    brushTypeEl = $('brushType'),
+    circleEl = $('_circle'),
+    rectEl = $('_rect'),
+    diamondEl = $('_diamond'),
+    columnEl = $('_column'),
+    rowEl = $('_rowEl'),
+
+    //ERASER TYPE
+    eraserTypeEl = $('EraserType'),
+    eCircleEl = $('_eCircle'),
+    eRectEl = $('_eRect'),
+    eDiamondEl = $('_eDiamond'),
+    eColumnEl = $('_eColumn'),
+    eRowEl = $('_eRow'),
+
     //LINE TYPE
     lineTypeEl = $('lineType'),
     stokeEl = $('_stroke'),
@@ -77,6 +93,7 @@ export default class SketchBookKonva {
         // this.LineDraw = LineDraw.prototype.draw(_stage);
         // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
+        eraserTypeEl.style.display = 'none';
         zoomSlider.style.display = 'none';
         lineTypeEl.style.display = 'none';
         $('_zoomSpan').style.display ='none';
@@ -102,6 +119,22 @@ export default class SketchBookKonva {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setSize(this.value);
         }
 
+        /**
+         * LINE STYLE
+         */
+        brushTypeEl.onchange = function(e) {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
+        }
+       /* dashEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
+        }
+        dotEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
+        }*/
+
+        /**
+         * LINE STYLE
+         */
         stokeEl.onchange = function() {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(0);
         }
@@ -136,6 +169,9 @@ export default class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
+
+            brushTypeEl.style.display = '';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         }
 
@@ -158,6 +194,8 @@ export default class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         }
 
@@ -173,6 +211,8 @@ export default class SketchBookKonva {
             opacityEl.value = LineDraw.prototype.getOpacity();
 
             lineTypeEl.style.display = '';
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
 
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
@@ -202,6 +242,9 @@ export default class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
+
+            eraserTypeEl.style.display = '';
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -219,6 +262,9 @@ export default class SketchBookKonva {
 
             zoomSlider.style.display = '';
             $('_zoomSpan').style.display = '';
+
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
 
         }
@@ -231,7 +277,9 @@ export default class SketchBookKonva {
             // GameConfig.MAIN_LAYER.draw();
             // _stage.remove(_mainLayer);
 
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
 
             this._toolsDestroy();
 
@@ -267,6 +315,7 @@ export default class SketchBookKonva {
         };
 
         moveEl.onclick = ()=> {
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
             this._toolsDestroy();
             Move.prototype.move(_stage);
@@ -278,8 +327,8 @@ export default class SketchBookKonva {
     }
 
     _default() {
-        // Brush.prototype.init(_stage);
-        Crayon.prototype.init(_stage);
+        Brush.prototype.init(_stage);
+        // Crayon.prototype.init(_stage);
         colorEl.value = Brush.prototype.getColor();
         sizeEl.value = Brush.prototype.getSize();
         opacityEl.value = Brush.prototype.getOpacity();

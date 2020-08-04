@@ -5,6 +5,11 @@ let _stage, _drawLayer, _this;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+const _typeConfigArr = [[0,0], [0, 0, 15], [0, 10]];
+let _img, _brushType,_clone, _shapeEnable;
+const _imgObj = {w:0, h:0, r:0};
+const _angleRatio = 4;
+let _lineCap = 'round';
 
 
 export default class Brush {
@@ -17,6 +22,8 @@ export default class Brush {
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
+        _shapeEnable = false;
+
 
         this.useTool();
 
@@ -31,37 +38,67 @@ export default class Brush {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-            // Create new line object
-            let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
-                stroke: _this.getColor(),
-                strokeWidth: _this.getSize(),
-                points: [pos.x, pos.y],
-                // globalCompositeOperation:'source-over',
-                // globalCompositeOperation:'destination-out',
-                // lineCap:'square',
-                lineCap:'round',
-                tension:GameConfig.DEFAULT_TENSION,
-                // fill:'#ffcc00',
-                // fillPatternImage:'asset/image/starImg.png',
-                // fillEnabled:true,
-                opacity:_this.getOpacity() / 100
-            });
 
-            _drawLayer.add(currentLine);
+            let pos = this.getRelativePointerPosition(_stage);
+            if(! _shapeEnable)
+            {
+                currentLine = new Konva.Line({
+                    stroke: _this.getColor(),
+                    strokeWidth: _this.getSize(),
+                    points: [pos.x, pos.y],
+                    globalCompositeOperation:'source-over',
+                    // globalCompositeOperation:'destination-out',
+                    // lineCap:'square',
+                    lineCap:_this.getLineCap(),
+                    tension:GameConfig.DEFAULT_TENSION,
+                    // fill:'#ffcc00',
+                    // fillPatternImage:'asset/image/starImg.png',
+                    // fillEnabled:true,
+                    opacity:_this.getOpacity() / 100
+                });
+
+                _drawLayer.add(currentLine);
+            }
+
+            else
+            {
+                currentLine = {points:[pos.x, pos.y]}
+                // console.log(currentLine.points)
+            }
+
+
+
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
+            if (!isDrawing) return;
+
+            let pos = this.getRelativePointerPosition(_stage);
+            if(! _shapeEnable)
+            {
+
+                let newPoints = currentLine.points().concat([pos.x, pos.y]);
+                currentLine.points(newPoints);
+                _drawLayer.batchDraw();
             }
 
-            // If drawing, add new point to the current line object
-            let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
-            _drawLayer.batchDraw();
+            else
+            {
+                let obj = _imgObj;
+                _img = new Konva.Rect({
+                    // width:_this.getSize(),
+                    // height:_this.getSize(),
+                    width:parseInt(obj.w  * this.getSize()),
+                    height:parseInt(obj.h * this.getSize()),
+                    rotation:obj.r,
+                    fill:_this.getColor(),
+                })
+
+                _img.cache();
+                this.imageDraw(pos.x, pos.y);
+                _drawLayer.batchDraw();
+
+            }
 
         });
 
@@ -84,6 +121,20 @@ export default class Brush {
 
         // now we find relative point
         return transform.point(pos);
+    }
+
+
+    imageDraw(x, y) {
+        _clone = _img.clone({
+            x:x,
+            y:y,
+            // width:_img.scale.x * 20,
+            // height:10,
+            fill:_this.getColor(),
+        });
+
+        _clone.cache();
+        _drawLayer.add(_clone);
     }
 
     destroy () {
@@ -118,17 +169,58 @@ export default class Brush {
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
 
-    pattern() {
-        // get fill pattern image
-        let shape
-        let fillPatternImage = shape.fillPatternImage();
+    /**
+     *
+     * @param lineCap
+     */
+    setLineCap(str) { _lineCap = str;}
+    getLineCap() { return _lineCap;}
 
-// set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function() {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
+    /**
+     *
+     * @param linType
+     */
+    setLineType(e) {
+        let type = e.target.id.substr(1, 100);
+        console.log(type);
+        switch (type)
+        {
+            case 'circle' :
+                this.setLineCap('round');
+                _shapeEnable = false;
+                break;
+            case 'rect' :
+                this.setLineCap('square');
+                _shapeEnable = false;
+                break;
+            case 'diamond' :
+                _imgObj.w = 1;
+                _imgObj.h = 1;
+                _imgObj.r = 45;
+                _shapeEnable = true;
+                break;
+            case 'column' :
+                _imgObj.w = 1/_angleRatio;
+                _imgObj.h = 1;
+                _imgObj.r = 0;
+                _shapeEnable = true;
+                break;
+            case 'row' :
+                _imgObj.w = 1;
+                _imgObj.h = 1/_angleRatio;
+                _imgObj.r = 0;
+                _shapeEnable = true;
+                break;
+            case 'slash' :
+                _imgObj.w = 1;
+                _imgObj.h = 1/_angleRatio;
+                _imgObj.r = -35;
+                _shapeEnable = true;
+                break;
+
+        }
     }
+    getLineType() { return _brushType;}
+
 
 }

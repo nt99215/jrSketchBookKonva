@@ -78,7 +78,7 @@ const _historyLimit = 30;
 
 const _defaultTension = 0.3;
 const _defaultBrushSize = 10;
-const _defaultLineSize = 5;
+const _defaultLineSize = 20;
 const _defaultEraserSize = 15;
 const _defaultColor = '#000000';
 const _defaultOpacity = 100;
@@ -264,6 +264,24 @@ clearEl = $('clear'),
     zoomSlider = $('_zoom'),
 
 
+//BRUSH TYPE
+brushTypeEl = $('brushType'),
+    circleEl = $('_circle'),
+    rectEl = $('_rect'),
+    diamondEl = $('_diamond'),
+    columnEl = $('_column'),
+    rowEl = $('_rowEl'),
+
+
+//ERASER TYPE
+eraserTypeEl = $('EraserType'),
+    eCircleEl = $('_eCircle'),
+    eRectEl = $('_eRect'),
+    eDiamondEl = $('_eDiamond'),
+    eColumnEl = $('_eColumn'),
+    eRowEl = $('_eRow'),
+
+
 //LINE TYPE
 lineTypeEl = $('lineType'),
     stokeEl = $('_stroke'),
@@ -308,6 +326,7 @@ class SketchBookKonva {
         // this.LineDraw = LineDraw.prototype.draw(_stage);
         // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
+        eraserTypeEl.style.display = 'none';
         zoomSlider.style.display = 'none';
         lineTypeEl.style.display = 'none';
         $('_zoomSpan').style.display = 'none';
@@ -331,6 +350,22 @@ class SketchBookKonva {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
         };
 
+        /**
+         * LINE STYLE
+         */
+        brushTypeEl.onchange = function (e) {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
+        };
+        /* dashEl.onchange = function() {
+             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
+         }
+         dotEl.onchange = function() {
+             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
+         }*/
+
+        /**
+         * LINE STYLE
+         */
         stokeEl.onchange = function () {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(0);
         };
@@ -364,6 +399,9 @@ class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
+
+            brushTypeEl.style.display = '';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -386,6 +424,8 @@ class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -401,6 +441,8 @@ class SketchBookKonva {
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getOpacity();
 
             lineTypeEl.style.display = '';
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
 
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
@@ -430,6 +472,9 @@ class SketchBookKonva {
             $('_opacitySpan').style.display = '';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
+
+            eraserTypeEl.style.display = '';
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -447,6 +492,9 @@ class SketchBookKonva {
 
             zoomSlider.style.display = '';
             $('_zoomSpan').style.display = '';
+
+            brushTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -458,7 +506,9 @@ class SketchBookKonva {
             // GameConfig.MAIN_LAYER.draw();
             // _stage.remove(_mainLayer);
 
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            eraserTypeEl.style.display = 'none';
 
             this._toolsDestroy();
 
@@ -491,6 +541,7 @@ class SketchBookKonva {
         };
 
         moveEl.onclick = () => {
+            brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
             this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage);
@@ -500,8 +551,8 @@ class SketchBookKonva {
     }
 
     _default() {
-        // Brush.prototype.init(_stage);
-        __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */].prototype.init(_stage);
+        __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
+        // Crayon.prototype.init(_stage);
         colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
         sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
         opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
@@ -667,6 +718,11 @@ let _stage, _drawLayer, _this;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+const _typeConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
+let _img, _brushType, _clone, _shapeEnable;
+const _imgObj = { w: 0, h: 0, r: 0 };
+const _angleRatio = 4;
+let _lineCap = 'round';
 
 class Brush {
 
@@ -678,6 +734,7 @@ class Brush {
         _stage.add(_drawLayer);
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
+        _shapeEnable = false;
 
         this.useTool();
     }
@@ -690,37 +747,56 @@ class Brush {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-            // Create new line object
-            let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
-                stroke: _this.getColor(),
-                strokeWidth: _this.getSize(),
-                points: [pos.x, pos.y],
-                // globalCompositeOperation:'source-over',
-                // globalCompositeOperation:'destination-out',
-                // lineCap:'square',
-                lineCap: 'round',
-                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
-                // fill:'#ffcc00',
-                // fillPatternImage:'asset/image/starImg.png',
-                // fillEnabled:true,
-                opacity: _this.getOpacity() / 100
-            });
 
-            _drawLayer.add(currentLine);
+            let pos = this.getRelativePointerPosition(_stage);
+            if (!_shapeEnable) {
+                currentLine = new Konva.Line({
+                    stroke: _this.getColor(),
+                    strokeWidth: _this.getSize(),
+                    points: [pos.x, pos.y],
+                    globalCompositeOperation: 'source-over',
+                    // globalCompositeOperation:'destination-out',
+                    // lineCap:'square',
+                    lineCap: _this.getLineCap(),
+                    tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
+                    // fill:'#ffcc00',
+                    // fillPatternImage:'asset/image/starImg.png',
+                    // fillEnabled:true,
+                    opacity: _this.getOpacity() / 100
+                });
+
+                _drawLayer.add(currentLine);
+            } else {
+                currentLine = { points: [pos.x, pos.y]
+                    // console.log(currentLine.points)
+                };
+            }
         });
 
         _stage.on('mousemove touchmove', evt => {
-            // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
-            }
+            if (!isDrawing) return;
 
-            // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
-            _drawLayer.batchDraw();
+            if (!_shapeEnable) {
+
+                let newPoints = currentLine.points().concat([pos.x, pos.y]);
+                currentLine.points(newPoints);
+                _drawLayer.batchDraw();
+            } else {
+                let obj = _imgObj;
+                _img = new Konva.Rect({
+                    // width:_this.getSize(),
+                    // height:_this.getSize(),
+                    width: parseInt(obj.w * this.getSize()),
+                    height: parseInt(obj.h * this.getSize()),
+                    rotation: obj.r,
+                    fill: _this.getColor()
+                });
+
+                _img.cache();
+                this.imageDraw(pos.x, pos.y);
+                _drawLayer.batchDraw();
+            }
         });
 
         _stage.on('mouseup touchend contentTouchend', evt => {
@@ -742,6 +818,19 @@ class Brush {
 
         // now we find relative point
         return transform.point(pos);
+    }
+
+    imageDraw(x, y) {
+        _clone = _img.clone({
+            x: x,
+            y: y,
+            // width:_img.scale.x * 20,
+            // height:10,
+            fill: _this.getColor()
+        });
+
+        _clone.cache();
+        _drawLayer.add(_clone);
     }
 
     destroy() {
@@ -786,17 +875,62 @@ class Brush {
         return _opacity;
     }
 
-    pattern() {
-        // get fill pattern image
-        let shape;
-        let fillPatternImage = shape.fillPatternImage();
+    /**
+     *
+     * @param lineCap
+     */
+    setLineCap(str) {
+        _lineCap = str;
+    }
+    getLineCap() {
+        return _lineCap;
+    }
 
-        // set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function () {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
+    /**
+     *
+     * @param linType
+     */
+    setLineType(e) {
+        let type = e.target.id.substr(1, 100);
+        console.log(type);
+        switch (type) {
+            case 'circle':
+                this.setLineCap('round');
+                _shapeEnable = false;
+                break;
+            case 'rect':
+                this.setLineCap('square');
+                _shapeEnable = false;
+                break;
+            case 'diamond':
+                _imgObj.w = 1;
+                _imgObj.h = 1;
+                _imgObj.r = 45;
+                _shapeEnable = true;
+                break;
+            case 'column':
+                _imgObj.w = 1 / _angleRatio;
+                _imgObj.h = 1;
+                _imgObj.r = 0;
+                _shapeEnable = true;
+                break;
+            case 'row':
+                _imgObj.w = 1;
+                _imgObj.h = 1 / _angleRatio;
+                _imgObj.r = 0;
+                _shapeEnable = true;
+                break;
+            case 'slash':
+                _imgObj.w = 1;
+                _imgObj.h = 1 / _angleRatio;
+                _imgObj.r = -35;
+                _shapeEnable = true;
+                break;
+
+        }
+    }
+    getLineType() {
+        return _brushType;
     }
 
 }
@@ -986,7 +1120,7 @@ let _stage, _drawLayer, _this;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
-let _img, _pattern, clone;
+let _img, _pattern, _clone;
 
 class Crayon {
 
@@ -1061,16 +1195,15 @@ class Crayon {
     }
 
     imageDraw(x, y) {
-
-        clone = _img.clone({
+        _clone = _img.clone({
             x: x - 20,
-            y: y - 20,
-            fillColor: '#000000',
-            fill: '#1dad46'
+            y: y - 20
+            // fillColor:'#000000',
+            // fill:'#1dad46'
         });
 
-        clone.cache();
-        _drawLayer.add(clone);
+        _clone.cache();
+        _drawLayer.add(_clone);
         // console.log(_drawLayer.children.length)
     }
 

@@ -5,10 +5,11 @@ let _stage, _drawLayer, _this;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-let _img, _pattern, _clone;
+const _typeConfigArr = [[0,0], [0, 0, 15], [0, 10]];
+let _brushType;
 
 
-export default class Crayon {
+export default class Brush {
 
     init(stage) {
 
@@ -19,23 +20,10 @@ export default class Crayon {
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        let imageURL = 'asset/image/pattern_3.png';
-        Konva.Image.fromURL(imageURL, function(img){
-            // img.fillPatternImage
-            // img.fill('#000000')
-            _img = img;
-        });
-
         this.useTool();
+
     }
 
-
-    newCtx(width, height) {
-        let canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        return canvas.getContext("2d");
-    }
 
     useTool () {
 
@@ -45,17 +33,36 @@ export default class Crayon {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-
+            // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
-            currentLine = {points:[pos.x, pos.y]}
-            // console.log(currentLine.points)
+            currentLine = new Konva.Line({
+                stroke: _this.getColor(),
+                strokeWidth: _this.getSize(),
+                points: [pos.x, pos.y],
+                // globalCompositeOperation:'source-over',
+                // globalCompositeOperation:'destination-out',
+                // lineCap:'square',
+                lineCap:'round',
+                tension:GameConfig.DEFAULT_TENSION,
+                // fill:'#ffcc00',
+                // fillPatternImage:'asset/image/starImg.png',
+                // fillEnabled:true,
+                opacity:_this.getOpacity() / 100
+            });
+
+            _drawLayer.add(currentLine);
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            if (!isDrawing) return;
+            // if(!GameConfig.IS_DRAWING_MODE) return;
+            if (!isDrawing) {
+                return;
+            }
 
+            // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            this.imageDraw(pos.x, pos.y);
+            let newPoints = currentLine.points().concat([pos.x, pos.y]);
+            currentLine.points(newPoints);
             _drawLayer.batchDraw();
 
         });
@@ -72,27 +79,13 @@ export default class Crayon {
         // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
         // to detect relative position we need to invert transform
-        // transform.invert();
+        transform.invert();
 
         // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
 
         // now we find relative point
         return transform.point(pos);
-    }
-
-
-    imageDraw(x, y) {
-        _clone = _img.clone({
-            x:x - 20,
-            y:y - 20,
-            // fillColor:'#000000',
-            // fill:'#1dad46'
-        });
-
-        _clone.cache();
-        _drawLayer.add(_clone);
-        // console.log(_drawLayer.children.length)
     }
 
     destroy () {
@@ -127,17 +120,12 @@ export default class Crayon {
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
 
-    pattern() {
-        // get fill pattern image
-        let shape
-        let fillPatternImage = shape.fillPatternImage();
+    /**
+     *
+     * @param linType
+     */
+    setLineType(num) { _brushType = _typeConfigArr[num];}
+    getLineType() { return _brushType;}
 
-// set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function() {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
-    }
 
 }
