@@ -391,6 +391,7 @@ class SketchBookKonva {
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
 
+            $('_circle').checked = true;
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';

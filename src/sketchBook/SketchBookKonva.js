@@ -161,6 +161,7 @@ export default class SketchBookKonva {
             sizeEl.value = Brush.prototype.getSize();
             opacityEl.value = Brush.prototype.getOpacity();
 
+            $('_circle').checked = true;
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
