@@ -5,6 +5,7 @@ let _stage, _drawLayer, _this, isPaint, _line;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+const _dashConfigArr = [[0,0], [0, 0, 15], [0, 10]];
 export default class LineDraw {
 
     init(stage) {
@@ -28,13 +29,13 @@ export default class LineDraw {
                 // pointerLength: 20,
                 // pointerWidth: 20,
                 lineCap:'round',
-                dashEnabled:`true`,
                 opacity:_this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
                 // dash:[_this.getSize()/10,_this.getSize()],
                 // dash:[29, 20, 0.001, 20],
-                dash:[0, 0, 15],
+                dashEnabled:`true`,
+                dash:_dashConfigArr[2],
             });
             _drawLayer.add(_line);
         });

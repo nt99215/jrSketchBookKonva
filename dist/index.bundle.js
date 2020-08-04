@@ -196,7 +196,7 @@ class LayerManager {
         // _currentLayer.clear();
         _currentLayer.remove();
         _currentLayer = null;
-        console.log("GameConfig.MAIN_LAYER", __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER);
+        // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LayerManager;
@@ -516,12 +516,16 @@ class LineDraw {
 
             _line = new Konva.Line({
                 points: [pos.x, pos.y, pos.x, pos.y],
-                pointerLength: 20,
-                pointerWidth: 20,
-                // fill: 'black',
+                // pointerLength: 20,
+                // pointerWidth: 20,
+                lineCap: 'round',
+                dashEnabled: `true`,
                 opacity: _this.getOpacity() / 100,
                 stroke: _this.getColor(),
-                strokeWidth: _this.getSize()
+                strokeWidth: _this.getSize(),
+                // dash:[_this.getSize()/10,_this.getSize()],
+                // dash:[29, 20, 0.001, 20],
+                dash: [0, 0, 15]
             });
             _drawLayer.add(_line);
         });
@@ -546,9 +550,9 @@ class LineDraw {
     destroy() {
         __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
         isPaint = false;
-        if (_stage) _stage.off('mousedown');
-        if (_stage) _stage.off('mousemove');
-        if (_stage) _stage.off('mouseup');
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
     }
 
     /**
@@ -621,7 +625,7 @@ class Brush {
 
         let isDrawing = false;
         let currentLine;
-        _stage.on('touchstart', evt => {
+        _stage.on('mousedown touchstart', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
@@ -633,7 +637,8 @@ class Brush {
                 points: [pos.x, pos.y],
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
-                lineCap: 'round',
+                // lineCap:'round',
+                lineCap: 'square',
                 tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
                 dash: [2, 2, 2],
                 dashEnabled: true,
@@ -645,7 +650,7 @@ class Brush {
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('touchmove', evt => {
+        _stage.on('mousemove touchmove', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             if (!isDrawing) {
                 return;
@@ -658,11 +663,11 @@ class Brush {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('touchend', evt => {
+        _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
             isDrawing = false;
             // currentLine.node.destroy();
-            console.log(currentLine);
+            // console.log(currentLine)
         });
     }
 
@@ -681,9 +686,9 @@ class Brush {
 
     destroy() {
         __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
-        if (_stage) _stage.off('mousedown');
-        if (_stage) _stage.off('mousemove');
-        if (_stage) _stage.off('mouseup');
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
 
         // console.log('brush', _drawLayer);
     }
@@ -940,9 +945,9 @@ class Eraser {
 
     destroy() {
         // console.log("eraseEND")
-        if (_stage) _stage.off('mousedown');
-        if (_stage) _stage.off('mousemove');
-        if (_stage) _stage.off('mouseup');
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
     }
 
     /**
