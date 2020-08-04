@@ -182,7 +182,6 @@ export default class Brush {
      */
     setLineType(e) {
         let type = e.target.id.substr(1, 100);
-        console.log(type);
         switch (type)
         {
             case 'circle' :
