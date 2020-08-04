@@ -20,7 +20,7 @@ export default class LineDraw {
     }
 
     useTool() {
-        _stage.on('contentMousedown', function () {
+        _stage.on('mousedown touchstart', function () {
             isPaint = true;
             let pos = _stage.getPointerPosition();
 
@@ -40,12 +40,12 @@ export default class LineDraw {
             _drawLayer.add(_line);
         });
 
-        _stage.on('contentMouseup', function () {
+        _stage.on('mouseup touchend contentTouchend', function () {
             isPaint = false;
 
         });
 
-        _stage.on('contentMousemove', function () {
+        _stage.on('mousemove touchmove', function () {
             if(!GameConfig.IS_LINE_DRAWING) return;
             if (!isPaint) {
                 return;

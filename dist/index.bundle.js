@@ -511,7 +511,7 @@ class LineDraw {
     }
 
     useTool() {
-        _stage.on('contentMousedown', function () {
+        _stage.on('mousedown touchstart', function () {
             isPaint = true;
             let pos = _stage.getPointerPosition();
 
@@ -531,11 +531,11 @@ class LineDraw {
             _drawLayer.add(_line);
         });
 
-        _stage.on('contentMouseup', function () {
+        _stage.on('mouseup touchend contentTouchend', function () {
             isPaint = false;
         });
 
-        _stage.on('contentMousemove', function () {
+        _stage.on('mousemove touchmove', function () {
             if (!__WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_LINE_DRAWING) return;
             if (!isPaint) {
                 return;
@@ -896,7 +896,7 @@ class Eraser {
     useTool() {
         isDrawing = false;
         let currentLine;
-        _stage.on('mousedown', evt => {
+        _stage.on('mousedown touchstart', evt => {
             // Start drawing
             isDrawing = true;
             // Create new line object
@@ -913,7 +913,7 @@ class Eraser {
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('mousemove', () => {
+        _stage.on('mousemove touchmove', () => {
             if (!isDrawing) {
                 return;
             }
@@ -925,7 +925,7 @@ class Eraser {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('mouseup', evt => {
+        _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
             isDrawing = false;
         });

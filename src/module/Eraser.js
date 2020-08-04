@@ -24,7 +24,7 @@ export default class Eraser {
     useTool () {
         isDrawing = false;
         let currentLine;
-        _stage.on('mousedown', (evt) => {
+        _stage.on('mousedown touchstart', (evt) => {
             // Start drawing
             isDrawing = true;
             // Create new line object
@@ -41,7 +41,7 @@ export default class Eraser {
             _drawLayer.add(currentLine);
         });
 
-        _stage.on('mousemove', () => {
+        _stage.on('mousemove touchmove', () => {
             if (!isDrawing) {
                 return;
             }
@@ -53,7 +53,7 @@ export default class Eraser {
             _drawLayer.batchDraw();
         });
 
-        _stage.on('mouseup', (evt) => {
+        _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
         });
