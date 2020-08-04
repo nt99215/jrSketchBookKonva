@@ -326,7 +326,7 @@ class SketchBookKonva {
         // this.LineDraw = LineDraw.prototype.draw(_stage);
         // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
 
-        eraserTypeEl.style.display = 'none';
+        // eraserTypeEl.style.display = 'none';
         zoomSlider.style.display = 'none';
         lineTypeEl.style.display = 'none';
         $('_zoomSpan').style.display = 'none';
@@ -402,7 +402,7 @@ class SketchBookKonva {
             $('_zoomSpan').style.display = 'none';
 
             brushTypeEl.style.display = '';
-            eraserTypeEl.style.display = 'none';
+            //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -426,7 +426,7 @@ class SketchBookKonva {
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
             brushTypeEl.style.display = 'none';
-            eraserTypeEl.style.display = 'none';
+            //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -443,7 +443,7 @@ class SketchBookKonva {
 
             lineTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
-            eraserTypeEl.style.display = 'none';
+            //eraserTypeEl.style.display = 'none';
 
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
@@ -474,7 +474,7 @@ class SketchBookKonva {
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display = 'none';
 
-            eraserTypeEl.style.display = '';
+            //eraserTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
@@ -495,7 +495,7 @@ class SketchBookKonva {
             $('_zoomSpan').style.display = '';
 
             brushTypeEl.style.display = 'none';
-            eraserTypeEl.style.display = 'none';
+            //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
         };
 
@@ -509,7 +509,7 @@ class SketchBookKonva {
 
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
-            eraserTypeEl.style.display = 'none';
+            //eraserTypeEl.style.display = 'none';
 
             this._toolsDestroy();
 
