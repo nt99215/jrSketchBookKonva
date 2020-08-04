@@ -496,6 +496,7 @@ let _stage, _drawLayer, _this, isPaint, _line;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+const _dashConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
 class LineDraw {
 
     init(stage) {
@@ -519,13 +520,13 @@ class LineDraw {
                 // pointerLength: 20,
                 // pointerWidth: 20,
                 lineCap: 'round',
-                dashEnabled: `true`,
                 opacity: _this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
                 // dash:[_this.getSize()/10,_this.getSize()],
                 // dash:[29, 20, 0.001, 20],
-                dash: [0, 0, 15]
+                dashEnabled: `true`,
+                dash: _dashConfigArr[2]
             });
             _drawLayer.add(_line);
         });
