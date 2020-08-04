@@ -5,6 +5,7 @@ let _stage, _drawLayer, _this;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+let _img, _pattern, clone;
 
 
 export default class Crayon {
@@ -18,10 +19,23 @@ export default class Crayon {
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        this.useTool();
+        let imageURL = 'asset/image/pattern_3.png';
+        Konva.Image.fromURL(imageURL, function(img){
+            // img.fillPatternImage
+            // img.fill('#000000')
+            _img = img;
+        });
 
+        this.useTool();
     }
 
+
+    newCtx(width, height) {
+        let canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        return canvas.getContext("2d");
+    }
 
     useTool () {
 
@@ -31,36 +45,16 @@ export default class Crayon {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-            // Create new line object
-            let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
-                stroke: _this.getColor(),
-                strokeWidth: _this.getSize(),
-                points: [pos.x, pos.y],
-                // globalCompositeOperation:'source-over',
-                // globalCompositeOperation:'destination-out',
-                // lineCap:'square',
-                lineCap:'round',
-                tension:GameConfig.DEFAULT_TENSION,
-                // fill:'#ffcc00',
-                // fillPatternImage:'asset/image/starImg.png',
-                // fillEnabled:true,
-                opacity:_this.getOpacity() / 100
-            });
 
-            _drawLayer.add(currentLine);
+            let pos = this.getRelativePointerPosition(_stage);
+            currentLine = {points:[pos.x, pos.y]}
+            // console.log(currentLine.points)
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
-            }
+            if (!isDrawing) return;
 
-            // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
             this.imageDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
 
@@ -78,7 +72,7 @@ export default class Crayon {
         // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
         // to detect relative position we need to invert transform
-        transform.invert();
+        // transform.invert();
 
         // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
@@ -90,23 +84,19 @@ export default class Crayon {
 
     imageDraw(x, y) {
 
-        let xPos = 0
-        let currentLine = new Konva.RegularPolygon({
-            // x: stage.width() / 2,
-            // y: stage.height() / 2,
-            x:x,
-            y:y,
-            sides: 3,
-            radius: 10,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 20,
-            lineJoin: 'bevel',
+        clone = _img.clone({
+            x:x - 20,
+            y:y - 20,
+            // fillColor:'#000000',
+            // fill:'#1dad46'
         });
-        _drawLayer.add(currentLine);
-        _drawLayer.batchDraw();
+
+        clone.cache();
+        _drawLayer.add(clone);
+        // console.log(_drawLayer.children.length)
 
     }
+
     destroy () {
         LayerManager.prototype.init(_drawLayer);
         if(_stage)_stage.off('mousedown touchstart');

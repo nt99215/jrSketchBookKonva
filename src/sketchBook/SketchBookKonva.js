@@ -15,7 +15,7 @@ let _sizeArr = [5,7,10,20,30];
 let $ = function(id){return document.getElementById(id)};
 let brushEl = $('brush'),
     // airBrushEl = $('airBrush'),
-    // crayonEl = $('crayon'),
+    crayonEl = $('crayon'),
     // fillEl = $('fill'),
     lineEl = $('line'),
     screenToneEl = $('screenTone'),
@@ -43,7 +43,7 @@ export default class SketchBookKonva {
     }
 
     _createImg() {
-        let imageURL = 'sampleImg.jpg';
+        let imageURL = 'asset/image/sampleImg.jpg';
         let layer = new Konva.Layer;
         Konva.Image.fromURL(imageURL, function(image){
             layer.add(image);
@@ -123,6 +123,28 @@ export default class SketchBookKonva {
             GameConfig.IS_LINE_DRAWING = false;
             this._toolsDestroy();
             Brush.prototype.init(_stage);
+
+            colorEl.value = Brush.prototype.getColor();
+            sizeEl.value = Brush.prototype.getSize();
+            opacityEl.value = Brush.prototype.getOpacity();
+
+            colorEl.style.display = '';
+            $('_colorSpan').style.display = '';
+            sizeEl.style.display = '';
+            $('_sizeSpan').style.display = '';
+            opacityEl.style.display = '';
+            $('_opacitySpan').style.display = '';
+            zoomSlider.style.display = 'none';
+            $('_zoomSpan').style.display ='none';
+            lineTypeEl.style.display = 'none';
+        }
+
+        crayonEl.onclick =()=> {
+
+            GameConfig.IS_DRAWING_MODE = true;
+            GameConfig.IS_LINE_DRAWING = false;
+            this._toolsDestroy();
+            Crayon.prototype.init(_stage);
 
             colorEl.value = Brush.prototype.getColor();
             sizeEl.value = Brush.prototype.getSize();
@@ -256,7 +278,8 @@ export default class SketchBookKonva {
     }
 
     _default() {
-        Brush.prototype.init(_stage);
+        // Brush.prototype.init(_stage);
+        Crayon.prototype.init(_stage);
         colorEl.value = Brush.prototype.getColor();
         sizeEl.value = Brush.prototype.getSize();
         opacityEl.value = Brush.prototype.getOpacity();

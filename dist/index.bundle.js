@@ -184,7 +184,7 @@ class GameConfig {
 
 
 class LayerManager {
-    init(currentLayer) {
+    /**/init(currentLayer) {
         let _currentLayer = currentLayer;
         let img = new Konva.Image({
             image: _currentLayer.canvas._canvas
@@ -246,7 +246,8 @@ let $ = function (id) {
 let brushEl = $('brush'),
 
 // airBrushEl = $('airBrush'),
-// crayonEl = $('crayon'),
+crayonEl = $('crayon'),
+
 // fillEl = $('fill'),
 lineEl = $('line'),
     screenToneEl = $('screenTone'),
@@ -276,7 +277,7 @@ class SketchBookKonva {
     }
 
     _createImg() {
-        let imageURL = 'sampleImg.jpg';
+        let imageURL = 'asset/image/sampleImg.jpg';
         let layer = new Konva.Layer();
         Konva.Image.fromURL(imageURL, function (image) {
             layer.add(image);
@@ -350,6 +351,28 @@ class SketchBookKonva {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
             this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
+
+            colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
+            sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
+            opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
+
+            colorEl.style.display = '';
+            $('_colorSpan').style.display = '';
+            sizeEl.style.display = '';
+            $('_sizeSpan').style.display = '';
+            opacityEl.style.display = '';
+            $('_opacitySpan').style.display = '';
+            zoomSlider.style.display = 'none';
+            $('_zoomSpan').style.display = 'none';
+            lineTypeEl.style.display = 'none';
+        };
+
+        crayonEl.onclick = () => {
+
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
+            this._toolsDestroy();
+            __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */].prototype.init(_stage);
 
             colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
@@ -477,7 +500,8 @@ class SketchBookKonva {
     }
 
     _default() {
-        __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
+        // Brush.prototype.init(_stage);
+        __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */].prototype.init(_stage);
         colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
         sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
         opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
@@ -962,6 +986,7 @@ let _stage, _drawLayer, _this;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+let _img, _pattern, clone;
 
 class Crayon {
 
@@ -974,7 +999,21 @@ class Crayon {
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
 
+        let imageURL = 'asset/image/pattern_3.png';
+        Konva.Image.fromURL(imageURL, function (img) {
+            // img.fillPatternImage
+            // img.fill('#000000')
+            _img = img;
+        });
+
         this.useTool();
+    }
+
+    newCtx(width, height) {
+        let canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        return canvas.getContext("2d");
     }
 
     useTool() {
@@ -985,36 +1024,17 @@ class Crayon {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-            // Create new line object
-            let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
-                stroke: _this.getColor(),
-                strokeWidth: _this.getSize(),
-                points: [pos.x, pos.y],
-                // globalCompositeOperation:'source-over',
-                // globalCompositeOperation:'destination-out',
-                // lineCap:'square',
-                lineCap: 'round',
-                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
-                // fill:'#ffcc00',
-                // fillPatternImage:'asset/image/starImg.png',
-                // fillEnabled:true,
-                opacity: _this.getOpacity() / 100
-            });
 
-            _drawLayer.add(currentLine);
+            let pos = this.getRelativePointerPosition(_stage);
+            currentLine = { points: [pos.x, pos.y]
+                // console.log(currentLine.points)
+            };
         });
 
         _stage.on('mousemove touchmove', evt => {
-            // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
-            }
+            if (!isDrawing) return;
 
-            // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
             this.imageDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
         });
@@ -1031,7 +1051,7 @@ class Crayon {
         // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
         // to detect relative position we need to invert transform
-        transform.invert();
+        // transform.invert();
 
         // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
@@ -1042,22 +1062,18 @@ class Crayon {
 
     imageDraw(x, y) {
 
-        let xPos = 0;
-        let currentLine = new Konva.RegularPolygon({
-            // x: stage.width() / 2,
-            // y: stage.height() / 2,
-            x: x,
-            y: y,
-            sides: 3,
-            radius: 10,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 20,
-            lineJoin: 'bevel'
+        clone = _img.clone({
+            x: x - 20,
+            y: y - 20,
+            fillColor: '#000000',
+            fill: '#1dad46'
         });
-        _drawLayer.add(currentLine);
-        _drawLayer.batchDraw();
+
+        clone.cache();
+        _drawLayer.add(clone);
+        // console.log(_drawLayer.children.length)
     }
+
     destroy() {
         __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
         if (_stage) _stage.off('mousedown touchstart');
@@ -1114,7 +1130,7 @@ class Crayon {
     }
 
 }
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = Crayon;
 
 
 /***/ }),
