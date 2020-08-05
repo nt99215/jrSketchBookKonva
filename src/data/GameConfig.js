@@ -8,7 +8,7 @@ const _historyLimit = 30;
 
 const _defaultTension = 0.3;
 const _defaultBrushSize = 10;
-const _defaultLineSize = 20;
+const _defaultLineSize = 15;
 const _defaultEraserSize = 15;
 const _defaultColor = '#000000';
 const _defaultOpacity = 100;

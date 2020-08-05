@@ -105,8 +105,11 @@ export default class Brush {
         _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
-            // currentLine.node.destroy();
-            // console.log(currentLine)
+            LayerManager.prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer;
+            _stage.add(_drawLayer);
+            GameConfig.CURRENT_LAYER = _drawLayer;
+            console.log(_drawLayer)
         });
     }
 
@@ -181,7 +184,8 @@ export default class Brush {
      * @param linType
      */
     setLineType(e) {
-        let type = e.target.id.substr(1, 100);
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        console.log(type)
         switch (type)
         {
             case 'circle' :

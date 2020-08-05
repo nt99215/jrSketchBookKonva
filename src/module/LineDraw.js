@@ -1,12 +1,13 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _drawLayer, _this, isPaint, _line;
+let _stage, _drawLayer, _this, isPaint, _line, _dashEnabled;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-const _dashConfigArr = [[0,0], [0, 0, 15], [0, 10]];
+const _dashConfigArr = [[0], [0, 0, 30], [0, 30]];
 let _lineType = _dashConfigArr[0];
+
 export default class LineDraw {
 
     init(stage) {
@@ -16,6 +17,7 @@ export default class LineDraw {
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
+        _dashEnabled = false;
 
         this.useTool();
     }
@@ -33,7 +35,7 @@ export default class LineDraw {
                 opacity:_this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
-                dashEnabled:`true`,
+                dashEnabled: _dashEnabled,
                 dash:_this.getLineType()
             });
             _drawLayer.add(_line);
@@ -41,14 +43,15 @@ export default class LineDraw {
 
         _stage.on('mouseup touchend contentTouchend', function () {
             isPaint = false;
-
+            LayerManager.prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer;
+            _stage.add(_drawLayer);
+            GameConfig.CURRENT_LAYER = _drawLayer;
         });
 
         _stage.on('mousemove touchmove', function () {
-            if(!GameConfig.IS_LINE_DRAWING) return;
-            if (!isPaint) {
-                return;
-            }
+
+            if(!GameConfig.IS_LINE_DRAWING || !isPaint) return;
 
             let pos = _stage.getPointerPosition();
             let oldPoints = _line.points();
@@ -80,8 +83,12 @@ export default class LineDraw {
      *
      * @param size
      */
-    setSize(size) { _size = size;}
-    getSize() { return _size;}
+    setSize(size) {
+        _size = size;
+        _lineType.pop();
+        _lineType.push(_size * 2);
+    }
+    getSize() {return _size;}
 
     /**
      *
@@ -92,9 +99,28 @@ export default class LineDraw {
 
     /**
      *
-     * @param linType
+     * @param lineType
      */
-    setLineType(num) { _lineType = _dashConfigArr[num];}
-    getLineType() { return _lineType;}
+    setLineType(e) {
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        switch (type)
+        {
+            case 'stroke' :
+                _lineType = [0];
+                break;
+            case 'dot' :
+                _lineType = [0, this.getSize() * 2];
+                break;
+            case 'dash' :
+                _lineType = [0, 0, this.getSize() * 2];
+                break;
+            default :
+                _lineType = [0];
+                break;
+        }
+        _dashEnabled = type !== 'stroke';
+    }
+
+    getLineType() {return _lineType;}
 
 }

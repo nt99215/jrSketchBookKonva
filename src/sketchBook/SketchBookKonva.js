@@ -120,9 +120,16 @@ export default class SketchBookKonva {
         }
 
         /**
-         * LINE STYLE
+         * BRUSH STYLE
          */
         brushTypeEl.onchange = function(e) {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
+        }
+
+        /**
+         * LINE STYLE
+         */
+        lineTypeEl.onchange = function(e) {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
        /* dashEl.onchange = function() {
@@ -131,19 +138,6 @@ export default class SketchBookKonva {
         dotEl.onchange = function() {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
         }*/
-
-        /**
-         * LINE STYLE
-         */
-        stokeEl.onchange = function() {
-            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(0);
-        }
-        dashEl.onchange = function() {
-            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
-        }
-        dotEl.onchange = function() {
-            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
-        }
 
 
         /**
@@ -281,6 +275,12 @@ export default class SketchBookKonva {
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
+            colorEl.style.display = 'none';
+            $('_colorSpan').style.display = 'none';
+            sizeEl.style.display = 'none';
+            $('_sizeSpan').style.display = 'none';
+            opacityEl.style.display = 'none';
+            $('_opacitySpan').style.display = 'none';
 
             this._toolsDestroy();
 
@@ -328,11 +328,32 @@ export default class SketchBookKonva {
     }
 
     _default() {
-        Brush.prototype.init(_stage);
-        // Crayon.prototype.init(_stage);
-        colorEl.value = Brush.prototype.getColor();
-        sizeEl.value = Brush.prototype.getSize();
-        opacityEl.value = Brush.prototype.getOpacity();
+        // Brush.prototype.init(_stage);
+        // colorEl.value = Brush.prototype.getColor();
+        // sizeEl.value = Brush.prototype.getSize();
+        // opacityEl.value = Brush.prototype.getOpacity();
+
+        GameConfig.IS_DRAWING_MODE = false;
+        GameConfig.IS_LINE_DRAWING = true;
+        this._toolsDestroy();
+        LineDraw.prototype.init(_stage);
+
+        colorEl.value = LineDraw.prototype.getColor();
+        sizeEl.value = LineDraw.prototype.getSize();
+        opacityEl.value = LineDraw.prototype.getOpacity();
+
+        lineTypeEl.style.display = '';
+        brushTypeEl.style.display = 'none';
+        //eraserTypeEl.style.display = 'none';
+
+        colorEl.style.display = '';
+        $('_colorSpan').style.display = '';
+        sizeEl.style.display = '';
+        $('_sizeSpan').style.display = '';
+        opacityEl.style.display = '';
+        $('_opacitySpan').style.display = '';
+        zoomSlider.style.display = 'none';
+        $('_zoomSpan').style.display ='none';
     }
 
 
