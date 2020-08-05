@@ -38,7 +38,6 @@ export default class Brush {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-
             let pos = this.getRelativePointerPosition(_stage);
             if(! _shapeEnable)
             {
@@ -60,13 +59,7 @@ export default class Brush {
                 _drawLayer.add(currentLine);
             }
 
-            else
-            {
-                currentLine = {points:[pos.x, pos.y]}
-                // console.log(currentLine.points)
-            }
-
-
+            else currentLine = {points:[pos.x, pos.y]}
 
         });
 
@@ -79,7 +72,6 @@ export default class Brush {
 
                 let newPoints = currentLine.points().concat([pos.x, pos.y]);
                 currentLine.points(newPoints);
-                _drawLayer.batchDraw();
             }
 
             else
@@ -96,10 +88,8 @@ export default class Brush {
 
                 _img.cache();
                 this.imageDraw(pos.x, pos.y);
-                _drawLayer.batchDraw();
-
             }
-
+            _drawLayer.batchDraw();
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
@@ -117,10 +107,8 @@ export default class Brush {
         let transform = node.getAbsoluteTransform().copy();
         // to detect relative position we need to invert transform
         transform.invert();
-
         // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-
         // now we find relative point
         return transform.point(pos);
     }
