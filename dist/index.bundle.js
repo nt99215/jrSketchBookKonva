@@ -78,7 +78,7 @@ const _historyLimit = 30;
 
 const _defaultTension = 0.3;
 const _defaultBrushSize = 10;
-const _defaultLineSize = 20;
+const _defaultLineSize = 15;
 const _defaultEraserSize = 15;
 const _defaultColor = '#000000';
 const _defaultOpacity = 100;
@@ -351,9 +351,16 @@ class SketchBookKonva {
         };
 
         /**
-         * LINE STYLE
+         * BRUSH STYLE
          */
         brushTypeEl.onchange = function (e) {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
+        };
+
+        /**
+         * LINE STYLE
+         */
+        lineTypeEl.onchange = function (e) {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
         };
         /* dashEl.onchange = function() {
@@ -362,19 +369,6 @@ class SketchBookKonva {
          dotEl.onchange = function() {
              if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
          }*/
-
-        /**
-         * LINE STYLE
-         */
-        stokeEl.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(0);
-        };
-        dashEl.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(1);
-        };
-        dotEl.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(2);
-        };
 
         /**
          * TOOLS
@@ -510,6 +504,12 @@ class SketchBookKonva {
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
+            colorEl.style.display = 'none';
+            $('_colorSpan').style.display = 'none';
+            sizeEl.style.display = 'none';
+            $('_sizeSpan').style.display = 'none';
+            opacityEl.style.display = 'none';
+            $('_opacitySpan').style.display = 'none';
 
             this._toolsDestroy();
 
@@ -552,11 +552,32 @@ class SketchBookKonva {
     }
 
     _default() {
-        __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.init(_stage);
-        // Crayon.prototype.init(_stage);
-        colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
-        sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
-        opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
+        // Brush.prototype.init(_stage);
+        // colorEl.value = Brush.prototype.getColor();
+        // sizeEl.value = Brush.prototype.getSize();
+        // opacityEl.value = Brush.prototype.getOpacity();
+
+        __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
+        __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = true;
+        this._toolsDestroy();
+        __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.init(_stage);
+
+        colorEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getColor();
+        sizeEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getSize();
+        opacityEl.value = __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */].prototype.getOpacity();
+
+        lineTypeEl.style.display = '';
+        brushTypeEl.style.display = 'none';
+        //eraserTypeEl.style.display = 'none';
+
+        colorEl.style.display = '';
+        $('_colorSpan').style.display = '';
+        sizeEl.style.display = '';
+        $('_sizeSpan').style.display = '';
+        opacityEl.style.display = '';
+        $('_opacitySpan').style.display = '';
+        zoomSlider.style.display = 'none';
+        $('_zoomSpan').style.display = 'none';
     }
 
     _toolsDestroy() {
@@ -594,12 +615,13 @@ class SketchBookKonva {
 
 
 
-let _stage, _drawLayer, _this, isPaint, _line;
+let _stage, _drawLayer, _this, isPaint, _line, _dashEnabled;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
-const _dashConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
+const _dashConfigArr = [[0], [0, 0, 30], [0, 30]];
 let _lineType = _dashConfigArr[0];
+
 class LineDraw {
 
     init(stage) {
@@ -609,6 +631,7 @@ class LineDraw {
         _stage.add(_drawLayer);
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
+        _dashEnabled = false;
 
         this.useTool();
     }
@@ -626,7 +649,7 @@ class LineDraw {
                 opacity: _this.getOpacity() / 100,
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
-                dashEnabled: `true`,
+                dashEnabled: _dashEnabled,
                 dash: _this.getLineType()
             });
             _drawLayer.add(_line);
@@ -634,13 +657,15 @@ class LineDraw {
 
         _stage.on('mouseup touchend contentTouchend', function () {
             isPaint = false;
+            __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer();
+            _stage.add(_drawLayer);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         });
 
         _stage.on('mousemove touchmove', function () {
-            if (!__WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_LINE_DRAWING) return;
-            if (!isPaint) {
-                return;
-            }
+
+            if (!__WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_LINE_DRAWING || !isPaint) return;
 
             let pos = _stage.getPointerPosition();
             let oldPoints = _line.points();
@@ -674,6 +699,8 @@ class LineDraw {
      */
     setSize(size) {
         _size = size;
+        _lineType.pop();
+        _lineType.push(_size * 2);
     }
     getSize() {
         return _size;
@@ -692,11 +719,27 @@ class LineDraw {
 
     /**
      *
-     * @param linType
+     * @param lineType
      */
-    setLineType(num) {
-        _lineType = _dashConfigArr[num];
+    setLineType(e) {
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        switch (type) {
+            case 'stroke':
+                _lineType = [0];
+                break;
+            case 'dot':
+                _lineType = [0, this.getSize() * 2];
+                break;
+            case 'dash':
+                _lineType = [0, 0, this.getSize() * 2];
+                break;
+            default:
+                _lineType = [0];
+                break;
+        }
+        _dashEnabled = type !== 'stroke';
     }
+
     getLineType() {
         return _lineType;
     }
@@ -803,8 +846,11 @@ class Brush {
         _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
             isDrawing = false;
-            // currentLine.node.destroy();
-            // console.log(currentLine)
+            __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer();
+            _stage.add(_drawLayer);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
+            console.log(_drawLayer);
         });
     }
 
@@ -892,7 +938,8 @@ class Brush {
      * @param linType
      */
     setLineType(e) {
-        let type = e.target.id.substr(1, 100);
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        console.log(type);
         switch (type) {
             case 'circle':
                 this.setLineCap('round');
