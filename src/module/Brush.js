@@ -109,7 +109,6 @@ export default class Brush {
             _drawLayer = new Konva.Layer;
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
-            console.log(_drawLayer)
         });
     }
 

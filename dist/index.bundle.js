@@ -850,7 +850,6 @@ class Brush {
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
-            console.log(_drawLayer);
         });
     }
 
