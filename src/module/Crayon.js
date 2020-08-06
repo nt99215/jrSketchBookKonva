@@ -2,12 +2,10 @@ import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 import Utility from "../util/utility";
 
-let _stage, _drawLayer, _this;
+let _stage, _drawLayer, _this,_pattern, _clone;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-let _pattern, _clone;
-
 
 
 export default class Crayon {
