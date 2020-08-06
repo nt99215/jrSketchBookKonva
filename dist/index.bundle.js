@@ -1177,7 +1177,7 @@ class Crayon {
             _pattern = img;
             _pattern.cache();
         };
-        _pattern.src = 'asset/image/pattern_3.png';
+        _pattern.src = 'asset/image/pattern/crayon0/pattern_0.png';
 
         this.useTool();
     }
@@ -1245,8 +1245,6 @@ class Crayon {
         if (_stage) _stage.off('mousedown touchstart');
         if (_stage) _stage.off('mousemove touchmove');
         if (_stage) _stage.off('mouseup touchend contentTouchend');
-
-        // console.log('brush', _drawLayer);
     }
 
     /**
@@ -1255,12 +1253,6 @@ class Crayon {
      */
     setColor(color) {
         _color = color;
-        /*const c = Utility.hexToRgb(color);
-        console.log(color, c);
-        _pattern.filters([Konva.Filters.RGBA]);
-        _pattern.red(c.r);
-        _pattern.green(c.g);
-        _pattern.blue(c.b);*/
     }
     getColor() {
         const c = __WEBPACK_IMPORTED_MODULE_2__util_utility__["a" /* default */].hexToRgb(_color);
@@ -1268,7 +1260,6 @@ class Crayon {
         _pattern.red(c.r);
         _pattern.green(c.g);
         _pattern.blue(c.b);
-        // return _color;
     }
 
     /**

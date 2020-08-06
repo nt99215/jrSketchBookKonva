@@ -27,7 +27,7 @@ export default class Crayon {
             _pattern = img;
             _pattern.cache();
         }
-        _pattern.src = 'asset/image/pattern_3.png';
+        _pattern.src = 'asset/image/pattern/crayon0/pattern_0.png';
 
 
         this.useTool();
@@ -98,8 +98,6 @@ export default class Crayon {
         if(_stage)_stage.off('mousedown touchstart');
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
-
-        // console.log('brush', _drawLayer);
     }
 
 
@@ -108,22 +106,13 @@ export default class Crayon {
      *
      * @param color
      */
-    setColor(color) {
-        _color = color;
-        /*const c = Utility.hexToRgb(color);
-        console.log(color, c);
-        _pattern.filters([Konva.Filters.RGBA]);
-        _pattern.red(c.r);
-        _pattern.green(c.g);
-        _pattern.blue(c.b);*/
-    }
+    setColor(color) {_color = color;}
     getColor() {
         const c = Utility.hexToRgb(_color);
         _pattern.filters([Konva.Filters.RGBA]);
         _pattern.red(c.r);
         _pattern.green(c.g);
         _pattern.blue(c.b);
-        // return _color;
     }
 
     /**
