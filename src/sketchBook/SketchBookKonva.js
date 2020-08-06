@@ -185,8 +185,8 @@ export default class SketchBookKonva {
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
             $('_sizeSpan').style.display = '';
-            opacityEl.style.display = '';
-            $('_opacitySpan').style.display = '';
+            opacityEl.style.display = 'none';
+            $('_opacitySpan').style.display = 'none';
             zoomSlider.style.display = 'none';
             $('_zoomSpan').style.display ='none';
             brushTypeEl.style.display = 'none';
@@ -333,27 +333,26 @@ export default class SketchBookKonva {
         // sizeEl.value = Brush.prototype.getSize();
         // opacityEl.value = Brush.prototype.getOpacity();
 
-        GameConfig.IS_DRAWING_MODE = false;
-        GameConfig.IS_LINE_DRAWING = true;
-        this._toolsDestroy();
-        LineDraw.prototype.init(_stage);
+        GameConfig.IS_DRAWING_MODE = true;
+        GameConfig.IS_LINE_DRAWING = false;
+        Crayon.prototype.init(_stage);
 
-        colorEl.value = LineDraw.prototype.getColor();
-        sizeEl.value = LineDraw.prototype.getSize();
-        opacityEl.value = LineDraw.prototype.getOpacity();
-
-        lineTypeEl.style.display = '';
-        brushTypeEl.style.display = 'none';
-        //eraserTypeEl.style.display = 'none';
+        colorEl.value = Brush.prototype.getColor();
+        sizeEl.value = Brush.prototype.getSize();
+        opacityEl.value = Brush.prototype.getOpacity();
 
         colorEl.style.display = '';
         $('_colorSpan').style.display = '';
         sizeEl.style.display = '';
         $('_sizeSpan').style.display = '';
-        opacityEl.style.display = '';
-        $('_opacitySpan').style.display = '';
+        opacityEl.style.display = 'none';
+        $('_opacitySpan').style.display = 'none';
         zoomSlider.style.display = 'none';
         $('_zoomSpan').style.display ='none';
+        brushTypeEl.style.display = 'none';
+        //eraserTypeEl.style.display = 'none';
+        lineTypeEl.style.display = 'none';
+
     }
 
 

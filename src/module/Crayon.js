@@ -1,11 +1,13 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
+import Utility from "../util/utility";
 
 let _stage, _drawLayer, _this;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-let _img, _pattern, _clone;
+let _pattern, _clone;
+
 
 
 export default class Crayon {
@@ -19,28 +21,23 @@ export default class Crayon {
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        let imageURL = 'asset/image/pattern_3.png';
-        Konva.Image.fromURL(imageURL, function(img){
-            // img.fillPatternImage
-            // img.fill('#000000')
-            _img = img;
-        });
+        _pattern = new Image();
+        _pattern.onload =()=> {
+            let img = new Konva.Image({image:_pattern});
+            _pattern = img;
+            _pattern.cache();
+        }
+        _pattern.src = 'asset/image/pattern_3.png';
+
 
         this.useTool();
-    }
-
-
-    newCtx(width, height) {
-        let canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        return canvas.getContext("2d");
     }
 
     useTool () {
 
         let isDrawing = false;
         let currentLine;
+
         _stage.on('mousedown touchstart', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
@@ -48,7 +45,8 @@ export default class Crayon {
 
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = {points:[pos.x, pos.y]}
-            // console.log(currentLine.points)
+            this.getSize();
+            this.getColor();
         });
 
         _stage.on('mousemove touchmove', (evt) => {
@@ -63,8 +61,10 @@ export default class Crayon {
         _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
-            // currentLine.node.destroy();
-            // console.log(currentLine)
+            LayerManager.prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer;
+            _stage.add(_drawLayer);
+            GameConfig.CURRENT_LAYER = _drawLayer;
         });
     }
 
@@ -83,16 +83,14 @@ export default class Crayon {
 
 
     imageDraw(x, y) {
-        _clone = _img.clone({
-            x:x - 20,
-            y:y - 20,
-            // fillColor:'#000000',
-            // fill:'#1dad46'
-        });
 
+        const obj = _pattern.attrs.image;
+        _clone = _pattern.clone({
+            x:x - obj.width/2,
+            y:y - obj.height/2,
+        });
         _clone.cache();
         _drawLayer.add(_clone);
-        // console.log(_drawLayer.children.length)
     }
 
     destroy () {
@@ -110,15 +108,34 @@ export default class Crayon {
      *
      * @param color
      */
-    setColor(color) { _color = color;}
-    getColor() { return _color;}
+    setColor(color) {
+        _color = color;
+        /*const c = Utility.hexToRgb(color);
+        console.log(color, c);
+        _pattern.filters([Konva.Filters.RGBA]);
+        _pattern.red(c.r);
+        _pattern.green(c.g);
+        _pattern.blue(c.b);*/
+    }
+    getColor() {
+        const c = Utility.hexToRgb(_color);
+        _pattern.filters([Konva.Filters.RGBA]);
+        _pattern.red(c.r);
+        _pattern.green(c.g);
+        _pattern.blue(c.b);
+        // return _color;
+    }
 
     /**
      *
      * @param size
      */
-    setSize(size) { _size = size;}
-    getSize() { return _size;}
+    setSize(size) { _size = size * 2;}
+    getSize() {
+        let obj = _pattern.attrs.image;
+        obj.width = _size;
+        obj.height = _size;
+    }
 
     /**
      *
@@ -126,18 +143,5 @@ export default class Crayon {
      */
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
-
-    pattern() {
-        // get fill pattern image
-        let shape
-        let fillPatternImage = shape.fillPatternImage();
-
-// set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function() {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
-    }
 
 }
