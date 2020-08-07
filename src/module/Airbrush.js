@@ -96,26 +96,22 @@ export default class Airbrush {
 
         let xPos = x + Math.random() * this.getSize();
         let yPos = y + Math.random() * this.getSize();
+        let c = this.getColor();
         let r = (Math.random() * 10)/5;
-        for(let i = 0; i<1; i++)
-        {
-            let circle = new Konva.Circle({
-                x:xPos,
-                y:yPos,
-                radius: r,
-                fill: this.getColor(),
-                perfectDrawEnabled:false,
-                listening:false
+        let circle = new Konva.Rect({
+            x:xPos,
+            y:yPos,
+            width:r,
+            height:r,
+            fill: c,
+            perfectDrawEnabled:false,
+            listening:false
 
-            });
-            _drawLayer.add(circle);
-            // _drawLayer.batchDraw();
-        }
-
-
-
+        });
+        _drawLayer.add(circle);
 
     }
+
     destroy () {
         LayerManager.prototype.init(_drawLayer);
         if(_stage)_stage.off('mousedown touchstart');
