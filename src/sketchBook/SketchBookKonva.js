@@ -50,7 +50,13 @@ let brushEl = $('brush'),
     lineTypeEl = $('lineType'),
     stokeEl = $('_stroke'),
     dashEl = $('_dash'),
-    dotEl = $('_dot');
+    dotEl = $('_dot'),
+
+    //CRAYON TYPE
+    crayonTypeEl = $('crayonType'),
+    crayonA = $('_cA'),
+    crayonB = $('_cB'),
+    crayonC = $('_cC');
 
 export default class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -76,8 +82,8 @@ export default class SketchBookKonva {
             container: 'container',
             // width: window.innerWidth,
             // height: window.innerHeight
-            width:500,
-            height:400
+            width:800,
+            height:550
         });
 
         GameConfig.MAIN_STAGE = _stage;
@@ -96,6 +102,7 @@ export default class SketchBookKonva {
         // eraserTypeEl.style.display = 'none';
         zoomSlider.style.display = 'none';
         lineTypeEl.style.display = 'none';
+        crayonTypeEl.style.display = 'none';
         $('_zoomSpan').style.display ='none';
 
 
@@ -139,6 +146,20 @@ export default class SketchBookKonva {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
         }*/
 
+        /**
+         * CRAYON STYLE
+         */
+        crayonTypeEl.onchange = function(e) {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
+        }
+       /* dashEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
+        }
+        dotEl.onchange = function() {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
+        }*/
+
+
 
         /**
          * TOOLS
@@ -168,6 +189,7 @@ export default class SketchBookKonva {
             brushTypeEl.style.display = '';
             //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
         }
 
         crayonEl.onclick =()=> {
@@ -181,6 +203,7 @@ export default class SketchBookKonva {
             sizeEl.value = Brush.prototype.getSize();
             opacityEl.value = Brush.prototype.getOpacity();
 
+            crayonTypeEl.style.display = '';
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
@@ -207,6 +230,7 @@ export default class SketchBookKonva {
 
             lineTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
 
             colorEl.style.display = '';
@@ -241,6 +265,7 @@ export default class SketchBookKonva {
             //eraserTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
         };
 
         zoomEl.onclick =()=> {
@@ -261,6 +286,7 @@ export default class SketchBookKonva {
             brushTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
 
         }
 
@@ -274,6 +300,7 @@ export default class SketchBookKonva {
 
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
             colorEl.style.display = 'none';
             $('_colorSpan').style.display = 'none';
@@ -318,6 +345,7 @@ export default class SketchBookKonva {
         moveEl.onclick = ()=> {
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             this._toolsDestroy();
             Move.prototype.move(_stage);
         };
@@ -352,6 +380,7 @@ export default class SketchBookKonva {
         brushTypeEl.style.display = 'none';
         //eraserTypeEl.style.display = 'none';
         lineTypeEl.style.display = 'none';
+        crayonTypeEl.style.display = '';
 
     }
 

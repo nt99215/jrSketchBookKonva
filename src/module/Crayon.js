@@ -4,8 +4,13 @@ import Utility from "../util/utility";
 
 let _stage, _drawLayer, _this,_pattern, _clone;
 let _color = GameConfig.DEFAULT_COLOR;
-let _size = GameConfig.DEFAULT_LINE_SIZE;
+let _size = GameConfig.DEFAULT_LINE_SIZE * 2;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+let _crayonType = 0;
+let _imgSrc = [
+    'asset/image/pattern/crayon0/pattern_0.png',
+    'asset/image/pattern/crayon1/pattern_1.png',
+    'asset/image/pattern/crayon2/pattern_2.png'];
 
 
 export default class Crayon {
@@ -19,17 +24,10 @@ export default class Crayon {
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        _pattern = new Image();
-        _pattern.onload =()=> {
-            let img = new Konva.Image({image:_pattern});
-            _pattern = img;
-            _pattern.cache();
-        }
-        _pattern.src = 'asset/image/pattern/crayon0/pattern_0.png';
-
-
+        this.getCrayonImage();
         this.useTool();
     }
+
 
     useTool () {
 
@@ -130,5 +128,44 @@ export default class Crayon {
      */
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
+
+    /**
+     *
+     * @param lineType
+     */
+    setLineType(e) {
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        switch (type)
+        {
+            case 'cA' :
+                _crayonType = 0;
+                break;
+            case 'cB' :
+                _crayonType = 1;
+                break;
+            case 'cC' :
+                _crayonType = 2
+                break;
+            default :
+                _crayonType = 0;
+                break;
+        }
+        this.getCrayonImage();
+    }
+
+    getLineType() {return _crayonType;}
+
+    getCrayonImage() {
+        _pattern = new Image();
+        _pattern.onload =()=> {
+            let img = new Konva.Image({image:_pattern});
+            _pattern = img;
+            _pattern.cache();
+        }
+        _pattern.src = _imgSrc[this.getLineType()];
+    }
+
+
+
 
 }

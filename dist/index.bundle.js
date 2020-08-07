@@ -286,7 +286,14 @@ eraserTypeEl = $('EraserType'),
 lineTypeEl = $('lineType'),
     stokeEl = $('_stroke'),
     dashEl = $('_dash'),
-    dotEl = $('_dot');
+    dotEl = $('_dot'),
+
+
+//CRAYON TYPE
+crayonTypeEl = $('crayonType'),
+    crayonA = $('_cA'),
+    crayonB = $('_cB'),
+    crayonC = $('_cC');
 
 class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -311,8 +318,8 @@ class SketchBookKonva {
             container: 'container',
             // width: window.innerWidth,
             // height: window.innerHeight
-            width: 500,
-            height: 400
+            width: 800,
+            height: 550
         });
 
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_STAGE = _stage;
@@ -329,6 +336,7 @@ class SketchBookKonva {
         // eraserTypeEl.style.display = 'none';
         zoomSlider.style.display = 'none';
         lineTypeEl.style.display = 'none';
+        crayonTypeEl.style.display = 'none';
         $('_zoomSpan').style.display = 'none';
 
         colorEl.onchange = function () {
@@ -371,6 +379,19 @@ class SketchBookKonva {
          }*/
 
         /**
+         * CRAYON STYLE
+         */
+        crayonTypeEl.onchange = function (e) {
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
+        };
+        /* dashEl.onchange = function() {
+             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
+         }
+         dotEl.onchange = function() {
+             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
+         }*/
+
+        /**
          * TOOLS
          */
 
@@ -398,6 +419,7 @@ class SketchBookKonva {
             brushTypeEl.style.display = '';
             //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
         };
 
         crayonEl.onclick = () => {
@@ -411,6 +433,7 @@ class SketchBookKonva {
             sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
             opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
 
+            crayonTypeEl.style.display = '';
             colorEl.style.display = '';
             $('_colorSpan').style.display = '';
             sizeEl.style.display = '';
@@ -437,6 +460,7 @@ class SketchBookKonva {
 
             lineTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
 
             colorEl.style.display = '';
@@ -471,6 +495,7 @@ class SketchBookKonva {
             //eraserTypeEl.style.display = '';
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
         };
 
         zoomEl.onclick = () => {
@@ -491,6 +516,7 @@ class SketchBookKonva {
             brushTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
         };
 
         clearEl.onclick = () => {
@@ -503,6 +529,7 @@ class SketchBookKonva {
 
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
             colorEl.style.display = 'none';
             $('_colorSpan').style.display = 'none';
@@ -544,6 +571,7 @@ class SketchBookKonva {
         moveEl.onclick = () => {
             brushTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
             this._toolsDestroy();
             __WEBPACK_IMPORTED_MODULE_8__module_Move__["a" /* default */].prototype.move(_stage);
         };
@@ -576,6 +604,7 @@ class SketchBookKonva {
         brushTypeEl.style.display = 'none';
         //eraserTypeEl.style.display = 'none';
         lineTypeEl.style.display = 'none';
+        crayonTypeEl.style.display = '';
     }
 
     _toolsDestroy() {
@@ -1154,11 +1183,12 @@ class Airbrush {
 
 
 
-let _stage, _drawLayer, _this;
+let _stage, _drawLayer, _this, _pattern, _clone;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
-let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE * 2;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
-let _pattern, _clone;
+let _crayonType = 0;
+let _imgSrc = ['asset/image/pattern/crayon0/pattern_0.png', 'asset/image/pattern/crayon1/pattern_1.png', 'asset/image/pattern/crayon2/pattern_2.png'];
 
 class Crayon {
 
@@ -1171,14 +1201,7 @@ class Crayon {
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
 
-        _pattern = new Image();
-        _pattern.onload = () => {
-            let img = new Konva.Image({ image: _pattern });
-            _pattern = img;
-            _pattern.cache();
-        };
-        _pattern.src = 'asset/image/pattern/crayon0/pattern_0.png';
-
+        this.getCrayonImage();
         this.useTool();
     }
 
@@ -1284,6 +1307,43 @@ class Crayon {
     }
     getOpacity() {
         return _opacity;
+    }
+
+    /**
+     *
+     * @param lineType
+     */
+    setLineType(e) {
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        switch (type) {
+            case 'cA':
+                _crayonType = 0;
+                break;
+            case 'cB':
+                _crayonType = 1;
+                break;
+            case 'cC':
+                _crayonType = 2;
+                break;
+            default:
+                _crayonType = 0;
+                break;
+        }
+        this.getCrayonImage();
+    }
+
+    getLineType() {
+        return _crayonType;
+    }
+
+    getCrayonImage() {
+        _pattern = new Image();
+        _pattern.onload = () => {
+            let img = new Konva.Image({ image: _pattern });
+            _pattern = img;
+            _pattern.cache();
+        };
+        _pattern.src = _imgSrc[this.getLineType()];
     }
 
 }
