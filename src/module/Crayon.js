@@ -19,7 +19,7 @@ export default class Crayon {
 
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
-        _drawLayer = new Konva.Layer;
+        _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
@@ -58,7 +58,7 @@ export default class Crayon {
             // End drawing
             isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
-            _drawLayer = new Konva.Layer;
+            _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
         });
@@ -87,6 +87,7 @@ export default class Crayon {
         });
         _clone.cache();
         _drawLayer.add(_clone);
+        _clone.clearCache();
     }
 
     destroy () {
@@ -158,7 +159,9 @@ export default class Crayon {
     getCrayonImage() {
         _pattern = new Image();
         _pattern.onload =()=> {
-            let img = new Konva.Image({image:_pattern});
+            let img = new Konva.Image({
+                image:_pattern,
+            });
             _pattern = img;
             _pattern.cache();
         }

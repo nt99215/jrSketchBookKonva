@@ -13,12 +13,13 @@ export default class Airbrush {
 
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
-        _drawLayer = new Konva.Layer;
+        _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
 
         this.useTool();
+        console.log('Air Brush')
 
     }
 
@@ -33,7 +34,7 @@ export default class Airbrush {
             isDrawing = true;
             // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
+            /*currentLine = new Konva.Line({
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
@@ -46,9 +47,10 @@ export default class Airbrush {
                 // fillPatternImage:'asset/image/starImg.png',
                 // fillEnabled:true,
                 opacity:_this.getOpacity() / 100
-            });
+            });*/
+            currentLine = {points:[pos.x, pos.y]}
 
-            _drawLayer.add(currentLine);
+            // _drawLayer.add(currentLine);
         });
 
         _stage.on('mousemove touchmove', (evt) => {
@@ -59,8 +61,8 @@ export default class Airbrush {
 
             // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
+            // let newPoints = currentLine.points().concat([pos.x, pos.y]);
+            // currentLine.points(newPoints);
             this.imageDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
 
@@ -69,8 +71,10 @@ export default class Airbrush {
         _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
-            // currentLine.node.destroy();
-            // console.log(currentLine)
+            LayerManager.prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer();
+            _stage.add(_drawLayer);
+            GameConfig.CURRENT_LAYER = _drawLayer;
         });
     }
 
@@ -90,21 +94,26 @@ export default class Airbrush {
 
     imageDraw(x, y) {
 
-        let xPos = 0
-        let currentLine = new Konva.RegularPolygon({
-            // x: stage.width() / 2,
-            // y: stage.height() / 2,
-            x:x,
-            y:y,
-            sides: 3,
-            radius: 10,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 20,
-            lineJoin: 'bevel',
-        });
-        _drawLayer.add(currentLine);
-        _drawLayer.batchDraw();
+        let xPos = x + Math.random() * this.getSize();
+        let yPos = y + Math.random() * this.getSize();
+        let r = (Math.random() * 10)/5;
+        for(let i = 0; i<1; i++)
+        {
+            let circle = new Konva.Circle({
+                x:xPos,
+                y:yPos,
+                radius: r,
+                fill: this.getColor(),
+                perfectDrawEnabled:false,
+                listening:false
+
+            });
+            _drawLayer.add(circle);
+            // _drawLayer.batchDraw();
+        }
+
+
+
 
     }
     destroy () {
@@ -139,17 +148,5 @@ export default class Airbrush {
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
 
-    pattern() {
-        // get fill pattern image
-        let shape
-        let fillPatternImage = shape.fillPatternImage();
-
-// set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function() {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
-    }
 
 }

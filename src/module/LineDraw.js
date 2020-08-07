@@ -13,7 +13,7 @@ export default class LineDraw {
     init(stage) {
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
-        _drawLayer = new Konva.Layer;
+        _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
@@ -44,7 +44,7 @@ export default class LineDraw {
         _stage.on('mouseup touchend contentTouchend', function () {
             isPaint = false;
             LayerManager.prototype.init(_drawLayer);
-            _drawLayer = new Konva.Layer;
+            _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
         });

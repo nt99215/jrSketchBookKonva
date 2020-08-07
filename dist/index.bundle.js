@@ -244,9 +244,8 @@ let $ = function (id) {
     return document.getElementById(id);
 };
 let brushEl = $('brush'),
-
-// airBrushEl = $('airBrush'),
-crayonEl = $('crayon'),
+    airBrushEl = $('airBrush'),
+    crayonEl = $('crayon'),
 
 // fillEl = $('fill'),
 lineEl = $('line'),
@@ -371,12 +370,6 @@ class SketchBookKonva {
         lineTypeEl.onchange = function (e) {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
         };
-        /* dashEl.onchange = function() {
-             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
-         }
-         dotEl.onchange = function() {
-             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
-         }*/
 
         /**
          * CRAYON STYLE
@@ -384,15 +377,9 @@ class SketchBookKonva {
         crayonTypeEl.onchange = function (e) {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
         };
-        /* dashEl.onchange = function() {
-             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(1);
-         }
-         dotEl.onchange = function() {
-             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(2);
-         }*/
 
         /**
-         * TOOLS
+         * TOOL SELECT
          */
 
         brushEl.onclick = () => {
@@ -417,6 +404,31 @@ class SketchBookKonva {
             $('_zoomSpan').style.display = 'none';
 
             brushTypeEl.style.display = '';
+            //eraserTypeEl.style.display = 'none';
+            lineTypeEl.style.display = 'none';
+            crayonTypeEl.style.display = 'none';
+        };
+
+        airBrushEl.onclick = () => {
+
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
+            __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
+            this._toolsDestroy();
+            __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.init(_stage);
+
+            colorEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getColor();
+            sizeEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getSize();
+            opacityEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getOpacity();
+
+            colorEl.style.display = '';
+            $('_colorSpan').style.display = '';
+            sizeEl.style.display = '';
+            $('_sizeSpan').style.display = '';
+            opacityEl.style.display = 'none';
+            $('_opacitySpan').style.display = 'none';
+            zoomSlider.style.display = 'none';
+            $('_zoomSpan').style.display = 'none';
+            brushTypeEl.style.display = 'none';
             //eraserTypeEl.style.display = 'none';
             lineTypeEl.style.display = 'none';
             crayonTypeEl.style.display = 'none';
@@ -587,11 +599,11 @@ class SketchBookKonva {
 
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_LINE_DRAWING = false;
-        __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */].prototype.init(_stage);
+        __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.init(_stage);
 
-        colorEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getColor();
-        sizeEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getSize();
-        opacityEl.value = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */].prototype.getOpacity();
+        colorEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getColor();
+        sizeEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getSize();
+        opacityEl.value = __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */].prototype.getOpacity();
 
         colorEl.style.display = '';
         $('_colorSpan').style.display = '';
@@ -604,7 +616,7 @@ class SketchBookKonva {
         brushTypeEl.style.display = 'none';
         //eraserTypeEl.style.display = 'none';
         lineTypeEl.style.display = 'none';
-        crayonTypeEl.style.display = '';
+        crayonTypeEl.style.display = 'none';
     }
 
     _toolsDestroy() {
@@ -1029,6 +1041,7 @@ class Airbrush {
         _this = this;
 
         this.useTool();
+        console.log('Air Brush');
     }
 
     useTool() {
@@ -1041,22 +1054,24 @@ class Airbrush {
             isDrawing = true;
             // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
-            currentLine = new Konva.Line({
+            /*currentLine = new Konva.Line({
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
                 // globalCompositeOperation:'source-over',
                 // globalCompositeOperation:'destination-out',
                 // lineCap:'square',
-                lineCap: 'round',
-                tension: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_TENSION,
+                lineCap:'round',
+                tension:GameConfig.DEFAULT_TENSION,
                 // fill:'#ffcc00',
                 // fillPatternImage:'asset/image/starImg.png',
                 // fillEnabled:true,
-                opacity: _this.getOpacity() / 100
-            });
+                opacity:_this.getOpacity() / 100
+            });*/
+            currentLine = { points: [pos.x, pos.y]
 
-            _drawLayer.add(currentLine);
+                // _drawLayer.add(currentLine);
+            };
         });
 
         _stage.on('mousemove touchmove', evt => {
@@ -1067,8 +1082,8 @@ class Airbrush {
 
             // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
-            let newPoints = currentLine.points().concat([pos.x, pos.y]);
-            currentLine.points(newPoints);
+            // let newPoints = currentLine.points().concat([pos.x, pos.y]);
+            // currentLine.points(newPoints);
             this.imageDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
         });
@@ -1076,8 +1091,10 @@ class Airbrush {
         _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
             isDrawing = false;
-            // currentLine.node.destroy();
-            // console.log(currentLine)
+            __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+            _drawLayer = new Konva.Layer();
+            _stage.add(_drawLayer);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         });
     }
 
@@ -1096,21 +1113,22 @@ class Airbrush {
 
     imageDraw(x, y) {
 
-        let xPos = 0;
-        let currentLine = new Konva.RegularPolygon({
-            // x: stage.width() / 2,
-            // y: stage.height() / 2,
-            x: x,
-            y: y,
-            sides: 3,
-            radius: 10,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 20,
-            lineJoin: 'bevel'
-        });
-        _drawLayer.add(currentLine);
-        _drawLayer.batchDraw();
+        let xPos = x + Math.random() * this.getSize();
+        let yPos = y + Math.random() * this.getSize();
+        let r = Math.random() * 10 / 5;
+        for (let i = 0; i < 1; i++) {
+            let circle = new Konva.Circle({
+                x: xPos,
+                y: yPos,
+                radius: r,
+                fill: this.getColor(),
+                perfectDrawEnabled: false,
+                listening: false
+
+            });
+            _drawLayer.add(circle);
+            // _drawLayer.batchDraw();
+        }
     }
     destroy() {
         __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
@@ -1154,21 +1172,8 @@ class Airbrush {
         return _opacity;
     }
 
-    pattern() {
-        // get fill pattern image
-        let shape;
-        let fillPatternImage = shape.fillPatternImage();
-
-        // set fill pattern image
-        let imageObj = new Image();
-        imageObj.onload = function () {
-            shape.fillPatternImage(imageObj);
-        };
-        imageObj.src = 'path/to/image/jpg';
-    }
-
 }
-/* unused harmony export default */
+/* harmony export (immutable) */ __webpack_exports__["a"] = Airbrush;
 
 
 /***/ }),
@@ -1261,6 +1266,7 @@ class Crayon {
         });
         _clone.cache();
         _drawLayer.add(_clone);
+        _clone.clearCache();
     }
 
     destroy() {
@@ -1339,7 +1345,9 @@ class Crayon {
     getCrayonImage() {
         _pattern = new Image();
         _pattern.onload = () => {
-            let img = new Konva.Image({ image: _pattern });
+            let img = new Konva.Image({
+                image: _pattern
+            });
             _pattern = img;
             _pattern.cache();
         };

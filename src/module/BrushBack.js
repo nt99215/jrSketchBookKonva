@@ -15,7 +15,7 @@ export default class Brush {
 
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
-        _drawLayer = new Konva.Layer;
+        _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
