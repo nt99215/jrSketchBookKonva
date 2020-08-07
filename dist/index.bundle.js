@@ -1041,7 +1041,6 @@ class Airbrush {
         _this = this;
 
         this.useTool();
-        console.log('Air Brush');
     }
 
     useTool() {
