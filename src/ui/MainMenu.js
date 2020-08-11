@@ -17,8 +17,8 @@ export default class MainMenu {
     constructor(drawCanvas, menuCanvas) {
         this.drawCanvas = drawCanvas;
         this.menuCanvas = menuCanvas;
-        console.log(drawCanvas)
-        console.log(menuCanvas)
+        // console.log(drawCanvas)
+        // console.log(menuCanvas)
         this._init();
     }
 

@@ -823,7 +823,6 @@ class Brush {
      */
     setLineType(e) {
         let type = e.target.id.substr(1, e.target.name.length + 1);
-        console.log(type);
         switch (type) {
             case 'circle':
                 this.setLineCap('round');
@@ -1234,11 +1233,10 @@ class Utility {
             return hex.length === 1 ? '0' + hex : hex;
         }).join('');
 
-        console.log(rgbToHex);
+        // console.log(rgbToHex)
     }
 
     _hexToRgb(hex) {
-        console.log("A");
         hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
 
         console.log(hex);
