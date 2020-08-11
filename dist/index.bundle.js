@@ -1095,8 +1095,10 @@ class Airbrush {
 
     imageDraw(x, y) {
 
-        let xPos = x + Math.random() * this.getSize();
-        let yPos = y + Math.random() * this.getSize();
+        let angle = Math.random() * Math.PI * 2;
+        let radius = Math.random() * this.getSize() / 2;
+        let xPos = x + Math.cos(angle) * radius;
+        let yPos = y + Math.sin(angle) * radius;
         let c = this.getColor();
         let r = Math.random() * 10 / 5;
         for (let i = 0; i < 3; i++) {
