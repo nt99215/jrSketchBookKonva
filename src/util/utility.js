@@ -23,4 +23,25 @@ export default class Utility {
             r, g, b, a: 255
         };
     }
+
+    _rgbToHex(r,g,b) {
+
+        let rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+            const hex = x.toString(16)
+            return hex.length === 1 ? '0' + hex : hex
+        }).join('');
+
+        console.log(rgbToHex)
+    }
+
+    _hexToRgb(hex) {
+        console.log("A")
+        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+            ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+            .substring(1).match(/.{2}/g)
+            .map(x => parseInt(x, 16))
+
+        console.log(hex);
+    }
+
 }

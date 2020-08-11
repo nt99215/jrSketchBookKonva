@@ -51,7 +51,8 @@ export default class LineDraw {
 
         _stage.on('mousemove touchmove', function () {
 
-            if(!GameConfig.IS_LINE_DRAWING || !isPaint) return;
+            // if(!GameConfig.IS_LINE_DRAWING || !isPaint) return;
+            if(!isPaint) return;
 
             let pos = _stage.getPointerPosition();
             let oldPoints = _line.points();

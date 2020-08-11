@@ -47,13 +47,12 @@
 <body scroll="no">
 <div id="container"></div>
 <div class="controls" >
-    <p>
         <button id="brush" >brush</button>
         <button id="airBrush" >airBrush</button>
         <button id="crayon" >crayon</button>
         <!--        <button id="fill" >fill</button>-->
         <button id="line" >line</button>
-        <!--        <button id="screenTone" >screenTone</button>-->
+        <button id="screenTone" >screenTone</button>
         <button id="eraser" >eraser</button>
         <!--        <button id="text" >text</button>-->
         <button id="zoom" >zoom</button>
@@ -66,32 +65,41 @@
         <span id="_opacitySpan">opacity</span><input min="10" max="100" step="1" id="_opacity" type="range">
         <span id="_zoomSpan">zoom</span><input min="50" max="200" step="10" id="_zoom" type="range">
     </div>
-    <div id="brushType">
-        <span id="_brushCircle">circle</span><input name="_brush" id="_circle" type="radio" checked>
-        <span id="_brushRect">rect</span><input name="_brush" id="_rect" type="radio">
-        <span id="_brushDiamond">diamond</span><input name="_brush" id="_diamond" type="radio">
-        <span id="_brushColumn">column</span><input name="_brush" id="_column" type="radio">
-        <span id="_brushRow">row</span><input name="_brush" id="_row" type="radio">
-        <span id="_brushSlash">slash</span><input name="_brush" id="_slash" type="radio">
+    <div id="tools">
+        <div id="brushType">
+            <span id="_brushCircle">circle</span><input name="_brush" id="_circle" type="radio" checked>
+            <span id="_brushRect">rect</span><input name="_brush" id="_rect" type="radio">
+            <span id="_brushDiamond">diamond</span><input name="_brush" id="_diamond" type="radio">
+            <span id="_brushColumn">column</span><input name="_brush" id="_column" type="radio">
+            <span id="_brushRow">row</span><input name="_brush" id="_row" type="radio">
+            <span id="_brushSlash">slash</span><input name="_brush" id="_slash" type="radio">
+        </div>
+       <!-- <div id="EraserType">
+            <span id="_eraseCircle">circle</span><input name="_erase" id="_eCircle" type="radio" checked>
+            <span id="_eraseRect">rect</span><input name="_erase" id="_eRect" type="radio">
+            <span id="_eraseDiamond">diamond</span><input name="_erase" id="_eDiamond" type="radio">
+            <span id="_eraseColumn">column</span><input name="_erase" id="_eColumn" type="radio">
+            <span id="_eraseRow">row</span><input name="_erase" id="_eRow" type="radio">
+        </div>-->
+        <div id="lineType">
+            <span id="_lineStroke">stroke</span><input name="_line" id="_stroke" type="radio" checked>
+            <span id="_lineDot">dot</span><input name="_line" id="_dot" type="radio">
+            <span id="_lineDash">dash</span><input name="_line" id="_dash" type="radio">
+        </div>
+        <div id="crayonType">
+            <span id="_crayonA">A</span><input name="_crayon" id="_cA" type="radio" checked>
+            <span id="_crayonB">B</span><input name="_crayon" id="_cB" type="radio">
+            <span id="_crayonC">C</span><input name="_crayon" id="_cC" type="radio">
+        </div>
+        <div id="screenToneType">
+            <span id="_screenToneA">A</span><input name="_screenTone" id="_sA" type="radio" checked>
+            <span id="_screenToneB">B</span><input name="_screenTone" id="_sB" type="radio">
+            <span id="_screenToneC">C</span><input name="_screenTone" id="_sC" type="radio">
+            <span id="_screenToneD">D</span><input name="_screenTone" id="_sD" type="radio">
+            <span id="_screenToneE">E</span><input name="_screenTone" id="_sE" type="radio">
+            <span id="_screenToneF">F</span><input name="_screenTone" id="_sF" type="radio">
+        </div>
     </div>
-   <!-- <div id="EraserType">
-        <span id="_eraseCircle">circle</span><input name="_erase" id="_eCircle" type="radio" checked>
-        <span id="_eraseRect">rect</span><input name="_erase" id="_eRect" type="radio">
-        <span id="_eraseDiamond">diamond</span><input name="_erase" id="_eDiamond" type="radio">
-        <span id="_eraseColumn">column</span><input name="_erase" id="_eColumn" type="radio">
-        <span id="_eraseRow">row</span><input name="_erase" id="_eRow" type="radio">
-    </div>-->
-    <div id="lineType">
-        <span id="_lineStroke">stroke</span><input name="_line" id="_stroke" type="radio" checked>
-        <span id="_lineDot">dot</span><input name="_line" id="_dot" type="radio">
-        <span id="_lineDash">dash</span><input name="_line" id="_dash" type="radio">
-    </div>
-    <div id="crayonType">
-        <span id="_crayonA">A</span><input name="_crayon" id="_cA" type="radio" checked>
-        <span id="_crayonB">B</span><input name="_crayon" id="_cB" type="radio">
-        <span id="_crayonC">C</span><input name="_crayon" id="_cC" type="radio">
-    </div>
-    </p>
 
 </div>
 

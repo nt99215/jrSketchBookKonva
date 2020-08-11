@@ -5,15 +5,15 @@ import Airbrush from "../module/Airbrush";
 import Crayon from "../module/Crayon";
 import Eraser from "../module/Eraser";
 import Zoom from "../module/Zoom";
-import ClearCanvas from "../module/ClearCanvas";
 import Move from "../module/Move";
+import ClearCanvas from "../module/ClearCanvas";
+import ScreenTone from "../module/ScreenTone";
 
-let _id, _stage, _layer, _mainLayer;
-let _colorArr = ['#ff00c8', '#59ff00', '#ffa200', '#0073ff'];
-let _sizeArr = [5,7,10,20,30];
+let _id, _stage, _mainLayer;
 
 let $ = function(id){return document.getElementById(id)};
-let brushEl = $('brush'),
+let toolsEl = $('tools'),
+    brushEl = $('brush'),
     airBrushEl = $('airBrush'),
     crayonEl = $('crayon'),
     // fillEl = $('fill'),
@@ -25,38 +25,44 @@ let brushEl = $('brush'),
     // moveEl = $('move'),
     clearEl = $('clear'),
     moveEl = $('move'),
+
+    //tools Property
     colorEl = $('_color'),
     sizeEl = $('_size'),
     opacityEl = $('_opacity'),
     zoomSlider = $('_zoom'),
 
-    //BRUSH TYPE
+
+    /**
+     * TOOLS TYPE
+     * @type {HTMLElement | jQuery | HTMLElement}
+     */
+        //BRUSH TYPE
     brushTypeEl = $('brushType'),
-    circleEl = $('_circle'),
-    rectEl = $('_rect'),
-    diamondEl = $('_diamond'),
-    columnEl = $('_column'),
-    rowEl = $('_rowEl'),
 
     //ERASER TYPE
     eraserTypeEl = $('EraserType'),
-    eCircleEl = $('_eCircle'),
-    eRectEl = $('_eRect'),
-    eDiamondEl = $('_eDiamond'),
-    eColumnEl = $('_eColumn'),
-    eRowEl = $('_eRow'),
 
     //LINE TYPE
     lineTypeEl = $('lineType'),
-    stokeEl = $('_stroke'),
-    dashEl = $('_dash'),
-    dotEl = $('_dot'),
 
     //CRAYON TYPE
     crayonTypeEl = $('crayonType'),
-    crayonA = $('_cA'),
-    crayonB = $('_cB'),
-    crayonC = $('_cC');
+
+    //SCREEN_TONE TYPE
+    screenToneTypeEl = $('screenToneType')
+
+let _elementArr = [
+    {el:brushEl, obj:Brush},
+    {el:airBrushEl, obj:Airbrush},
+    {el:crayonEl, obj:Crayon},
+    {el:lineEl, obj:LineDraw},
+    {el:screenToneEl, obj:ScreenTone},
+    {el:eraserEl, obj:Eraser},
+    {el:zoomEl, obj:Zoom},
+    {el:clearEl, obj:ClearCanvas},
+    {el:moveEl, obj:Move},
+]
 
 export default class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -64,24 +70,10 @@ export default class SketchBookKonva {
         this._init();
     }
 
-    _createImg() {
-        let imageURL = 'asset/image/sampleImg.jpg';
-        let layer = new Konva.Layer();
-        Konva.Image.fromURL(imageURL, function(image){
-            layer.add(image);
-            layer.draw();
-        });
-
-        _stage.add(layer)
-    }
-
     _init() {
-
 
         _stage = new Konva.Stage({
             container: 'container',
-            // width: window.innerWidth,
-            // height: window.innerHeight
             width:800,
             height:550
         });
@@ -95,14 +87,10 @@ export default class SketchBookKonva {
         _stage.add(_mainLayer);
 
 
+        // zoomSlider.style.display = 'none';
+        // lineTypeEl.style.display = 'none';
+        // crayonTypeEl.style.display = 'none';
 
-        // this.LineDraw = LineDraw.prototype.draw(_stage);
-        // this.Brush = Brush.prototype.draw(_stage, _mainLayer);
-
-        // eraserTypeEl.style.display = 'none';
-        zoomSlider.style.display = 'none';
-        lineTypeEl.style.display = 'none';
-        crayonTypeEl.style.display = 'none';
         $('_zoomSpan').style.display ='none';
 
 
@@ -126,6 +114,17 @@ export default class SketchBookKonva {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setSize(this.value);
         }
 
+
+        /**TOOLS SELECT
+         *
+         */
+        for(let i in _elementArr)
+        {
+            let eL = _elementArr[i].el;
+            let o =  _elementArr[i].obj;
+            eL.onclick =()=> this._elementEnable(eL.id, o);
+        }
+
         /**
          * BRUSH STYLE
          */
@@ -147,183 +146,59 @@ export default class SketchBookKonva {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
-
-
         /**
-         * TOOL SELECT
+         * CRAYON STYLE
          */
+        screenToneTypeEl.onchange = function(e) {
+            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
+        }
 
-        brushEl.onclick =()=> {
 
-            GameConfig.IS_DRAWING_MODE = true;
-            GameConfig.IS_LINE_DRAWING = false;
-            this._toolsDestroy();
+        /*brushEl.onclick =()=> {
+
             Brush.prototype.init(_stage);
-
-            colorEl.value = Brush.prototype.getColor();
-            sizeEl.value = Brush.prototype.getSize();
-            opacityEl.value = Brush.prototype.getOpacity();
-
-            $('_circle').checked = true;
-            colorEl.style.display = '';
-            $('_colorSpan').style.display = '';
-            sizeEl.style.display = '';
-            $('_sizeSpan').style.display = '';
-            opacityEl.style.display = '';
-            $('_opacitySpan').style.display = '';
-            zoomSlider.style.display = 'none';
-            $('_zoomSpan').style.display ='none';
-
-            brushTypeEl.style.display = '';
-            //eraserTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
+            this._elementEnable(brushEl, Brush);
         }
 
         airBrushEl.onclick =()=> {
 
-            GameConfig.IS_DRAWING_MODE = true;
-            GameConfig.IS_LINE_DRAWING = false;
-            this._toolsDestroy();
-            Airbrush.prototype.init(_stage);
-
-            colorEl.value = Airbrush.prototype.getColor();
-            sizeEl.value = Airbrush.prototype.getSize();
-            opacityEl.value = Airbrush.prototype.getOpacity();
-
-            colorEl.style.display = '';
-            $('_colorSpan').style.display = '';
-            sizeEl.style.display = '';
-            $('_sizeSpan').style.display = '';
-            opacityEl.style.display = 'none';
-            $('_opacitySpan').style.display = 'none';
-            zoomSlider.style.display = 'none';
-            $('_zoomSpan').style.display ='none';
-            brushTypeEl.style.display = 'none';
-            //eraserTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
+            Brush.prototype.init(_stage);
+            this._elementEnable(brushEl, Airbrush);
         }
 
         crayonEl.onclick =()=> {
 
-            GameConfig.IS_DRAWING_MODE = true;
-            GameConfig.IS_LINE_DRAWING = false;
-            this._toolsDestroy();
             Crayon.prototype.init(_stage);
-
-            colorEl.value = Brush.prototype.getColor();
-            sizeEl.value = Brush.prototype.getSize();
-            opacityEl.value = Brush.prototype.getOpacity();
-
-            crayonTypeEl.style.display = '';
-            colorEl.style.display = '';
-            $('_colorSpan').style.display = '';
-            sizeEl.style.display = '';
-            $('_sizeSpan').style.display = '';
-            opacityEl.style.display = 'none';
-            $('_opacitySpan').style.display = 'none';
-            zoomSlider.style.display = 'none';
-            $('_zoomSpan').style.display ='none';
-            brushTypeEl.style.display = 'none';
-            //eraserTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
+            this._elementEnable(brushEl, Crayon);
         }
 
         lineEl.onclick =()=> {
 
-            GameConfig.IS_DRAWING_MODE = false;
-            GameConfig.IS_LINE_DRAWING = true;
-            this._toolsDestroy();
             LineDraw.prototype.init(_stage);
-
-            colorEl.value = LineDraw.prototype.getColor();
-            sizeEl.value = LineDraw.prototype.getSize();
-            opacityEl.value = LineDraw.prototype.getOpacity();
-
-            lineTypeEl.style.display = '';
-            brushTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
-            //eraserTypeEl.style.display = 'none';
-
-            colorEl.style.display = '';
-            $('_colorSpan').style.display = '';
-            sizeEl.style.display = '';
-            $('_sizeSpan').style.display = '';
-            opacityEl.style.display = '';
-            $('_opacitySpan').style.display = '';
-            zoomSlider.style.display = 'none';
-            $('_zoomSpan').style.display ='none';
+            this._elementEnable(brushEl, LineDraw);
         }
 
         eraserEl.onclick =()=> {
 
-            GameConfig.IS_DRAWING_MODE = false;
-            GameConfig.IS_LINE_DRAWING = false;
-            this._toolsDestroy();
-            Eraser.prototype.init(_stage, _mainLayer);
+            Eraser.prototype.init(_stage);
+            this._elementEnable(brushEl, Eraser);
+        };
 
-            sizeEl.value = Eraser.prototype.getSize();
-            opacityEl.value = Eraser.prototype.getOpacity();
-
-            colorEl.style.display = 'none';
-            $('_colorSpan').style.display = 'none';
-            sizeEl.style.display = '';
-            $('_sizeSpan').style.display = '';
-            opacityEl.style.display = '';
-            $('_opacitySpan').style.display = '';
-            zoomSlider.style.display = 'none';
-            $('_zoomSpan').style.display ='none';
-
-            //eraserTypeEl.style.display = '';
-            brushTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
+        moveEl.onclick = ()=> {
+            Move.prototype.move(_stage);
+            this._elementEnable(brushEl, Move);
         };
 
         zoomEl.onclick =()=> {
             // this._toolsDestroy();
             Zoom.prototype.init(_stage);
+            this._elementEnable(brushEl, Zoom);
             zoomSlider.value = Zoom.prototype.getSize();
-
-            colorEl.style.display = 'none';
-            $('_colorSpan').style.display = 'none';
-            sizeEl.style.display = 'none';
-            $('_sizeSpan').style.display = 'none';
-            opacityEl.style.display = 'none';
-            $('_opacitySpan').style.display = 'none';
-
-            zoomSlider.style.display = '';
-            $('_zoomSpan').style.display = '';
-
-            brushTypeEl.style.display = 'none';
-            //eraserTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
 
         }
 
+
         clearEl.onclick = ()=> {
-            // ClearCanvas.prototype.canvasClear(_canvas);
-            // _mainLayer.clear();
-            // this._toolsDestroy();
-            // GameConfig.MAIN_LAYER.find('Line').destroy();
-            // GameConfig.MAIN_LAYER.draw();
-            // _stage.remove(_mainLayer);
-
-            brushTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
-            //eraserTypeEl.style.display = 'none';
-            colorEl.style.display = 'none';
-            $('_colorSpan').style.display = 'none';
-            sizeEl.style.display = 'none';
-            $('_sizeSpan').style.display = 'none';
-            opacityEl.style.display = 'none';
-            $('_opacitySpan').style.display = 'none';
-
-            this._toolsDestroy();
-
             _stage.remove(GameConfig.MAIN_LAYER);
             // GameConfig.MAIN_LAYER.clear();
             if(GameConfig.MAIN_LAYER)
@@ -332,7 +207,6 @@ export default class SketchBookKonva {
                 GameConfig.MAIN_LAYER.destroy();
                 GameConfig.MAIN_LAYER = null;
             }
-
             if(GameConfig.CURRENT_LAYER)
             {
                 _stage.remove(GameConfig.CURRENT_LAYER);
@@ -341,90 +215,86 @@ export default class SketchBookKonva {
                 GameConfig.CURRENT_LAYER.destroy();
                 GameConfig.CURRENT_LAYER = null;
             }
-
-
             _mainLayer = new Konva.Layer();
             _stage.add(_mainLayer);
             GameConfig.MAIN_LAYER = _mainLayer;
             _mainLayer.draw();
-            // console.log(_mainLayer)
-            // _stage.remove(_mainLayer)
-            // GameConfig.MAIN_LAYER.visible(false);
-
-            // GameConfig.MAIN_LAYER.destroy();
-            // console.log("clear", _stage, GameConfig.MAIN_LAYER)
         };
-
-        moveEl.onclick = ()=> {
-            brushTypeEl.style.display = 'none';
-            lineTypeEl.style.display = 'none';
-            crayonTypeEl.style.display = 'none';
-            this._toolsDestroy();
-            Move.prototype.move(_stage);
-        };
-
-
-        this._default();
+*/
+        this._elementEnable();
 
     }
 
-    _default() {
-        // Brush.prototype.init(_stage);
-        // colorEl.value = Brush.prototype.getColor();
-        // sizeEl.value = Brush.prototype.getSize();
-        // opacityEl.value = Brush.prototype.getOpacity();
+
+    _elementEnable(id = '', obj =  Brush) {
+        // toolsEl.style.display = 'none';
+        // brushTypeEl.style.display = '';
+
+        if(id === 'zoom' || id === 'clear' || id === 'move')
+        {
+            GameConfig.IS_DRAWING_MODE = false;
+            if(id === 'clear') this._layerClear();
+            return;
+        }
+
 
         GameConfig.IS_DRAWING_MODE = true;
-        GameConfig.IS_LINE_DRAWING = false;
-        Airbrush.prototype.init(_stage);
+        // GameConfig.IS_LINE_DRAWING = true;
+        this._toolsDestroy();
 
-        colorEl.value = Airbrush.prototype.getColor();
-        sizeEl.value = Airbrush.prototype.getSize();
-        opacityEl.value = Airbrush.prototype.getOpacity();
+        if(id === 'eraser') {
+            GameConfig.IS_DRAWING_MODE = false;
+            obj.prototype.init(_stage, _mainLayer);
+            return;
+        }
+        else obj.prototype.init(_stage);
 
-        colorEl.style.display = '';
-        $('_colorSpan').style.display = '';
-        sizeEl.style.display = '';
-        $('_sizeSpan').style.display = '';
-        opacityEl.style.display = 'none';
-        $('_opacitySpan').style.display = 'none';
-        zoomSlider.style.display = 'none';
-        $('_zoomSpan').style.display ='none';
-        brushTypeEl.style.display = 'none';
-        //eraserTypeEl.style.display = 'none';
-        lineTypeEl.style.display = 'none';
-        crayonTypeEl.style.display = 'none';
+
+        colorEl.value = obj.prototype.getColor();
+        sizeEl.value = obj.prototype.getSize();
+        opacityEl.value = obj.prototype.getOpacity();
 
     }
 
+    _layerClear() {
+        _stage.remove(GameConfig.MAIN_LAYER);
+        // GameConfig.MAIN_LAYER.clear();
+        if(GameConfig.MAIN_LAYER)
+        {
+            GameConfig.MAIN_LAYER.remove();
+            GameConfig.MAIN_LAYER.destroy();
+            GameConfig.MAIN_LAYER = null;
+        }
+        if(GameConfig.CURRENT_LAYER)
+        {
+            _stage.remove(GameConfig.CURRENT_LAYER);
+            GameConfig.CURRENT_LAYER.clear();
+            GameConfig.CURRENT_LAYER.remove();
+            GameConfig.CURRENT_LAYER.destroy();
+            GameConfig.CURRENT_LAYER = null;
+        }
+        _mainLayer = new Konva.Layer();
+        _stage.add(_mainLayer);
+        GameConfig.MAIN_LAYER = _mainLayer;
+        _mainLayer.draw();
+    }
+
+
+    _createImg() {
+        let imageURL = 'asset/image/sampleImg.jpg';
+        let layer = new Konva.Layer();
+        Konva.Image.fromURL(imageURL, function(image){
+            layer.add(image);
+            layer.draw();
+        });
+
+        _stage.add(layer)
+    }
 
 
     _toolsDestroy() {
         if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.destroy();
     }
-
-    rgbToHex(r,g,b) {
-
-        let rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-            const hex = x.toString(16)
-            return hex.length === 1 ? '0' + hex : hex
-        }).join('');
-
-        console.log(rgbToHex)
-    }
-
-    hexToRgb(hex) {
-        console.log("A")
-        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-            ,(m, r, g, b) => '#' + r + r + g + g + b + b)
-            .substring(1).match(/.{2}/g)
-            .map(x => parseInt(x, 16))
-
-        console.log(hex);
-    }
-
-
-
 
 
 }

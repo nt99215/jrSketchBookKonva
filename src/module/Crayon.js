@@ -80,14 +80,14 @@ export default class Crayon {
 
     imageDraw(x, y) {
 
-        const obj = _pattern.attrs.image;
+        let obj = _pattern.attrs.image;
         _clone = _pattern.clone({
             x:x - obj.width/2,
             y:y - obj.height/2,
         });
         _clone.cache();
         _drawLayer.add(_clone);
-        _clone.clearCache();
+        // _clone.clearCache();
     }
 
     destroy () {
@@ -105,7 +105,7 @@ export default class Crayon {
      */
     setColor(color) {_color = color;}
     getColor() {
-        const c = Utility.hexToRgb(_color);
+        let c = Utility.hexToRgb(_color);
         _pattern.filters([Konva.Filters.RGBA]);
         _pattern.red(c.r);
         _pattern.green(c.g);
