@@ -1051,24 +1051,8 @@ class Airbrush {
             // if(!GameConfig.IS_DRAWING_MODE) return;
             // Start drawing
             isDrawing = true;
-            // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
-            /*currentLine = new Konva.Line({
-                stroke: _this.getColor(),
-                strokeWidth: _this.getSize(),
-                points: [pos.x, pos.y],
-                // globalCompositeOperation:'source-over',
-                // globalCompositeOperation:'destination-out',
-                // lineCap:'square',
-                lineCap:'round',
-                tension:GameConfig.DEFAULT_TENSION,
-                // fill:'#ffcc00',
-                // fillPatternImage:'asset/image/starImg.png',
-                // fillEnabled:true,
-                opacity:_this.getOpacity() / 100
-            });*/
             currentLine = { points: [pos.x, pos.y]
-
                 // _drawLayer.add(currentLine);
             };
         });
@@ -1084,7 +1068,6 @@ class Airbrush {
             // let newPoints = currentLine.points().concat([pos.x, pos.y]);
             // currentLine.points(newPoints);
             this.imageDraw(pos.x, pos.y);
-            _drawLayer.batchDraw();
         });
 
         _stage.on('mouseup touchend contentTouchend', evt => {
@@ -1116,17 +1099,19 @@ class Airbrush {
         let yPos = y + Math.random() * this.getSize();
         let c = this.getColor();
         let r = Math.random() * 10 / 5;
-        let circle = new Konva.Rect({
-            x: xPos,
-            y: yPos,
-            width: r,
-            height: r,
-            fill: c,
-            perfectDrawEnabled: false,
-            listening: false
-
-        });
-        _drawLayer.add(circle);
+        for (let i = 0; i < 3; i++) {
+            let rect = new Konva.Rect({
+                x: xPos,
+                y: yPos,
+                width: r,
+                height: r,
+                fill: c,
+                perfectDrawEnabled: false,
+                listening: false
+            });
+            _drawLayer.add(rect);
+            _drawLayer.batchDraw();
+        }
     }
 
     destroy() {
@@ -1134,8 +1119,6 @@ class Airbrush {
         if (_stage) _stage.off('mousedown touchstart');
         if (_stage) _stage.off('mousemove touchmove');
         if (_stage) _stage.off('mouseup touchend contentTouchend');
-
-        // console.log('brush', _drawLayer);
     }
 
     /**
