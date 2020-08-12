@@ -16,11 +16,15 @@ const _defaultOpacity = 100;
 let _mainStage = null;
 let _mainDrawLayer = null;
 let _currentLayer = null;
+let _stageSize = {width:800, height:450}
 
 export default class GameConfig {
 
     static get MAIN_STAGE() { return _mainStage};
     static set MAIN_STAGE(obj) { _mainStage = obj};
+
+    static get STAGE_SIZE() { return _stageSize};
+    static set STAGE_SIZE(obj) { _stageSize = obj};
 
     static get MAIN_LAYER() { return _mainDrawLayer};
     static set MAIN_LAYER(obj) { _mainDrawLayer = obj};

@@ -86,6 +86,7 @@ const _defaultOpacity = 100;
 let _mainStage = null;
 let _mainDrawLayer = null;
 let _currentLayer = null;
+let _stageSize = { width: 800, height: 450 };
 
 class GameConfig {
 
@@ -94,6 +95,13 @@ class GameConfig {
     }
     static set MAIN_STAGE(obj) {
         _mainStage = obj;
+    }
+
+    static get STAGE_SIZE() {
+        return _stageSize;
+    }
+    static set STAGE_SIZE(obj) {
+        _stageSize = obj;
     }
 
     static get MAIN_LAYER() {
@@ -187,13 +195,10 @@ class LayerManager {
     /**/init(currentLayer) {
         let _currentLayer = currentLayer;
         let img = new Konva.Image({
-            image: _currentLayer.canvas._canvas
-
+            image: _currentLayer.canvas._canvas,
+            width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
+            height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
         });
-        img.width(800);
-        img.height(550);
-        console.log(img);
-
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
         // _currentLayer.destroy();
@@ -307,8 +312,8 @@ class SketchBookKonva {
 
         _stage = new Konva.Stage({
             container: 'container',
-            width: 800,
-            height: 550
+            width: __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
+            height: __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].STAGE_SIZE.height
         });
 
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_STAGE = _stage;

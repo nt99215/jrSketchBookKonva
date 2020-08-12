@@ -74,8 +74,8 @@ export default class SketchBookKonva {
 
         _stage = new Konva.Stage({
             container: 'container',
-            width:800,
-            height:550
+            width:GameConfig.STAGE_SIZE.width,
+            height:GameConfig.STAGE_SIZE.height
         });
 
         GameConfig.MAIN_STAGE = _stage;
