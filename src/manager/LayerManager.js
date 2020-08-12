@@ -5,7 +5,12 @@ export default class LayerManager {
         let _currentLayer = currentLayer;
         let img = new Konva.Image({
             image:_currentLayer.canvas._canvas,
+
         });
+        img.width(800);
+        img.height(550);
+        console.log(img)
+
         GameConfig.MAIN_LAYER.add(img);
         GameConfig.MAIN_LAYER.draw();
         // _currentLayer.destroy();

@@ -188,7 +188,12 @@ class LayerManager {
         let _currentLayer = currentLayer;
         let img = new Konva.Image({
             image: _currentLayer.canvas._canvas
+
         });
+        img.width(800);
+        img.height(550);
+        console.log(img);
+
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
         // _currentLayer.destroy();
@@ -314,12 +319,6 @@ class SketchBookKonva {
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].MAIN_LAYER = _mainLayer;
         _stage.add(_mainLayer);
 
-        // zoomSlider.style.display = 'none';
-        // lineTypeEl.style.display = 'none';
-        // crayonTypeEl.style.display = 'none';
-
-        $('_zoomSpan').style.display = 'none';
-
         colorEl.onchange = function () {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setColor(this.value);
         };
@@ -345,7 +344,7 @@ class SketchBookKonva {
         for (let i in _elementArr) {
             let eL = _elementArr[i].el;
             let o = _elementArr[i].obj;
-            eL.onclick = () => this._elementEnable(eL.id, o);
+            eL.onclick = () => this._toolSelect(eL.id, o);
         }
 
         /**
@@ -376,63 +375,10 @@ class SketchBookKonva {
             if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setLineType(e);
         };
 
-        /*brushEl.onclick =()=> {
-              Brush.prototype.init(_stage);
-            this._elementEnable(brushEl, Brush);
-        }
-          airBrushEl.onclick =()=> {
-              Brush.prototype.init(_stage);
-            this._elementEnable(brushEl, Airbrush);
-        }
-          crayonEl.onclick =()=> {
-              Crayon.prototype.init(_stage);
-            this._elementEnable(brushEl, Crayon);
-        }
-          lineEl.onclick =()=> {
-              LineDraw.prototype.init(_stage);
-            this._elementEnable(brushEl, LineDraw);
-        }
-          eraserEl.onclick =()=> {
-              Eraser.prototype.init(_stage);
-            this._elementEnable(brushEl, Eraser);
-        };
-          moveEl.onclick = ()=> {
-            Move.prototype.move(_stage);
-            this._elementEnable(brushEl, Move);
-        };
-          zoomEl.onclick =()=> {
-            // this._toolsDestroy();
-            Zoom.prototype.init(_stage);
-            this._elementEnable(brushEl, Zoom);
-            zoomSlider.value = Zoom.prototype.getSize();
-          }
-            clearEl.onclick = ()=> {
-            _stage.remove(GameConfig.MAIN_LAYER);
-            // GameConfig.MAIN_LAYER.clear();
-            if(GameConfig.MAIN_LAYER)
-            {
-                GameConfig.MAIN_LAYER.remove();
-                GameConfig.MAIN_LAYER.destroy();
-                GameConfig.MAIN_LAYER = null;
-            }
-            if(GameConfig.CURRENT_LAYER)
-            {
-                _stage.remove(GameConfig.CURRENT_LAYER);
-                GameConfig.CURRENT_LAYER.clear();
-                GameConfig.CURRENT_LAYER.remove();
-                GameConfig.CURRENT_LAYER.destroy();
-                GameConfig.CURRENT_LAYER = null;
-            }
-            _mainLayer = new Konva.Layer();
-            _stage.add(_mainLayer);
-            GameConfig.MAIN_LAYER = _mainLayer;
-            _mainLayer.draw();
-        };
-        */
-        this._elementEnable();
+        this._toolSelect();
     }
 
-    _elementEnable(id = '', obj = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */]) {
+    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */]) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 
@@ -479,13 +425,13 @@ class SketchBookKonva {
     }
 
     _createImg() {
-        let imageURL = 'asset/image/sampleImg.jpg';
-        let layer = new Konva.Layer();
-        Konva.Image.fromURL(imageURL, function (image) {
+        const imageURL = 'asset/image/sampleImg.jpg';
+        const layer = new Konva.Layer();
+        Konva.Image.fromURL(imageURL, image => {
+
             layer.add(image);
             layer.draw();
         });
-
         _stage.add(layer);
     }
 
@@ -1103,7 +1049,6 @@ class Crayon {
         });
         _clone.cache();
         _drawLayer.add(_clone);
-        // _clone.clearCache();
     }
 
     destroy() {
@@ -1591,23 +1536,15 @@ class ScreenTone {
         return transform.point(pos);
     }
 
-    getPatternBitmapData(type = 'type0') {
-        let tempBmd;
-        tempBmd = new Konva.B(7, 7, true, 0x000000);
-        tempBmd.fillRect(new Konva.Rect({}));
-        return tempBmd;
-    }
-
     imageDraw(x, y) {
 
-        const obj = _pattern.attrs.image;
-        _clone = _pattern.clone({
-            x: x - obj.width / 2,
-            y: y - obj.height / 2
+        let obj = this.getCrayonImage();
+        _clone = obj.clone({
+            x: x,
+            y: y
         });
         _clone.cache();
         _drawLayer.add(_clone);
-        _clone.clearCache();
     }
 
     destroy() {
@@ -1649,6 +1586,48 @@ class ScreenTone {
     getOpacity() {
         return _opacity;
     }
+
+    /**
+     *
+     * @param lineType
+     */
+    setLineType(e) {
+        let type = e.target.id.substr(1, e.target.name.length + 1);
+        console.log(type);
+        switch (type) {
+            case 'sA':
+                _screenToneType = 0;
+                break;
+            case 'sB':
+                _screenToneType = 1;
+                break;
+            case 'sC':
+                _screenToneType = 2;
+                break;
+            default:
+                _screenToneType = 0;
+                break;
+        }
+        this.getCrayonImage();
+    }
+
+    getLineType() {
+        return _screenToneType;
+    }
+
+    getCrayonImage() {
+        // tempBmd = new Konva.B(7,7,true,0x000000)
+        _pattern = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: 30,
+            height: 30,
+            fill: '#363433'
+
+        });
+        return _pattern;
+    }
+
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ScreenTone;
 

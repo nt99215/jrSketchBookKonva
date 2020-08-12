@@ -86,14 +86,6 @@ export default class SketchBookKonva {
         GameConfig.MAIN_LAYER = _mainLayer;
         _stage.add(_mainLayer);
 
-
-        // zoomSlider.style.display = 'none';
-        // lineTypeEl.style.display = 'none';
-        // crayonTypeEl.style.display = 'none';
-
-        $('_zoomSpan').style.display ='none';
-
-
         colorEl.onchange = function() {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setColor(this.value);
         }
@@ -122,7 +114,7 @@ export default class SketchBookKonva {
         {
             let eL = _elementArr[i].el;
             let o =  _elementArr[i].obj;
-            eL.onclick =()=> this._elementEnable(eL.id, o);
+            eL.onclick =()=> this._toolSelect(eL.id, o);
         }
 
         /**
@@ -153,80 +145,12 @@ export default class SketchBookKonva {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
-
-        /*brushEl.onclick =()=> {
-
-            Brush.prototype.init(_stage);
-            this._elementEnable(brushEl, Brush);
-        }
-
-        airBrushEl.onclick =()=> {
-
-            Brush.prototype.init(_stage);
-            this._elementEnable(brushEl, Airbrush);
-        }
-
-        crayonEl.onclick =()=> {
-
-            Crayon.prototype.init(_stage);
-            this._elementEnable(brushEl, Crayon);
-        }
-
-        lineEl.onclick =()=> {
-
-            LineDraw.prototype.init(_stage);
-            this._elementEnable(brushEl, LineDraw);
-        }
-
-        eraserEl.onclick =()=> {
-
-            Eraser.prototype.init(_stage);
-            this._elementEnable(brushEl, Eraser);
-        };
-
-        moveEl.onclick = ()=> {
-            Move.prototype.move(_stage);
-            this._elementEnable(brushEl, Move);
-        };
-
-        zoomEl.onclick =()=> {
-            // this._toolsDestroy();
-            Zoom.prototype.init(_stage);
-            this._elementEnable(brushEl, Zoom);
-            zoomSlider.value = Zoom.prototype.getSize();
-
-        }
-
-
-        clearEl.onclick = ()=> {
-            _stage.remove(GameConfig.MAIN_LAYER);
-            // GameConfig.MAIN_LAYER.clear();
-            if(GameConfig.MAIN_LAYER)
-            {
-                GameConfig.MAIN_LAYER.remove();
-                GameConfig.MAIN_LAYER.destroy();
-                GameConfig.MAIN_LAYER = null;
-            }
-            if(GameConfig.CURRENT_LAYER)
-            {
-                _stage.remove(GameConfig.CURRENT_LAYER);
-                GameConfig.CURRENT_LAYER.clear();
-                GameConfig.CURRENT_LAYER.remove();
-                GameConfig.CURRENT_LAYER.destroy();
-                GameConfig.CURRENT_LAYER = null;
-            }
-            _mainLayer = new Konva.Layer();
-            _stage.add(_mainLayer);
-            GameConfig.MAIN_LAYER = _mainLayer;
-            _mainLayer.draw();
-        };
-*/
-        this._elementEnable();
+        this._toolSelect();
 
     }
 
 
-    _elementEnable(id = '', obj =  Brush) {
+    _toolSelect(id = '', obj =  ScreenTone) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 
@@ -281,14 +205,15 @@ export default class SketchBookKonva {
 
 
     _createImg() {
-        let imageURL = 'asset/image/sampleImg.jpg';
-        let layer = new Konva.Layer();
-        Konva.Image.fromURL(imageURL, function(image){
+        const imageURL = 'asset/image/sampleImg.jpg';
+        const layer = new Konva.Layer();
+        Konva.Image.fromURL(imageURL, (image)=>{
+
             layer.add(image);
             layer.draw();
         });
+        _stage.add(layer);
 
-        _stage.add(layer)
     }
 
 

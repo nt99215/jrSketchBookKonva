@@ -87,7 +87,6 @@ export default class Crayon {
         });
         _clone.cache();
         _drawLayer.add(_clone);
-        // _clone.clearCache();
     }
 
     destroy () {
