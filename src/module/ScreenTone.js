@@ -1,12 +1,10 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _drawLayer, _this;
+let _stage, _drawLayer, _this, _patternImage, _patternGroup, _fillRect;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-let _img, _clone, _shapeEnable;
-let _patternImage, _patternGroup, _fillRect;
 let _lineCap = 'round';
 let _patternType = 'A';
 const _patterUrl = 'asset/image/screenTone/screenToneType';
@@ -23,8 +21,6 @@ export default class Brush {
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
-        _shapeEnable = false;
-
         this.useTool();
 
     }
@@ -90,39 +86,19 @@ export default class Brush {
     }
 
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         transform.invert();
-        // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-        // now we find relative point
         return transform.point(pos);
     }
 
-
-    imageDraw(x, y) {
-        _clone = _img.clone({
-            x:x,
-            y:y,
-            // width:_img.scale.x * 20,
-            // height:10,
-            fill:_this.getColor(),
-        });
-
-        _clone.cache();
-        _drawLayer.add(_clone);
-    }
 
     destroy () {
         LayerManager.prototype.init(_drawLayer);
         if(_stage)_stage.off('mousedown touchstart');
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
-
-        // console.log('brush', _drawLayer);
     }
-
 
 
     /**
