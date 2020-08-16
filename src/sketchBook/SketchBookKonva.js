@@ -204,6 +204,7 @@ export default class SketchBookKonva {
     }
 
 
+
     _createImg() {
         const imageURL = 'asset/image/sampleImg.jpg';
         const layer = new Konva.Layer();

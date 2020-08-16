@@ -383,7 +383,7 @@ class SketchBookKonva {
         this._toolSelect();
     }
 
-    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */]) {
+    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */]) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 
@@ -1498,6 +1498,7 @@ class ScreenTone {
 
         let isDrawing = false;
         let currentLine;
+        _pattern = this.getCrayonImage();
 
         _stage.on('mousedown touchstart', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
@@ -1520,11 +1521,11 @@ class ScreenTone {
 
         _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
-            isDrawing = false;
-            __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
-            _drawLayer = new Konva.Layer();
-            _stage.add(_drawLayer);
-            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
+            // isDrawing = false;
+            // LayerManager.prototype.init(_drawLayer);
+            // _drawLayer = new Konva.Layer();
+            // _stage.add(_drawLayer);
+            // GameConfig.CURRENT_LAYER = _drawLayer;
         });
     }
 
@@ -1543,10 +1544,13 @@ class ScreenTone {
 
     imageDraw(x, y) {
 
-        let obj = this.getCrayonImage();
-        _clone = obj.clone({
+        return;
+        // let obj = this.getCrayonImage();
+
+        _clone = _pattern.clone({
             x: x,
             y: y
+
         });
         _clone.cache();
         _drawLayer.add(_clone);
@@ -1598,7 +1602,7 @@ class ScreenTone {
      */
     setLineType(e) {
         let type = e.target.id.substr(1, e.target.name.length + 1);
-        console.log(type);
+        // console.log(type)
         switch (type) {
             case 'sA':
                 _screenToneType = 0;
@@ -1613,7 +1617,7 @@ class ScreenTone {
                 _screenToneType = 0;
                 break;
         }
-        this.getCrayonImage();
+        _pattern = this.getCrayonImage();
     }
 
     getLineType() {
@@ -1622,15 +1626,75 @@ class ScreenTone {
 
     getCrayonImage() {
         // tempBmd = new Konva.B(7,7,true,0x000000)
-        _pattern = new Konva.Rect({
+        _pattern = new Konva.Image();
+        for (let i = 0; i < 4; i++) {
+            let rect = new Konva.Rect({
+                x: i,
+                y: i,
+                width: 1,
+                height: 1,
+                fill: '#fa0a8e'
+
+            });
+            _pattern.fillPatternImage = rect;
+        }
+        this.sample();
+        return _pattern;
+    }
+
+    sample() {
+        /* const image = new window.Image();
+         image.onload = () => {
+             this.setState({
+                 fillPatternImage: image
+             });
+         }
+         image.src = 'http://i.imgur.com/A6H6xHF.png';
+         this.state = {
+             color: 'green',
+             fillPatternImage: null
+         };*/
+
+        _pattern = new Image();
+        _pattern.onload = () => {
+            let img = new Konva.Image({
+                image: _pattern,
+                width: 20,
+                height: 20
+            });
+            // _pattern = img;
+            // _pattern.cache();
+            this.patternDraw(_pattern);
+        };
+        _pattern.src = 'asset/image/screenToneDefault.png';
+        // _pattern.src = 'http://i.imgur.com/A6H6xHF.png';
+
+    }
+
+    patternDraw(pattern) {
+        let images = {};
+        console.log(_pattern);
+        let patternPentagon = new Konva.Rect({
             x: 0,
             y: 0,
-            width: 30,
-            height: 30,
-            fill: '#363433'
-
+            width: 800,
+            height: 550,
+            // sides: 6,
+            // radius: 170,
+            fillPatternImage: pattern,
+            fillPatternOffset: { x: 20, y: 20 }
+            // stroke: 'black',
+            // strokeWidth: 4,
+            // draggable: true,
         });
-        return _pattern;
+
+        // patternPentagon.fillPatternImage(_pattern);
+        _drawLayer.add(patternPentagon);
+        _drawLayer.draw();
+
+        let sources = {
+            darthVader: 'asset/image/screenToneDefault.png'
+        };
     }
 
 }
