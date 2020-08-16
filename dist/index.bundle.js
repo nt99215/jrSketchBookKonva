@@ -237,6 +237,8 @@ let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* def
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__module_Move__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__module_TextInput__ = __webpack_require__(14);
+
 
 
 
@@ -300,7 +302,7 @@ crayonTypeEl = $('crayonType'),
 //SCREEN_TONE TYPE
 screenToneTypeEl = $('screenToneType');
 
-let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }];
+let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: textEl, obj: __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }];
 
 class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -383,7 +385,7 @@ class SketchBookKonva {
         this._toolSelect();
     }
 
-    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */]) {
+    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */]) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 
@@ -1625,6 +1627,201 @@ class Brush {
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Brush;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
+
+
+
+let _stage, _drawLayer, _this, _text;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+const _fontFamily = ['Nanum Brush Script', 'Nanum Pen Script', 'NanumBarunGothic', 'NanumBarunGothic YetHangul', 'NanumBarunpen', 'NanumGothic', 'NanumGothic Eco', 'NanumGothicCoding', 'NanumMyeongjo', 'NanumMyeongjo Eco', 'NanumMyeongjo YetHangul', 'NanumSquare', 'NanumSquare_ac', 'NanumSquareRound'];
+
+class TextInput {
+    init(stage) {
+
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
+        _stage = stage;
+        _drawLayer = new Konva.Layer();
+        _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
+        _this = this;
+
+        this.useTool();
+    }
+
+    useTool() {
+
+        let isDrawing = false;
+        let textNode;
+        let textarea;
+
+        _stage.on('mousedown touchstart', evt => {
+            isDrawing = !isDrawing;
+            let pos = this.getRelativePointerPosition(_stage);
+            let ff = _fontFamily[1];
+            if (isDrawing) {
+                textNode = new Konva.Text({
+                    text: '글을 입력하세요',
+                    x: pos.x,
+                    y: pos.y,
+                    fontFamily: ff,
+                    fontSize: this.getSize()
+                });
+
+                let stageBox = _stage.getContainer().getBoundingClientRect();
+                let areaPosition = {
+                    x: pos.x + stageBox.left,
+                    y: pos.y + stageBox.top
+                };
+
+                textarea = document.createElement('textarea');
+                document.body.appendChild(textarea);
+
+                textarea.value = textNode.text();
+                textarea.style.position = 'absolute';
+                textarea.style.top = areaPosition.y + 'px';
+                textarea.style.left = areaPosition.x + 'px';
+                textarea.style.width = textNode.width();
+                textarea.focus();
+            } else {
+                textNode.text(textarea.value);
+                document.body.removeChild(textarea);
+                _drawLayer.add(textNode);
+                _drawLayer.draw();
+            }
+        });
+    }
+
+    sample() {
+        // let text_overlay = new Konva.Layer();
+        // stage.add(text_overlay);
+
+        let textNode = new Konva.Text({
+            text: 'Some text here',
+            x: 20,
+            y: 50,
+            fontSize: 20
+        });
+
+        _drawLayer.add(textNode);
+        _drawLayer.draw();
+
+        textNode.on('dblclick', () => {
+            // create textarea over canvas with absolute position
+
+            // first we need to find its position
+            let textPosition = textNode.getAbsolutePosition();
+            // let stageBox = stage.getContainer().getBoundingClientRect();
+            let stageBox = _stage.getContainer().getBoundingClientRect();
+            console.log(stageBox);
+
+            let areaPosition = {
+                x: textPosition.x + stageBox.left,
+                y: textPosition.y + stageBox.top
+            };
+
+            // create textarea and style it
+            let textarea = document.createElement('textarea');
+            document.body.appendChild(textarea);
+
+            textarea.value = textNode.text();
+            textarea.style.position = 'absolute';
+            textarea.style.top = areaPosition.y + 'px';
+            textarea.style.left = areaPosition.x + 'px';
+            textarea.style.width = textNode.width();
+            console.log(textNode.width(), typeof textNode.width());
+
+            textarea.focus();
+
+            textarea.addEventListener('keydown', function (e) {
+                // hide on enter
+                console.log(e.keyCode);
+                if (e.keyCode === 27) {
+                    textNode.text(textarea.value);
+                    _drawLayer.draw();
+                    document.body.removeChild(textarea);
+                }
+            });
+        });
+    }
+
+    getRelativePointerPosition(node) {
+        // the function will return pointer position relative to the passed node
+        let transform = node.getAbsoluteTransform().copy();
+        // to detect relative position we need to invert transform
+        transform.invert();
+
+        // get pointer (say mouse or touch) position
+        let pos = node.getStage().getPointerPosition();
+
+        // now we find relative point
+        return transform.point(pos);
+    }
+
+    textInput(x, y) {
+        let text = new Konva.Text({
+            x: x,
+            y: y,
+            text: '나눔스퀘어',
+            fontSize: 30,
+            fontFamily: '나눔고딕',
+            // fontFamily: '나눔스퀘어',
+            fill: this.getColor()
+        });
+        _drawLayer.add(text);
+        _drawLayer.batchDraw();
+    }
+
+    destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+        if (_stage) _stage.off('mousedown touchstart');
+        if (_stage) _stage.off('mousemove touchmove');
+        if (_stage) _stage.off('mouseup touchend contentTouchend');
+    }
+
+    /**
+     *
+     * @param color
+     */
+    setColor(color) {
+        _color = color;
+    }
+    getColor() {
+        return _color;
+    }
+
+    /**
+     *
+     * @param size
+     */
+    setSize(size) {
+        _size = size;
+    }
+    getSize() {
+        return _size;
+    }
+
+    /**
+     *
+     * @param opacity
+     */
+    setOpacity(opacity) {
+        _opacity = opacity;
+    }
+    getOpacity() {
+        return _opacity;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = TextInput;
 
 
 /***/ })
