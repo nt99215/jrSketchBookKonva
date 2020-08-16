@@ -8,6 +8,7 @@ import Zoom from "../module/Zoom";
 import Move from "../module/Move";
 import ClearCanvas from "../module/ClearCanvas";
 import ScreenTone from "../module/ScreenTone";
+import TextInput from "../module/TextInput";
 
 let _id, _stage, _mainLayer;
 
@@ -58,6 +59,7 @@ let _elementArr = [
     {el:crayonEl, obj:Crayon},
     {el:lineEl, obj:LineDraw},
     {el:screenToneEl, obj:ScreenTone},
+    {el:textEl, obj:TextInput},
     {el:eraserEl, obj:Eraser},
     {el:zoomEl, obj:Zoom},
     {el:clearEl, obj:ClearCanvas},
@@ -150,7 +152,7 @@ export default class SketchBookKonva {
     }
 
 
-    _toolSelect(id = '', obj =  ScreenTone) {
+    _toolSelect(id = '', obj =  TextInput) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 
