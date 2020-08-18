@@ -1208,7 +1208,7 @@ class Utility {
 
 
 
-let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing;
+let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing, _lineCap;
 let _lineArr = [];
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
@@ -1313,6 +1313,24 @@ class Eraser {
     getOpacity() {
         return _opacity;
     }
+
+    /**
+     *
+     * @param lineCap
+     */
+    setLineCap(str) {
+        _lineCap = str;
+    }
+    getLineCap() {
+        return _lineCap;
+    }
+
+    /**
+     *
+     * @param linType
+     */
+    setLineType(str) {}
+    getLineType(str) {}
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Eraser;
@@ -1667,14 +1685,15 @@ class TextInput {
         _stage.on('mousedown touchstart', evt => {
             isDrawing = !isDrawing;
             let pos = this.getRelativePointerPosition(_stage);
-            let ff = _fontFamily[1];
+            let ff = _fontFamily[0];
             if (isDrawing) {
                 _textNode = new Konva.Text({
                     // text: _defaultText,
                     x: pos.x,
                     y: pos.y,
                     fontSize: this.getSize(),
-                    fontFamily: ff
+                    fontFamily: ff,
+                    fill: this.getColor()
                 });
 
                 _drawLayer.add(_textNode);

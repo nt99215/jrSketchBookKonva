@@ -45,7 +45,7 @@ export default class TextInput {
         _stage.on('mousedown touchstart', (evt) => {
             isDrawing = !isDrawing;
             let pos = this.getRelativePointerPosition(_stage);
-            let ff = _fontFamily[1];
+            let ff = _fontFamily[0];
             if(isDrawing)
             {
                 _textNode = new Konva.Text({
@@ -53,7 +53,8 @@ export default class TextInput {
                     x: pos.x,
                     y: pos.y,
                     fontSize: this.getSize(),
-                    fontFamily: ff
+                    fontFamily: ff,
+                    fill: this.getColor()
                 });
 
                 _drawLayer.add(_textNode);

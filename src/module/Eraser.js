@@ -1,7 +1,7 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing;
+let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing, _lineCap;
 let _lineArr = [];
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
@@ -96,5 +96,20 @@ export default class Eraser {
      */
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
+
+    /**
+     *
+     * @param lineCap
+     */
+    setLineCap(str) { _lineCap = str;}
+    getLineCap() { return _lineCap;}
+
+
+    /**
+     *
+     * @param linType
+     */
+    setLineType(str) {}
+    getLineType(str) {}
 
 }
