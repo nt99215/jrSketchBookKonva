@@ -1,7 +1,7 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _drawLayer, _this, textarea, textNode;
+let _stage, _drawLayer, _this, _textarea, _textNode;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
@@ -48,7 +48,7 @@ export default class TextInput {
             let ff = _fontFamily[1];
             if(isDrawing)
             {
-                textNode = new Konva.Text({
+                _textNode = new Konva.Text({
                     text: _defaultText,
                     x: pos.x,
                     y: pos.y,
@@ -57,7 +57,7 @@ export default class TextInput {
                     fontFamily: ff
                 });
 
-                _drawLayer.add(textNode);
+                _drawLayer.add(_textNode);
 
                 let stageBox = _stage.getContainer().getBoundingClientRect();
                 let areaPosition = {
@@ -65,25 +65,25 @@ export default class TextInput {
                     y: pos.y + stageBox.top
                 };
 
-                textarea = document.createElement('textarea');
-                document.body.appendChild(textarea);
+                _textarea = document.createElement('textarea');
+                document.body.appendChild(_textarea);
 
-                textarea.value = textNode.text();
-                textarea.style.position = 'absolute';
-                textarea.style.top = areaPosition.y + 'px';
-                textarea.style.left = areaPosition.x + 'px';
-                textarea.style.width = textNode.width() + 'px';
-                textarea.style.height = textNode.height() + 'px';
-                textarea.focus();
-                textarea.addEventListener('input', this.updateValue);
-                // textarea.style.display = 'none'
+                _textarea.value = _textNode.text();
+                _textarea.style.position = 'absolute';
+                _textarea.style.top = areaPosition.y + 'px';
+                _textarea.style.left = areaPosition.x + 'px';
+                _textarea.style.width = _textNode.width() + 'px';
+                _textarea.style.height = _textNode.height() + 'px';
+                _textarea.focus();
+                _textarea.addEventListener('input', this.updateValue);
+                // _textarea.style.display = 'none'
 
             }
             else
             {
-                // textNode.text(textarea.value);
-                document.body.removeChild(textarea);
-                // _drawLayer.add(textNode);
+                // _textNode.text(_textarea.value);
+                document.body.removeChild(_textarea);
+                // _drawLayer.add(_textNode);
                 // _drawLayer.draw();
             }
 
@@ -94,30 +94,23 @@ export default class TextInput {
 
     updateValue() {
 
-        // textNode.text(textarea.value);
-        // textarea.style.position = 'absolute';
-        // textarea.style.top = areaPosition.y + 'px';
-        // textarea.style.left = areaPosition.x + 'px';
-        // textarea.style.width = textNode.width() + 'px';
-        // textarea.style.height = textNode.height() + 'px';
+        // _textNode.text(_textarea.value);
+        // _textarea.style.position = 'absolute';
+        // _textarea.style.top = areaPosition.y + 'px';
+        // _textarea.style.left = areaPosition.x + 'px';
+        // _textarea.style.width = _textNode.width() + 'px';
+        // _textarea.style.height = _textNode.height() + 'px';
 
+        console.log(_textarea.value);
 
-        console.log(textarea.value);
-
-        textNode.text(textarea.value);
+        _textNode.text(_textarea.value);
         _drawLayer.draw();
     }
 
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         transform.invert();
-
-        // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
         return transform.point(pos);
     }
 
@@ -138,6 +131,7 @@ export default class TextInput {
 
     destroy () {
         LayerManager.prototype.init(_drawLayer);
+        if(_textarea) document.body.removeChild(_textarea);
         if(_stage)_stage.off('mousedown touchstart');
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
