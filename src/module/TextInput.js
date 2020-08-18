@@ -1,10 +1,12 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _drawLayer, _this, _text;
+let _stage, _drawLayer, _this, textarea, textNode;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+// const _defaultText = '글을 입력하세요';
+const _defaultText = '글을';
 const _fontFamily = [
     'Nanum Brush Script',
     'Nanum Pen Script',
@@ -39,8 +41,6 @@ export default class TextInput {
     useTool () {
 
         let isDrawing = false;
-        let textNode;
-        let textarea;
 
         _stage.on('mousedown touchstart', (evt) => {
             isDrawing = !isDrawing;
@@ -49,12 +49,15 @@ export default class TextInput {
             if(isDrawing)
             {
                 textNode = new Konva.Text({
-                    text: '글을 입력하세요',
+                    text: _defaultText,
                     x: pos.x,
                     y: pos.y,
-                    fontFamily: ff,
-                    fontSize: this.getSize()
+                    // fontSize: this.getSize(),
+                    fontSize: 100,
+                    fontFamily: ff
                 });
+
+                _drawLayer.add(textNode);
 
                 let stageBox = _stage.getContainer().getBoundingClientRect();
                 let areaPosition = {
@@ -69,16 +72,19 @@ export default class TextInput {
                 textarea.style.position = 'absolute';
                 textarea.style.top = areaPosition.y + 'px';
                 textarea.style.left = areaPosition.x + 'px';
-                textarea.style.width = textNode.width();
+                textarea.style.width = textNode.width() + 'px';
+                textarea.style.height = textNode.height() + 'px';
                 textarea.focus();
+                textarea.addEventListener('input', this.updateValue);
+                // textarea.style.display = 'none'
 
             }
             else
             {
-                textNode.text(textarea.value);
+                // textNode.text(textarea.value);
                 document.body.removeChild(textarea);
-                _drawLayer.add(textNode);
-                _drawLayer.draw();
+                // _drawLayer.add(textNode);
+                // _drawLayer.draw();
             }
 
 
@@ -86,58 +92,20 @@ export default class TextInput {
 
     }
 
-    sample() {
-        // let text_overlay = new Konva.Layer();
-        // stage.add(text_overlay);
+    updateValue() {
 
-        let textNode = new Konva.Text({
-            text: 'Some text here',
-            x: 20,
-            y: 50,
-            fontSize: 20
-        });
+        // textNode.text(textarea.value);
+        // textarea.style.position = 'absolute';
+        // textarea.style.top = areaPosition.y + 'px';
+        // textarea.style.left = areaPosition.x + 'px';
+        // textarea.style.width = textNode.width() + 'px';
+        // textarea.style.height = textNode.height() + 'px';
 
-        _drawLayer.add(textNode);
+
+        console.log(textarea.value);
+
+        textNode.text(textarea.value);
         _drawLayer.draw();
-
-        textNode.on('dblclick', () => {
-            // create textarea over canvas with absolute position
-
-            // first we need to find its position
-            let textPosition = textNode.getAbsolutePosition();
-            // let stageBox = stage.getContainer().getBoundingClientRect();
-            let stageBox = _stage.getContainer().getBoundingClientRect();
-            console.log(stageBox);
-
-            let areaPosition = {
-                x: textPosition.x + stageBox.left,
-                y: textPosition.y + stageBox.top
-            };
-
-            // create textarea and style it
-            let textarea = document.createElement('textarea');
-            document.body.appendChild(textarea);
-
-            textarea.value = textNode.text();
-            textarea.style.position = 'absolute';
-            textarea.style.top = areaPosition.y + 'px';
-            textarea.style.left = areaPosition.x + 'px';
-            textarea.style.width = textNode.width();
-            console.log(textNode.width(), typeof textNode.width())
-
-            textarea.focus();
-
-            textarea.addEventListener('keydown', function (e) {
-                // hide on enter
-                console.log(e.keyCode)
-                if (e.keyCode === 27) {
-                    textNode.text(textarea.value);
-                    _drawLayer.draw();
-                    document.body.removeChild(textarea);
-                }
-            });
-        })
-
     }
 
     getRelativePointerPosition(node) {
