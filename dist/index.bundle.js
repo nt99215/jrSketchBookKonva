@@ -1643,8 +1643,8 @@ let _stage, _drawLayer, _this, _textarea, _textNode;
 let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
 let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
 let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
-// const _defaultText = '글을 입력하세요';
-const _defaultText = '글을';
+const _defaultText = '글을 입력하세요';
+// const _defaultText = '글을';
 const _fontFamily = ['Nanum Brush Script', 'Nanum Pen Script', 'NanumBarunGothic', 'NanumBarunGothic YetHangul', 'NanumBarunpen', 'NanumGothic', 'NanumGothic Eco', 'NanumGothicCoding', 'NanumMyeongjo', 'NanumMyeongjo Eco', 'NanumMyeongjo YetHangul', 'NanumSquare', 'NanumSquare_ac', 'NanumSquareRound'];
 
 class TextInput {
@@ -1673,8 +1673,7 @@ class TextInput {
                     text: _defaultText,
                     x: pos.x,
                     y: pos.y,
-                    // fontSize: this.getSize(),
-                    fontSize: 100,
+                    fontSize: 30,
                     fontFamily: ff
                 });
 
@@ -1716,7 +1715,7 @@ class TextInput {
         // _textarea.style.width = _textNode.width() + 'px';
         // _textarea.style.height = _textNode.height() + 'px';
 
-        console.log(_textarea.value);
+        // console.log(_textarea.value);
 
         _textNode.text(_textarea.value);
         _drawLayer.draw();
