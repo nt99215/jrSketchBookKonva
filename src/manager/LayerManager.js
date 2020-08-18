@@ -1,7 +1,7 @@
 import GameConfig from "../data/GameConfig";
 
 export default class LayerManager {
-    /**/init(currentLayer) {
+        init(currentLayer) {
         let _currentLayer = currentLayer;
         let img = new Konva.Image({
                 image:_currentLayer.canvas._canvas,

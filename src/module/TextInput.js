@@ -49,10 +49,10 @@ export default class TextInput {
             if(isDrawing)
             {
                 _textNode = new Konva.Text({
-                    text: _defaultText,
+                    // text: _defaultText,
                     x: pos.x,
                     y: pos.y,
-                    fontSize: 30,
+                    fontSize: this.getSize(),
                     fontFamily: ff
                 });
 
@@ -71,11 +71,11 @@ export default class TextInput {
                 _textarea.style.position = 'absolute';
                 _textarea.style.top = areaPosition.y + 'px';
                 _textarea.style.left = areaPosition.x + 'px';
-                _textarea.style.width = _textNode.width() + 'px';
+                // _textarea.style.width = _textNode.width() + 'px';
+                _textarea.style.width = '30px';
                 _textarea.style.height = _textNode.height() + 'px';
                 _textarea.focus();
                 _textarea.addEventListener('input', this.updateValue);
-                // _textarea.style.display = 'none'
 
             }
             else
@@ -97,13 +97,16 @@ export default class TextInput {
         // _textarea.style.position = 'absolute';
         // _textarea.style.top = areaPosition.y + 'px';
         // _textarea.style.left = areaPosition.x + 'px';
-        // _textarea.style.width = _textNode.width() + 'px';
-        // _textarea.style.height = _textNode.height() + 'px';
+        _textarea.style.width = _textNode.width() + 'px';
+        _textarea.style.height = _textNode.height() + 'px';
 
         // console.log(_textarea.value);
 
-        _textNode.text(_textarea.value);
-        _drawLayer.draw();
+        if(_textarea.value)
+        {
+            _textNode.text(_textarea.value);
+            _drawLayer.draw();
+        }
     }
 
     getRelativePointerPosition(node) {

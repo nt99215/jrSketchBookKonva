@@ -192,22 +192,22 @@ class GameConfig {
 
 
 class LayerManager {
-    /**/init(currentLayer) {
-        let _currentLayer = currentLayer;
-        let img = new Konva.Image({
-            image: _currentLayer.canvas._canvas,
-            width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
-            height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
-        });
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
-        // _currentLayer.destroy();
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
-        // _currentLayer.clear();
-        _currentLayer.remove();
-        _currentLayer = null;
-        // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
-    }
+        init(currentLayer) {
+                let _currentLayer = currentLayer;
+                let img = new Konva.Image({
+                        image: _currentLayer.canvas._canvas,
+                        width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
+                        height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
+                });
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
+                // _currentLayer.destroy();
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
+                // _currentLayer.clear();
+                _currentLayer.remove();
+                _currentLayer = null;
+                // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
+        }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LayerManager;
 
@@ -1670,10 +1670,10 @@ class TextInput {
             let ff = _fontFamily[1];
             if (isDrawing) {
                 _textNode = new Konva.Text({
-                    text: _defaultText,
+                    // text: _defaultText,
                     x: pos.x,
                     y: pos.y,
-                    fontSize: 30,
+                    fontSize: this.getSize(),
                     fontFamily: ff
                 });
 
@@ -1692,11 +1692,11 @@ class TextInput {
                 _textarea.style.position = 'absolute';
                 _textarea.style.top = areaPosition.y + 'px';
                 _textarea.style.left = areaPosition.x + 'px';
-                _textarea.style.width = _textNode.width() + 'px';
+                // _textarea.style.width = _textNode.width() + 'px';
+                _textarea.style.width = '30px';
                 _textarea.style.height = _textNode.height() + 'px';
                 _textarea.focus();
                 _textarea.addEventListener('input', this.updateValue);
-                // _textarea.style.display = 'none'
             } else {
                 // _textNode.text(_textarea.value);
                 document.body.removeChild(_textarea);
@@ -1712,13 +1712,15 @@ class TextInput {
         // _textarea.style.position = 'absolute';
         // _textarea.style.top = areaPosition.y + 'px';
         // _textarea.style.left = areaPosition.x + 'px';
-        // _textarea.style.width = _textNode.width() + 'px';
-        // _textarea.style.height = _textNode.height() + 'px';
+        _textarea.style.width = _textNode.width() + 'px';
+        _textarea.style.height = _textNode.height() + 'px';
 
         // console.log(_textarea.value);
 
-        _textNode.text(_textarea.value);
-        _drawLayer.draw();
+        if (_textarea.value) {
+            _textNode.text(_textarea.value);
+            _drawLayer.draw();
+        }
     }
 
     getRelativePointerPosition(node) {
