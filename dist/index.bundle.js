@@ -401,13 +401,15 @@ class SketchBookKonva {
         // toolsOption.style.display = 'none';
         // brushTypeEl.style.display = '';
 
+        if (id === 'clear') {
+            this._layerClear();
+            return;
+        }
         this._toolsDestroy();
 
-        // if(id === 'zoom' || id === 'clear' || id === 'move')
-        if (id === 'zoom' || id === 'move' || id === 'clear') {
+        if (id === 'zoom' || id === 'move') {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
             obj.prototype.init(_stage);
-            if (id === 'clear') this._layerClear();
             return;
         }
 

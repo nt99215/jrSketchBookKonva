@@ -157,14 +157,17 @@ export default class SketchBookKonva {
         // toolsOption.style.display = 'none';
         // brushTypeEl.style.display = '';
 
+        if(id === 'clear')
+        {
+            this._layerClear();
+            return;
+        }
         this._toolsDestroy();
 
-        // if(id === 'zoom' || id === 'clear' || id === 'move')
-        if(id === 'zoom' || id === 'move' || id === 'clear')
+        if(id === 'zoom' || id === 'move')
         {
             GameConfig.IS_DRAWING_MODE = false;
             obj.prototype.init(_stage);
-            if(id === 'clear') this._layerClear();
             return;
         }
 
