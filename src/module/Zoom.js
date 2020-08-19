@@ -5,9 +5,9 @@ const _minimumViewPort = 50;
 const _maximumViewPort = 200;
 let _currentViewPort = 100;
 let _stage, _drawLayer, _this;
-// const _zoomScale = [50,60,70,80,90,100,110,125,150,175,200];
 const _zoomScale = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
 let _zoomScope = 1;
+
 export default class Zoom {
 
     init(stage, drawLayer) {
@@ -15,8 +15,6 @@ export default class Zoom {
         _stage = stage;
         _drawLayer = drawLayer;
         _this = this;
-        // _stage.add(_drawLayer);
-
         this.sizeSetMouse();
     }
 
@@ -59,9 +57,9 @@ export default class Zoom {
      * @param size
      */
     setSize(point) {
-        console.log(point)
-        // if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
-        // _currentViewPort = point;
+      /*  console.log(point)
+        if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
+        _currentViewPort = point;*/
         _currentViewPort = point/100;
         this.sizeSetButton(this.getSize());
     }
