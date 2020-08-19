@@ -24,8 +24,42 @@ export default class Brush {
         _this = this;
         _shapeEnable = false;
 
-
         this.useTool();
+        // this.convertJson();
+    }
+
+
+    convertJson(){
+       /* var width = window.innerWidth;
+        var height = window.innerHeight;
+
+        var stage = new Konva.Stage({
+            container: 'container',
+            width: width,
+            height: height,
+        });
+        var layer = new Konva.Layer();
+
+        var hexagon = new Konva.RegularPolygon({
+            x: width / 2,
+            y: height / 2,
+            sides: 6,
+            radius: 70,
+            fill: 'red',
+            stroke: 'black',
+            strokeWidth: 4,
+        });
+
+        // add the shape to the layer
+        layer.add(hexagon);
+
+        // add the layer to the stage
+        stage.add(layer);*/
+
+        // save stage as a json string
+        var json = _stage.toJSON();
+
+        console.log(json);
 
     }
 
@@ -95,12 +129,23 @@ export default class Brush {
         _stage.on('mouseup touchend contentTouchend', (evt) => {
             // End drawing
             isDrawing = false;
+
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
 
         });
+    }
+
+    downloadURI(uri, name) {
+        let link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // delete link;
     }
 
     getRelativePointerPosition(node) {

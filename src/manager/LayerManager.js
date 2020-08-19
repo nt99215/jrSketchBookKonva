@@ -23,5 +23,10 @@ export default class LayerManager {
          const url = _stage.toDataURL({ pixelRatio: scale });
          document.getElementById('preview').src = url;*/
 
+        // let dataUrl = _drawLayer.toDataURL();
+        // this.downloadURI(dataUrl, 'stage.png');
+        // let json = _stage.toJSON();
+        // console.log(json);
+
     }
 }

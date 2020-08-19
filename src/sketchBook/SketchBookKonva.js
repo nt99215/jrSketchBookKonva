@@ -13,7 +13,7 @@ import TextInput from "../module/TextInput";
 let _id, _stage, _mainLayer;
 
 let $ = function(id){return document.getElementById(id)};
-let toolsEl = $('tools'),
+let toolsOption = $('toolsOption'),
     brushEl = $('brush'),
     airBrushEl = $('airBrush'),
     crayonEl = $('crayon'),
@@ -62,8 +62,8 @@ let _elementArr = [
     {el:textEl, obj:TextInput},
     {el:eraserEl, obj:Eraser},
     {el:zoomEl, obj:Zoom},
-    {el:clearEl, obj:ClearCanvas},
     {el:moveEl, obj:Move},
+    {el:clearEl, obj:ClearCanvas},
 ]
 
 export default class SketchBookKonva {
@@ -105,7 +105,8 @@ export default class SketchBookKonva {
         }
 
         zoomSlider.onchange = function() {
-            if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setSize(this.value);
+            if(GameConfig.CURRENT_TOOL.constructor.name === 'Zoom')
+                GameConfig.CURRENT_TOOL.setSize(this.value);
         }
 
 
@@ -153,20 +154,23 @@ export default class SketchBookKonva {
 
 
     _toolSelect(id = '', obj =  Brush) {
-        // toolsEl.style.display = 'none';
+        // toolsOption.style.display = 'none';
         // brushTypeEl.style.display = '';
 
-        if(id === 'zoom' || id === 'clear' || id === 'move')
+        this._toolsDestroy();
+
+        // if(id === 'zoom' || id === 'clear' || id === 'move')
+        if(id === 'zoom' || id === 'move' || id === 'clear')
         {
             GameConfig.IS_DRAWING_MODE = false;
+            obj.prototype.init(_stage);
             if(id === 'clear') this._layerClear();
             return;
         }
 
 
         GameConfig.IS_DRAWING_MODE = true;
-        // GameConfig.IS_LINE_DRAWING = true;
-        this._toolsDestroy();
+        // this._toolsDestroy();
 
         if(id === 'eraser') {
             GameConfig.IS_DRAWING_MODE = false;

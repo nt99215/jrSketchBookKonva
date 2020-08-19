@@ -192,29 +192,34 @@ class GameConfig {
 
 
 class LayerManager {
-    init(currentLayer) {
-        let _currentLayer = currentLayer;
-        let img = new Konva.Image({
-            image: _currentLayer.canvas._canvas,
-            width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
-            height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
-        });
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
-        // _currentLayer.destroy();
-        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
-        // _currentLayer.clear();
-        _currentLayer.remove();
-        _currentLayer = null;
-        // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
-    }
+        init(currentLayer) {
+                let _currentLayer = currentLayer;
+                let img = new Konva.Image({
+                        image: _currentLayer.canvas._canvas,
+                        width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
+                        height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
+                });
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
+                // _currentLayer.destroy();
+                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
+                // _currentLayer.clear();
+                _currentLayer.remove();
+                _currentLayer = null;
+                // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
+        }
 
-    stageUpdate() {
-        /* const scale = 1 / 4;
-         const url = _stage.toDataURL({ pixelRatio: scale });
-         document.getElementById('preview').src = url;*/
+        stageUpdate() {
+                /* const scale = 1 / 4;
+                 const url = _stage.toDataURL({ pixelRatio: scale });
+                 document.getElementById('preview').src = url;*/
 
-    }
+                // let dataUrl = _drawLayer.toDataURL();
+                // this.downloadURI(dataUrl, 'stage.png');
+                // let json = _stage.toJSON();
+                // console.log(json);
+
+        }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LayerManager;
 
@@ -262,7 +267,7 @@ let _id, _stage, _mainLayer;
 let $ = function (id) {
     return document.getElementById(id);
 };
-let toolsEl = $('tools'),
+let toolsOption = $('toolsOption'),
     brushEl = $('brush'),
     airBrushEl = $('airBrush'),
     crayonEl = $('crayon'),
@@ -309,7 +314,7 @@ crayonTypeEl = $('crayonType'),
 //SCREEN_TONE TYPE
 screenToneTypeEl = $('screenToneType');
 
-let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: textEl, obj: __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }];
+let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: textEl, obj: __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }];
 
 class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -349,7 +354,7 @@ class SketchBookKonva {
         };
 
         zoomSlider.onchange = function () {
-            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL) __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
+            if (__WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.constructor.name === 'Zoom') __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].CURRENT_TOOL.setSize(this.value);
         };
 
         /**TOOLS SELECT
@@ -393,18 +398,21 @@ class SketchBookKonva {
     }
 
     _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */]) {
-        // toolsEl.style.display = 'none';
+        // toolsOption.style.display = 'none';
         // brushTypeEl.style.display = '';
 
-        if (id === 'zoom' || id === 'clear' || id === 'move') {
+        this._toolsDestroy();
+
+        // if(id === 'zoom' || id === 'clear' || id === 'move')
+        if (id === 'zoom' || id === 'move' || id === 'clear') {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
+            obj.prototype.init(_stage);
             if (id === 'clear') this._layerClear();
             return;
         }
 
         __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = true;
-        // GameConfig.IS_LINE_DRAWING = true;
-        this._toolsDestroy();
+        // this._toolsDestroy();
 
         if (id === 'eraser') {
             __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
@@ -634,6 +642,36 @@ class Brush {
         _shapeEnable = false;
 
         this.useTool();
+        // this.convertJson();
+    }
+
+    convertJson() {
+        /* var width = window.innerWidth;
+         var height = window.innerHeight;
+           var stage = new Konva.Stage({
+             container: 'container',
+             width: width,
+             height: height,
+         });
+         var layer = new Konva.Layer();
+           var hexagon = new Konva.RegularPolygon({
+             x: width / 2,
+             y: height / 2,
+             sides: 6,
+             radius: 70,
+             fill: 'red',
+             stroke: 'black',
+             strokeWidth: 4,
+         });
+           // add the shape to the layer
+         layer.add(hexagon);
+           // add the layer to the stage
+         stage.add(layer);*/
+
+        // save stage as a json string
+        var json = _stage.toJSON();
+
+        console.log(json);
     }
 
     useTool() {
@@ -693,11 +731,22 @@ class Brush {
         _stage.on('mouseup touchend contentTouchend', evt => {
             // End drawing
             isDrawing = false;
+
             __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         });
+    }
+
+    downloadURI(uri, name) {
+        let link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // delete link;
     }
 
     getRelativePointerPosition(node) {
@@ -1355,7 +1404,10 @@ const _defaultViewPort = 1;
 const _minimumViewPort = 50;
 const _maximumViewPort = 200;
 let _currentViewPort = 100;
-let _canvas, _stage, _drawLayer, _this;
+let _stage, _drawLayer, _this;
+// const _zoomScale = [50,60,70,80,90,100,110,125,150,175,200];
+const _zoomScale = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
+let _zoomScope = 1;
 class Zoom {
 
     init(stage, drawLayer) {
@@ -1364,61 +1416,52 @@ class Zoom {
         _drawLayer = drawLayer;
         _this = this;
         // _stage.add(_drawLayer);
+
+        this.sizeSetMouse();
     }
 
-    sizeChange(num) {
-
-        // _canvas.zoomToPoint({ x: _canvas.width/2, y: _canvas.height/2 }, this.getSize() * 0.01);
-
-        // let scaleBy = 1.01;
-        /* let scaleBy = num;
-         let oldScale = _stage.scaleX();
-           // let pointer = _stage.getPointerPosition();
-           let mousePointTo = {
-             x: (pointer.x - _stage.x()) / oldScale,
-             y: (pointer.y - _stage.y()) / oldScale,
-         };
-           let newScale =
-             e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-           _stage.scale({ x: newScale, y: newScale });
-           let newPos = {
-             x: pointer.x - mousePointTo.x * newScale,
-             y: pointer.y - mousePointTo.y * newScale,
-         };
-         */
-
+    sizeSetButton() {
         // _stage.scale({ x: num/100, y: num/100 });
         _stage.scale({ x: this.getSize(), y: this.getSize() });
-
-        // _stage.position(newPos);
         _stage.batchDraw();
     }
 
-    sizeSetMouseWheel() {
-        /*canvas.on('mouse:wheel', function(opt) {
-         let delta = opt.e.deltaY;
-         let zoom = canvas.getZoom();
-         zoom *= 0.999 ** delta;
-         if (zoom > 20) zoom = 20;
-         if (zoom < 0.01) zoom = 0.01;
-         canvas.setZoom(zoom);
-         opt.e.preventDefault();
-         opt.e.stopPropagation();
-        })*/
-        // _canvas.setZoom(this.getSize() * 0.01);
+    sizeSetMouse() {
+        _stage.on('mousedown touchstart', evt => {
+            evt.evt.preventDefault();
+            let oldScale = _zoomScale.indexOf(_stage.scaleX());
+            if (oldScale === _zoomScale.length - 1 || oldScale === 0) _zoomScope = -_zoomScope;
+            let newScale = _zoomScale[oldScale + _zoomScope];
+            _stage.scale({ x: newScale, y: newScale });
+
+            /*  let mousePointTo = {
+                  x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
+                  y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
+              };
+              let newPos = {
+                  x: -(mousePointTo.x - _stage.getPointerPosition().x / newScale) * newScale,
+                  y: -(mousePointTo.y - _stage.getPointerPosition().y / newScale) * newScale
+              };
+              console.log(mousePointTo, newPos, newScale)
+              _stage.position(newPos);*/
+            _stage.batchDraw();
+        });
     }
 
-    destroy() {}
+    destroy() {
+        if (_stage) _stage.off('mousedown touchstart');
+    }
 
     /**
      *
      * @param size
      */
     setSize(point) {
-        // console.log(point)
+        console.log(point);
         // if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
         // _currentViewPort = point;
         _currentViewPort = point / 100;
+        this.sizeSetButton(this.getSize());
     }
     getSize() {
         return _currentViewPort;
@@ -1436,38 +1479,18 @@ class Zoom {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 
 
-let _canvas, _stage;
+let _stage;
 class Move {
-    move(stage) {
+
+    init(stage) {
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].IS_DRAWING_MODE = false;
         _stage = stage;
         _stage.draggable(true);
-
-        let scaleBy = 1.3;
-        _stage.on('wheel', evt => {
-            evt.evt.preventDefault();
-            let oldScale = _stage.scaleX();
-
-            let mousePointTo = {
-                x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
-                y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
-            };
-
-            let newScale = evt.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-            _stage.scale({ x: newScale, y: newScale });
-
-            let newPos = {
-                x: -(mousePointTo.x - _stage.getPointerPosition().x / newScale) * newScale,
-                y: -(mousePointTo.y - _stage.getPointerPosition().y / newScale) * newScale
-            };
-            _stage.position(newPos);
-            _stage.batchDraw();
-        });
     }
 
     destroy() {
         if (_stage) _stage.draggable(false);
-        if (_stage) _stage.off('wheel');
     }
 
 }

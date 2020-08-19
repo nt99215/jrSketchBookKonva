@@ -4,7 +4,10 @@ const _defaultViewPort = 1;
 const _minimumViewPort = 50;
 const _maximumViewPort = 200;
 let _currentViewPort = 100;
-let _canvas, _stage, _drawLayer, _this;
+let _stage, _drawLayer, _this;
+// const _zoomScale = [50,60,70,80,90,100,110,125,150,175,200];
+const _zoomScale = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
+let _zoomScope = 1;
 export default class Zoom {
 
     init(stage, drawLayer) {
@@ -13,57 +16,41 @@ export default class Zoom {
         _drawLayer = drawLayer;
         _this = this;
         // _stage.add(_drawLayer);
+
+        this.sizeSetMouse();
     }
 
 
-    sizeChange(num) {
-
-        // _canvas.zoomToPoint({ x: _canvas.width/2, y: _canvas.height/2 }, this.getSize() * 0.01);
-
-        // let scaleBy = 1.01;
-       /* let scaleBy = num;
-        let oldScale = _stage.scaleX();
-
-        // let pointer = _stage.getPointerPosition();
-
-        let mousePointTo = {
-            x: (pointer.x - _stage.x()) / oldScale,
-            y: (pointer.y - _stage.y()) / oldScale,
-        };
-
-        let newScale =
-            e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
-        _stage.scale({ x: newScale, y: newScale });
-
-        let newPos = {
-            x: pointer.x - mousePointTo.x * newScale,
-            y: pointer.y - mousePointTo.y * newScale,
-        };
-        */
-
+    sizeSetButton() {
         // _stage.scale({ x: num/100, y: num/100 });
         _stage.scale({ x: this.getSize(), y: this.getSize() });
-
-        // _stage.position(newPos);
         _stage.batchDraw();
     }
 
-    sizeSetMouseWheel() {
-        /*canvas.on('mouse:wheel', function(opt) {
-         let delta = opt.e.deltaY;
-         let zoom = canvas.getZoom();
-         zoom *= 0.999 ** delta;
-         if (zoom > 20) zoom = 20;
-         if (zoom < 0.01) zoom = 0.01;
-         canvas.setZoom(zoom);
-         opt.e.preventDefault();
-         opt.e.stopPropagation();
-     })*/
-        // _canvas.setZoom(this.getSize() * 0.01);
+    sizeSetMouse() {
+        _stage.on('mousedown touchstart', (evt) => {
+            evt.evt.preventDefault();
+            let oldScale = _zoomScale.indexOf(_stage.scaleX());
+            if(oldScale === _zoomScale.length - 1 || oldScale === 0) _zoomScope = -_zoomScope;
+            let newScale = _zoomScale[oldScale + _zoomScope];
+            _stage.scale({x: newScale, y: newScale});
+
+          /*  let mousePointTo = {
+                x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
+                y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
+            };
+            let newPos = {
+                x: -(mousePointTo.x - _stage.getPointerPosition().x / newScale) * newScale,
+                y: -(mousePointTo.y - _stage.getPointerPosition().y / newScale) * newScale
+            };
+            console.log(mousePointTo, newPos, newScale)
+            _stage.position(newPos);*/
+            _stage.batchDraw();
+        });
     }
 
     destroy() {
+        if(_stage) _stage.off('mousedown touchstart');
 
     }
 
@@ -72,10 +59,11 @@ export default class Zoom {
      * @param size
      */
     setSize(point) {
-        // console.log(point)
+        console.log(point)
         // if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
         // _currentViewPort = point;
         _currentViewPort = point/100;
+        this.sizeSetButton(this.getSize());
     }
     getSize() { return _currentViewPort;}
 
