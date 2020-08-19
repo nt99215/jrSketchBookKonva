@@ -17,4 +17,11 @@ export default class LayerManager {
         _currentLayer = null;
         // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
     }
+
+    stageUpdate() {
+        /* const scale = 1 / 4;
+         const url = _stage.toDataURL({ pixelRatio: scale });
+         document.getElementById('preview').src = url;*/
+
+    }
 }

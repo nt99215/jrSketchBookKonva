@@ -152,7 +152,7 @@ export default class SketchBookKonva {
     }
 
 
-    _toolSelect(id = '', obj =  TextInput) {
+    _toolSelect(id = '', obj =  Brush) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 

@@ -192,22 +192,29 @@ class GameConfig {
 
 
 class LayerManager {
-        init(currentLayer) {
-                let _currentLayer = currentLayer;
-                let img = new Konva.Image({
-                        image: _currentLayer.canvas._canvas,
-                        width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
-                        height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
-                });
-                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
-                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
-                // _currentLayer.destroy();
-                __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
-                // _currentLayer.clear();
-                _currentLayer.remove();
-                _currentLayer = null;
-                // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
-        }
+    init(currentLayer) {
+        let _currentLayer = currentLayer;
+        let img = new Konva.Image({
+            image: _currentLayer.canvas._canvas,
+            width: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width,
+            height: __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height
+        });
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.add(img);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER.draw();
+        // _currentLayer.destroy();
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_STAGE.remove(_currentLayer);
+        // _currentLayer.clear();
+        _currentLayer.remove();
+        _currentLayer = null;
+        // console.log("GameConfig.MAIN_LAYER", GameConfig.MAIN_LAYER);
+    }
+
+    stageUpdate() {
+        /* const scale = 1 / 4;
+         const url = _stage.toDataURL({ pixelRatio: scale });
+         document.getElementById('preview').src = url;*/
+
+    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = LayerManager;
 
@@ -385,7 +392,7 @@ class SketchBookKonva {
         this._toolSelect();
     }
 
-    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */]) {
+    _toolSelect(id = '', obj = __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */]) {
         // toolsEl.style.display = 'none';
         // brushTypeEl.style.display = '';
 

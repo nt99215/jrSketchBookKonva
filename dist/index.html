@@ -40,12 +40,20 @@
         .controls {
             display: inline-block;
         }
+        #preview {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border: 1px solid grey;
+            background-color: lightgrey;
+        }
 
 
     </style>
 </head>
 <body scroll="no">
 <div id="container"></div>
+<img id="preview" />
 <div class="controls" >
         <button id="brush" >brush</button>
         <button id="airBrush" >airBrush</button>
