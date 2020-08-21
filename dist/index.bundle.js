@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -86,7 +86,7 @@ const _defaultOpacity = 100;
 let _mainStage = null;
 let _mainDrawLayer = null;
 let _currentLayer = null;
-let _stageSize = { width: 800, height: 450 };
+let _stageSize = { width: 810, height: 700 };
 
 class GameConfig {
 
@@ -193,6 +193,7 @@ class GameConfig {
 
 class LayerManager {
         init(currentLayer) {
+                if (currentLayer === __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER) return;
                 let _currentLayer = currentLayer;
                 let img = new Konva.Image({
                         image: _currentLayer.canvas._canvas,
@@ -229,27 +230,80 @@ class LayerManager {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__ = __webpack_require__(3);
+class Utility {
 
-let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* default */]('container');
+    static newCtx(width, height) {
+        let canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        return canvas.getContext("2d");
+    }
+
+    static hexToRgb(hexType) {
+        let hex = hexType.replace("#", "");
+        let value = hex.match(/[a-f\d]/gi);
+
+        // 헥사값이 세자리일 경우, 여섯자리로.
+        if (value.length == 3) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2];
+
+        value = hex.match(/[a-f\d]{2}/gi);
+        let r = parseInt(value[0], 16);
+        let g = parseInt(value[1], 16);
+        let b = parseInt(value[2], 16);
+
+        return {
+            r, g, b, a: 255
+        };
+    }
+
+    _rgbToHex(r, g, b) {
+
+        let rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+            const hex = x.toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }).join('');
+
+        // console.log(rgbToHex)
+    }
+
+    _hexToRgb(hex) {
+        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
+
+        console.log(hex);
+    }
+
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = Utility;
+
 
 /***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__module_Brush__ = __webpack_require__(5);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__ = __webpack_require__(4);
+
+let s = new __WEBPACK_IMPORTED_MODULE_0__sketchBook_SketchBookKonva__["a" /* default */]('container');
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__module_Brush__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__data_GameConfig__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__module_Crayon__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__module_Crayon__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__module_Eraser__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__module_Zoom__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__module_Move__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__module_TextInput__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__module_FloodFill__ = __webpack_require__(15);
+
 
 
 
@@ -271,9 +325,8 @@ let toolsOption = $('toolsOption'),
     brushEl = $('brush'),
     airBrushEl = $('airBrush'),
     crayonEl = $('crayon'),
-
-// fillEl = $('fill'),
-lineEl = $('line'),
+    fillEl = $('fill'),
+    lineEl = $('line'),
     screenToneEl = $('screenTone'),
     eraserEl = $('eraser'),
     textEl = $('text'),
@@ -314,7 +367,7 @@ crayonTypeEl = $('crayonType'),
 //SCREEN_TONE TYPE
 screenToneTypeEl = $('screenToneType');
 
-let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: textEl, obj: __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }];
+let _elementArr = [{ el: brushEl, obj: __WEBPACK_IMPORTED_MODULE_1__module_Brush__["a" /* default */] }, { el: airBrushEl, obj: __WEBPACK_IMPORTED_MODULE_3__module_Airbrush__["a" /* default */] }, { el: crayonEl, obj: __WEBPACK_IMPORTED_MODULE_4__module_Crayon__["a" /* default */] }, { el: fillEl, obj: __WEBPACK_IMPORTED_MODULE_11__module_FloodFill__["a" /* default */] }, { el: lineEl, obj: __WEBPACK_IMPORTED_MODULE_0__module_LineDraw__["a" /* default */] }, { el: screenToneEl, obj: __WEBPACK_IMPORTED_MODULE_9__module_ScreenTone__["a" /* default */] }, { el: textEl, obj: __WEBPACK_IMPORTED_MODULE_10__module_TextInput__["a" /* default */] }, { el: eraserEl, obj: __WEBPACK_IMPORTED_MODULE_5__module_Eraser__["a" /* default */] }, { el: zoomEl, obj: __WEBPACK_IMPORTED_MODULE_6__module_Zoom__["a" /* default */] }, { el: moveEl, obj: __WEBPACK_IMPORTED_MODULE_7__module_Move__["a" /* default */] }, { el: clearEl, obj: __WEBPACK_IMPORTED_MODULE_8__module_ClearCanvas__["a" /* default */] }];
 
 class SketchBookKonva {
     constructor(id, width, height, layer = 1) {
@@ -456,7 +509,7 @@ class SketchBookKonva {
             layer.add(image);
             layer.draw();
         });
-        _stage.add(layer);
+        // _stage.add(layer);
     }
 
     _toolsDestroy() {
@@ -468,7 +521,7 @@ class SketchBookKonva {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -612,7 +665,7 @@ class LineDraw {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -879,7 +932,7 @@ class Brush {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1025,13 +1078,13 @@ class Airbrush {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_utility__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_utility__ = __webpack_require__(2);
 
 
 
@@ -1206,57 +1259,6 @@ class Crayon {
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Utility {
-
-    static newCtx(width, height) {
-        let canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        return canvas.getContext("2d");
-    }
-
-    static hexToRgb(hexType) {
-        let hex = hexType.replace("#", "");
-        let value = hex.match(/[a-f\d]/gi);
-
-        // 헥사값이 세자리일 경우, 여섯자리로.
-        if (value.length == 3) hex = value[0] + value[0] + value[1] + value[1] + value[2] + value[2];
-
-        value = hex.match(/[a-f\d]{2}/gi);
-        let r = parseInt(value[0], 16);
-        let g = parseInt(value[1], 16);
-        let b = parseInt(value[2], 16);
-
-        return {
-            r, g, b, a: 255
-        };
-    }
-
-    _rgbToHex(r, g, b) {
-
-        let rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-            const hex = x.toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        }).join('');
-
-        // console.log(rgbToHex)
-    }
-
-    _hexToRgb(hex) {
-        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
-
-        console.log(hex);
-    }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Utility;
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1420,21 +1422,15 @@ class Zoom {
         this.sizeSetMouse();
     }
 
-    sizeSetButton() {
-        // _stage.scale({ x: num/100, y: num/100 });
-        _stage.scale({ x: this.getSize(), y: this.getSize() });
-        _stage.batchDraw();
-    }
-
     sizeSetMouse() {
         _stage.on('mousedown touchstart', evt => {
             evt.evt.preventDefault();
             let oldScale = _zoomScale.indexOf(_stage.scaleX());
             if (oldScale === _zoomScale.length - 1 || oldScale === 0) _zoomScope = -_zoomScope;
             let newScale = _zoomScale[oldScale + _zoomScope];
-            _stage.scale({ x: newScale, y: newScale });
-
-            /*  let mousePointTo = {
+            this.scaleModify(newScale);
+            /*_stage.scale({x: newScale, y: newScale});
+              let mousePointTo = {
                   x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
                   y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
               };
@@ -1444,8 +1440,12 @@ class Zoom {
               };
               console.log(mousePointTo, newPos, newScale)
               _stage.position(newPos);*/
-            _stage.batchDraw();
         });
+    }
+
+    scaleModify(scale) {
+        _stage.scale({ x: scale, y: scale });
+        _stage.draw();
     }
 
     destroy() {
@@ -1461,7 +1461,7 @@ class Zoom {
           if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
           _currentViewPort = point;*/
         _currentViewPort = point / 100;
-        this.sizeSetButton(this.getSize());
+        this.scaleModify(this.getSize());
     }
     getSize() {
         return _currentViewPort;
@@ -1835,6 +1835,213 @@ class TextInput {
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = TextInput;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_utility__ = __webpack_require__(2);
+
+
+
+
+let _stage, _drawLayer, _this;
+let _color = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_COLOR;
+let _size = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_LINE_SIZE;
+let _opacity = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DEFAULT_OPACITY;
+let g_imgData, g_canvasWidth, g_targetColor;
+
+class FloodFillBack {
+    init(stage) {
+
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_TOOL = this;
+        _stage = stage;
+        _drawLayer = __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].MAIN_LAYER;
+        _this = this;
+        this.useTool();
+    }
+
+    useTool() {
+        let isDrawing = false;
+        _stage.on('mousedown touchstart', evt => {
+            isDrawing = true;
+            let pos = this.getRelativePointerPosition(_stage);
+            let color = __WEBPACK_IMPORTED_MODULE_2__util_utility__["a" /* default */].hexToRgb(this.getColor());
+            this.paintAt(_drawLayer, color, pos.x, pos.y);
+        });
+    }
+
+    paintAt(ctx, targetColor, startX, startY) {
+
+        g_targetColor = targetColor;
+        g_canvasWidth = ctx.canvas.width;
+        g_imgData = ctx.canvas.context._context.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        let pixelPos = (startY * g_canvasWidth + startX) * 4,
+            r = g_imgData.data[pixelPos],
+            g = g_imgData.data[pixelPos + 1],
+            b = g_imgData.data[pixelPos + 2],
+            a = g_imgData.data[pixelPos + 3];
+
+        if (r === g_targetColor.r && g === g_targetColor.g && b === g_targetColor.b && a === g_targetColor.a) {
+            // Return because trying to fill with the same color
+            return null;
+        }
+
+        this.floodFill(ctx, startX, startY, r, g, b, a);
+
+        // ctx.putImageData(g_imgData, 0, 0);
+        _drawLayer.canvas.context.putImageData(g_imgData, 0, 0);
+        g_imgData = null;
+    }
+
+    floodFill(ctx, startX, startY, startR, startG, startB, startA) {
+        let canvasWidth = g_canvasWidth,
+            newPos,
+            x,
+            y,
+            pixelPos,
+            reachLeft,
+            reachRight,
+            drawingBoundLeft = 0,
+            drawingBoundTop = 0,
+            drawingBoundRight = ctx.canvas.width,
+            drawingBoundBottom = ctx.canvas.height,
+            pixelStack = [[startX, startY]];
+
+        while (pixelStack.length) {
+
+            newPos = pixelStack.pop();
+            x = newPos[0];
+            y = newPos[1];
+
+            // Get current pixel position
+            pixelPos = (y * canvasWidth + x) * 4;
+
+            // Go up as long as the color matches and are inside the canvas
+            while (y > drawingBoundTop && this.matchStartColor(pixelPos, startR, startG, startB, startA)) {
+                y -= 1;
+                pixelPos -= canvasWidth * 4;
+            }
+
+            pixelPos += canvasWidth * 4;
+            y += 1;
+            reachLeft = false;
+            reachRight = false;
+
+            // Go down as long as the color matches and in inside the canvas
+            while (y < drawingBoundBottom && this.matchStartColor(pixelPos, startR, startG, startB, startA)) {
+                y += 1;
+
+                this.colorPixel(pixelPos);
+
+                if (x > drawingBoundLeft) {
+                    if (this.matchStartColor(pixelPos - 4, startR, startG, startB, startA)) {
+                        if (!reachLeft) {
+                            // Add pixel to stack
+                            pixelStack.push([x - 1, y]);
+                            reachLeft = true;
+                        }
+                    } else if (reachLeft) {
+                        reachLeft = false;
+                    }
+                }
+
+                if (x < drawingBoundRight) {
+                    if (this.matchStartColor(pixelPos + 4, startR, startG, startB, startA)) {
+                        if (!reachRight) {
+                            // Add pixel to stack
+                            pixelStack.push([x + 1, y]);
+                            reachRight = true;
+                        }
+                    } else if (reachRight) {
+                        reachRight = false;
+                    }
+                }
+
+                pixelPos += canvasWidth * 4;
+            }
+        }
+    }
+
+    matchStartColor(pixelPos, startR, startG, startB, startA) {
+        const arr = g_imgData.data;
+        return startR === arr[pixelPos] && startG === arr[pixelPos + 1] && startB === arr[pixelPos + 2] && startA === arr[pixelPos + 3];
+    }
+
+    colorPixel(pixelPos) {
+        const arr = g_imgData.data;
+        arr[pixelPos] = g_targetColor.r;
+        arr[pixelPos + 1] = g_targetColor.g;
+        arr[pixelPos + 2] = g_targetColor.b;
+        arr[pixelPos + 3] = 255;
+    }
+
+    getRelativePointerPosition(node) {
+        let transform = node.getAbsoluteTransform().copy();
+        transform.invert();
+        let pos = node.getStage().getPointerPosition();
+        return transform.point(pos);
+    }
+
+    destroy() {
+        __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
+        if (_stage) _stage.off('mousedown touchstart');
+    }
+
+    sampleDrawImage(ctx) {
+        ctx.canvas.context.beginPath();
+        // ctx.canvas.context.fillStyle = "#fff";
+        // ctx.canvas.context.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
+        ctx.canvas.context.fillStyle = "#18843c";
+        ctx.canvas.context.fillRect(25, 25, 350, 250);
+        ctx.canvas.context.fillStyle = "#fff";
+        ctx.canvas.context.fillRect(100, 100, 50, 50);
+        ctx.canvas.context.fillRect(175, 150, 15, 75);
+        ctx.canvas.context.fillRect(300, 200, 100, 75);
+        ctx.canvas.context.fillRect(220, 75, 100, 50);
+        ctx.canvas.context.closePath();
+        ctx.canvas.context.fill();
+    }
+
+    /**
+     *
+     * @param color
+     */
+    setColor(color) {
+        _color = color;
+    }
+    getColor() {
+        return _color;
+    }
+
+    /**
+     *
+     * @param size
+     */
+    setSize(size) {
+        _size = size;
+    }
+    getSize() {
+        return _size;
+    }
+
+    /**
+     *
+     * @param opacity
+     */
+    setOpacity(opacity) {
+        _opacity = opacity;
+    }
+    getOpacity() {
+        return _opacity;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = FloodFillBack;
 
 
 /***/ })

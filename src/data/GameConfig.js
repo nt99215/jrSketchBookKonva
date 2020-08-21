@@ -16,7 +16,7 @@ const _defaultOpacity = 100;
 let _mainStage = null;
 let _mainDrawLayer = null;
 let _currentLayer = null;
-let _stageSize = {width:800, height:450}
+let _stageSize = {width:810, height:700}
 
 export default class GameConfig {
 

@@ -18,33 +18,31 @@ export default class Zoom {
         this.sizeSetMouse();
     }
 
-
-    sizeSetButton() {
-        // _stage.scale({ x: num/100, y: num/100 });
-        _stage.scale({ x: this.getSize(), y: this.getSize() });
-        _stage.batchDraw();
-    }
-
     sizeSetMouse() {
         _stage.on('mousedown touchstart', (evt) => {
             evt.evt.preventDefault();
             let oldScale = _zoomScale.indexOf(_stage.scaleX());
             if(oldScale === _zoomScale.length - 1 || oldScale === 0) _zoomScope = -_zoomScope;
             let newScale = _zoomScale[oldScale + _zoomScope];
-            _stage.scale({x: newScale, y: newScale});
-
-          /*  let mousePointTo = {
-                x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
-                y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
-            };
-            let newPos = {
-                x: -(mousePointTo.x - _stage.getPointerPosition().x / newScale) * newScale,
-                y: -(mousePointTo.y - _stage.getPointerPosition().y / newScale) * newScale
-            };
-            console.log(mousePointTo, newPos, newScale)
-            _stage.position(newPos);*/
-            _stage.batchDraw();
+            this.scaleModify(newScale)
+            /*_stage.scale({x: newScale, y: newScale});
+              let mousePointTo = {
+                  x: _stage.getPointerPosition().x / oldScale - _stage.x() / oldScale,
+                  y: _stage.getPointerPosition().y / oldScale - _stage.y() / oldScale
+              };
+              let newPos = {
+                  x: -(mousePointTo.x - _stage.getPointerPosition().x / newScale) * newScale,
+                  y: -(mousePointTo.y - _stage.getPointerPosition().y / newScale) * newScale
+              };
+              console.log(mousePointTo, newPos, newScale)
+              _stage.position(newPos);*/
         });
+    }
+
+    scaleModify(scale) {
+        _stage.scale({x: scale, y:scale})
+        _stage.draw();
+
     }
 
     destroy() {
@@ -61,7 +59,7 @@ export default class Zoom {
         if(_currentViewPort >= _minimumViewPort && _currentViewPort <= _maximumViewPort)
         _currentViewPort = point;*/
         _currentViewPort = point/100;
-        this.sizeSetButton(this.getSize());
+        this.scaleModify(this.getSize());
     }
     getSize() { return _currentViewPort;}
 

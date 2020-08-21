@@ -9,6 +9,7 @@ import Move from "../module/Move";
 import ClearCanvas from "../module/ClearCanvas";
 import ScreenTone from "../module/ScreenTone";
 import TextInput from "../module/TextInput";
+import FloodFill from "../module/FloodFill";
 
 let _id, _stage, _mainLayer;
 
@@ -17,7 +18,7 @@ let toolsOption = $('toolsOption'),
     brushEl = $('brush'),
     airBrushEl = $('airBrush'),
     crayonEl = $('crayon'),
-    // fillEl = $('fill'),
+    fillEl = $('fill'),
     lineEl = $('line'),
     screenToneEl = $('screenTone'),
     eraserEl = $('eraser'),
@@ -57,6 +58,7 @@ let _elementArr = [
     {el:brushEl, obj:Brush},
     {el:airBrushEl, obj:Airbrush},
     {el:crayonEl, obj:Crayon},
+    {el:fillEl, obj:FloodFill},
     {el:lineEl, obj:LineDraw},
     {el:screenToneEl, obj:ScreenTone},
     {el:textEl, obj:TextInput},
@@ -222,7 +224,7 @@ export default class SketchBookKonva {
             layer.add(image);
             layer.draw();
         });
-        _stage.add(layer);
+        // _stage.add(layer);
 
     }
 
