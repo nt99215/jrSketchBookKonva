@@ -23,7 +23,6 @@ export default class Crayon {
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
-
         this.getCrayonImage();
         this.useTool();
     }
@@ -36,9 +35,7 @@ export default class Crayon {
 
         _stage.on('mousedown touchstart', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
-            // Start drawing
             isDrawing = true;
-
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = {points:[pos.x, pos.y]}
             this.getSize();
@@ -65,15 +62,9 @@ export default class Crayon {
     }
 
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         // transform.invert();
-
-        // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
         return transform.point(pos);
     }
 

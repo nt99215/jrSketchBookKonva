@@ -18,6 +18,7 @@ export default class Eraser {
         _this = this;
 
         // _stage.add(_drawLayer);
+        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         this.useTool();
 
     }
@@ -43,17 +44,21 @@ export default class Eraser {
         });
 
         _stage.on('mousemove touchmove', () => {
+            let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
             if (!isDrawing) {
                 return;
             }
 
-            let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
             _drawLayer.batchDraw();
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
+            GameConfig.DRAW_CURSOR._destroy();
+            let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
             isDrawing = false;
             /*LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();

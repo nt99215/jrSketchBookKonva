@@ -559,6 +559,7 @@ class LineDraw {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize());
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
         _dashEnabled = false;
@@ -570,7 +571,6 @@ class LineDraw {
         _stage.on('mousedown touchstart', function () {
             isPaint = true;
             let pos = _stage.getPointerPosition();
-
             _line = new Konva.Line({
                 points: [pos.x, pos.y, pos.x, pos.y],
                 // pointerLength: 20,
@@ -585,7 +585,11 @@ class LineDraw {
             _drawLayer.add(_line);
         });
 
-        _stage.on('mouseup touchend contentTouchend', function () {
+        _stage.on('mouseup touchend contentTouchend', () => {
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._destroy();
+            let pos = _stage.getPointerPosition();
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+
             isPaint = false;
             __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
@@ -599,6 +603,7 @@ class LineDraw {
             if (!isPaint) return;
 
             let pos = _stage.getPointerPosition();
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._move(pos.x, pos.y);
             let oldPoints = _line.points();
             _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y]);
             _drawLayer.draw();
@@ -1065,7 +1070,6 @@ class Crayon {
         _stage.add(_drawLayer);
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
-
         this.getCrayonImage();
         this.useTool();
     }
@@ -1077,9 +1081,7 @@ class Crayon {
 
         _stage.on('mousedown touchstart', evt => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
-            // Start drawing
             isDrawing = true;
-
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = { points: [pos.x, pos.y] };
             this.getSize();
@@ -1105,15 +1107,9 @@ class Crayon {
     }
 
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         // transform.invert();
-
-        // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
         return transform.point(pos);
     }
 
@@ -1243,6 +1239,7 @@ class Eraser {
         _this = this;
 
         // _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize());
         this.useTool();
     }
 
@@ -1267,17 +1264,21 @@ class Eraser {
         });
 
         _stage.on('mousemove touchmove', () => {
+            let pos = this.getRelativePointerPosition(_stage);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._move(pos.x, pos.y);
             if (!isDrawing) {
                 return;
             }
 
-            let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
             _drawLayer.batchDraw();
         });
 
         _stage.on('mouseup touchend contentTouchend', evt => {
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._destroy();
+            let pos = this.getRelativePointerPosition(_stage);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
             isDrawing = false;
             /*LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
@@ -1497,6 +1498,7 @@ class Brush {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
+        __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize());
         __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].CURRENT_LAYER = _drawLayer;
         _this = this;
         this.useTool();
@@ -1509,7 +1511,6 @@ class Brush {
         _stage.on('mousedown touchstart', evt => {
 
             let pos = this.getRelativePointerPosition(_stage);
-
             _patternImage = new Image();
             // _patternImage.src = 'asset/image/screenTone/screenToneTypeA.png';
             _patternImage.src = this.getLineType();
@@ -1541,9 +1542,9 @@ class Brush {
         });
 
         _stage.on('mousemove touchmove', evt => {
-            if (!isDrawing) return;
-
             let pos = this.getRelativePointerPosition(_stage);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._move(pos.x, pos.y);
+            if (!isDrawing) return;
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
 
@@ -1553,6 +1554,9 @@ class Brush {
         });
 
         _stage.on('mouseup touchend contentTouchend', evt => {
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._destroy();
+            let pos = this.getRelativePointerPosition(_stage);
+            __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
             isDrawing = false;
             __WEBPACK_IMPORTED_MODULE_1__manager_LayerManager__["a" /* default */].prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
@@ -1993,13 +1997,18 @@ class FloodFillBack {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__ = __webpack_require__(0);
+
+
 let _cursorPointer, _stage, _layer, _size;
+const _strokeWidth = 2;
 class Cursor {
     constructor(stage, layer, tool = 'brush', size = '10') {
         _stage = stage;
         _layer = layer;
         _size = size;
         _stage.container().style.cursor = 'crosshair';
+        // stage.container().style.cursor = 'url(images/my-cursor.png), auto';
     }
 
     _drawRect(radius, x = 0, y = 0) {
@@ -2008,22 +2017,23 @@ class Cursor {
             y: y,
             radius: parseInt(radius / 1.5),
             stroke: 'white',
-            strokeWidth: 2,
-            cursor: {
-                mouseenter: 'pointer',
-                onmousemove: 'pointer',
-                onmousedown: 'pointer'
-            }
+            strokeWidth: _strokeWidth
         });
         _layer.add(_cursorPointer);
     }
 
     _move(x, y) {
         if (_cursorPointer) {
-            _stage.container().style.cursor = 'crosshair';
-            _cursorPointer.x(x);
-            _cursorPointer.y(y);
-            _layer.draw();
+            if (x <= 0 || x >= __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.width || y <= 0 || y >= __WEBPACK_IMPORTED_MODULE_0__data_GameConfig__["a" /* default */].STAGE_SIZE.height) {
+                console.log(x, y);
+                _cursorPointer.visible(false);
+            } else {
+                _stage.container().style.cursor = 'crosshair';
+                _cursorPointer.x(x);
+                _cursorPointer.y(y);
+                _cursorPointer.visible(true);
+                _layer.draw();
+            }
         }
     }
 

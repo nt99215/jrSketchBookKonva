@@ -19,6 +19,7 @@ export default class Brush {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
+        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         this.useTool();
@@ -32,7 +33,6 @@ export default class Brush {
         _stage.on('mousedown touchstart', (evt) => {
 
             let pos = this.getRelativePointerPosition(_stage);
-
             _patternImage = new Image();
             // _patternImage.src = 'asset/image/screenTone/screenToneTypeA.png';
             _patternImage.src = this.getLineType();
@@ -65,9 +65,9 @@ export default class Brush {
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            if (!isDrawing) return;
-
             let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
+            if (!isDrawing) return;
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
 
@@ -77,6 +77,9 @@ export default class Brush {
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
+            GameConfig.DRAW_CURSOR._destroy();
+            let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
             isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();

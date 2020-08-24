@@ -15,6 +15,7 @@ export default class LineDraw {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
+        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         _dashEnabled = false;
@@ -26,7 +27,6 @@ export default class LineDraw {
         _stage.on('mousedown touchstart', function () {
             isPaint = true;
             let pos = _stage.getPointerPosition();
-
             _line = new Konva.Line({
                 points: [pos.x, pos.y, pos.x, pos.y],
                 // pointerLength: 20,
@@ -41,7 +41,11 @@ export default class LineDraw {
             _drawLayer.add(_line);
         });
 
-        _stage.on('mouseup touchend contentTouchend', function () {
+        _stage.on('mouseup touchend contentTouchend', ()=> {
+            GameConfig.DRAW_CURSOR._destroy();
+            let pos = _stage.getPointerPosition();
+            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+
             isPaint = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
@@ -55,6 +59,7 @@ export default class LineDraw {
             if(!isPaint) return;
 
             let pos = _stage.getPointerPosition();
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
             let oldPoints = _line.points();
             _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y])
             _drawLayer.draw();
