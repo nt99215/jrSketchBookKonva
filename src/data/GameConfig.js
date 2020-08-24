@@ -16,6 +16,7 @@ const _defaultOpacity = 100;
 let _mainStage = null;
 let _mainDrawLayer = null;
 let _currentLayer = null;
+let _drawCursor = null;
 let _stageSize = {width:810, height:700}
 
 export default class GameConfig {
@@ -31,6 +32,9 @@ export default class GameConfig {
 
     static get CURRENT_LAYER() { return _currentLayer};
     static set CURRENT_LAYER(obj) { _currentLayer = obj};
+
+    static get DRAW_CURSOR() { return _drawCursor};
+    static set DRAW_CURSOR(obj) { _drawCursor = obj};
 
     static get CURRENT_TOOL() { return _tool};
     static set CURRENT_TOOL(obj) { _tool = obj};

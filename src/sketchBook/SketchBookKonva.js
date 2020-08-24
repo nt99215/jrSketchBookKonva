@@ -10,8 +10,9 @@ import ClearCanvas from "../module/ClearCanvas";
 import ScreenTone from "../module/ScreenTone";
 import TextInput from "../module/TextInput";
 import FloodFill from "../module/FloodFill";
+import Cursor from "../ui/Cursor";
 
-let _id, _stage, _mainLayer;
+let _id, _stage, _mainLayer, _cursorLayer;
 
 let $ = function(id){return document.getElementById(id)};
 let toolsOption = $('toolsOption'),
@@ -84,11 +85,18 @@ export default class SketchBookKonva {
 
         GameConfig.MAIN_STAGE = _stage;
 
-        this._createImg();
+        // this._createImg();
 
         _mainLayer = new Konva.Layer();
         GameConfig.MAIN_LAYER = _mainLayer;
         _stage.add(_mainLayer);
+
+        _cursorLayer = new Konva.Layer();
+        _stage.add(_cursorLayer);
+
+        GameConfig.DRAW_CURSOR = new Cursor(_stage,_cursorLayer);
+
+
 
         colorEl.onchange = function() {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setColor(this.value);
@@ -224,7 +232,7 @@ export default class SketchBookKonva {
             layer.add(image);
             layer.draw();
         });
-        // _stage.add(layer);
+        _stage.add(layer);
 
     }
 

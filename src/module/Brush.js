@@ -20,57 +20,18 @@ export default class Brush {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
+        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         _shapeEnable = false;
-
         this.useTool();
-        // this.convertJson();
-    }
-
-
-    convertJson(){
-       /* var width = window.innerWidth;
-        var height = window.innerHeight;
-
-        var stage = new Konva.Stage({
-            container: 'container',
-            width: width,
-            height: height,
-        });
-        var layer = new Konva.Layer();
-
-        var hexagon = new Konva.RegularPolygon({
-            x: width / 2,
-            y: height / 2,
-            sides: 6,
-            radius: 70,
-            fill: 'red',
-            stroke: 'black',
-            strokeWidth: 4,
-        });
-
-        // add the shape to the layer
-        layer.add(hexagon);
-
-        // add the layer to the stage
-        stage.add(layer);*/
-
-        // save stage as a json string
-        var json = _stage.toJSON();
-
-        console.log(json);
-
     }
 
 
     useTool () {
-
         let isDrawing = false;
         let currentLine;
         _stage.on('mousedown touchstart', (evt) => {
-            // if(!GameConfig.IS_DRAWING_MODE) return;
-            // Start drawing
             isDrawing = true;
             let pos = this.getRelativePointerPosition(_stage);
             if(! _shapeEnable)
@@ -80,17 +41,13 @@ export default class Brush {
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
                     globalCompositeOperation:'source-over',
-                    // globalCompositeOperation:'destination-out',
-                    // lineCap:'square',
                     lineCap:_this.getLineCap(),
                     tension:GameConfig.DEFAULT_TENSION,
-                    // fill:'#ffcc00',
-                    // fillPatternImage:'asset/image/starImg.png',
-                    // fillEnabled:true,
                     opacity:_this.getOpacity() / 100
                 });
 
                 _drawLayer.add(currentLine);
+
             }
 
             else currentLine = {points:[pos.x, pos.y]}
@@ -98,22 +55,19 @@ export default class Brush {
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            if (!isDrawing) return;
 
             let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
+            if (!isDrawing) return;
             if(! _shapeEnable)
             {
-
                 let newPoints = currentLine.points().concat([pos.x, pos.y]);
                 currentLine.points(newPoints);
             }
-
             else
             {
                 let obj = _imgObj;
                 _img = new Konva.Rect({
-                    // width:_this.getSize(),
-                    // height:_this.getSize(),
                     width:parseInt(obj.w  * this.getSize()),
                     height:parseInt(obj.h * this.getSize()),
                     rotation:obj.r,
@@ -127,9 +81,11 @@ export default class Brush {
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
-            // End drawing
-            isDrawing = false;
 
+            GameConfig.DRAW_CURSOR._destroy();
+            let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+            isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
@@ -138,24 +94,10 @@ export default class Brush {
         });
     }
 
-    downloadURI(uri, name) {
-        let link = document.createElement('a');
-        link.download = name;
-        link.href = uri;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        // delete link;
-    }
-
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         let transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         transform.invert();
-        // get pointer (say mouse or touch) position
         let pos = node.getStage().getPointerPosition();
-        // now we find relative point
         return transform.point(pos);
     }
 
@@ -164,8 +106,6 @@ export default class Brush {
         _clone = _img.clone({
             x:x,
             y:y,
-            // width:_img.scale.x * 20,
-            // height:10,
             fill:_this.getColor(),
         });
 
@@ -178,10 +118,7 @@ export default class Brush {
         if(_stage)_stage.off('mousedown touchstart');
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
-
-        // console.log('brush', _drawLayer);
     }
-
 
 
     /**

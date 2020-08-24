@@ -156,22 +156,6 @@ export default class FloodFillBack {
         if(_stage)_stage.off('mousedown touchstart');
     }
 
-    sampleDrawImage(ctx) {
-        ctx.canvas.context.beginPath();
-        // ctx.canvas.context.fillStyle = "#fff";
-        // ctx.canvas.context.fillRect(0,0,ctx.canvas.width, ctx.canvas.height);
-        ctx.canvas.context.fillStyle = "#18843c";
-        ctx.canvas.context.fillRect(25,25,350,250);
-        ctx.canvas.context.fillStyle = "#fff";
-        ctx.canvas.context.fillRect(100,100,50,50);
-        ctx.canvas.context.fillRect(175,150,15,75);
-        ctx.canvas.context.fillRect(300,200,100,75);
-        ctx.canvas.context.fillRect(220,75,100,50);
-        ctx.canvas.context.closePath();
-        ctx.canvas.context.fill();
-
-    }
-
     /**
      *
      * @param color
