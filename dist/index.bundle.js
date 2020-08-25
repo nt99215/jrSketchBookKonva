@@ -1764,15 +1764,15 @@ var Crayon = function () {
                 isDrawing = true;
                 var pos = _this2.getRelativePointerPosition(_stage);
                 currentLine = { points: [pos.x, pos.y] };
-                _this2.getSize();
-                _this2.getColor();
+                _this2.patternColorCheck();
+                _this2.patternSizeCheck();
             });
 
             _stage.on('mousemove touchmove', function (evt) {
                 var pos = _this2.getRelativePointerPosition(_stage);
                 _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
                 if (!isDrawing) return;
-                _this2.imageDraw(pos.x, pos.y);
+                _this2.patternDraw(pos.x, pos.y);
                 _drawLayer.batchDraw();
             });
 
@@ -1795,8 +1795,37 @@ var Crayon = function () {
             return transform.point(pos);
         }
     }, {
-        key: "imageDraw",
-        value: function imageDraw(x, y) {
+        key: "getCrayonImage",
+        value: function getCrayonImage() {
+            _pattern = new Image();
+            _pattern.onload = function () {
+                var img = new Konva.Image({
+                    image: _pattern
+                });
+                _pattern = img;
+                _pattern.cache();
+            };
+            _pattern.src = _imgSrc[this.getLineType()];
+        }
+    }, {
+        key: "patternColorCheck",
+        value: function patternColorCheck() {
+            var c = _utility2.default.hexToRgb(this.getColor());
+            _pattern.filters([Konva.Filters.RGBA]);
+            _pattern.red(c.r);
+            _pattern.green(c.g);
+            _pattern.blue(c.b);
+        }
+    }, {
+        key: "patternSizeCheck",
+        value: function patternSizeCheck() {
+            var obj = _pattern.attrs.image;
+            obj.width = this.getSize();
+            obj.height = this.getSize();
+        }
+    }, {
+        key: "patternDraw",
+        value: function patternDraw(x, y) {
 
             var obj = _pattern.attrs.image;
             _clone = _pattern.clone({
@@ -1828,11 +1857,7 @@ var Crayon = function () {
     }, {
         key: "getColor",
         value: function getColor() {
-            var c = _utility2.default.hexToRgb(_color);
-            _pattern.filters([Konva.Filters.RGBA]);
-            _pattern.red(c.r);
-            _pattern.green(c.g);
-            _pattern.blue(c.b);
+            return _color;
         }
 
         /**
@@ -1848,9 +1873,7 @@ var Crayon = function () {
     }, {
         key: "getSize",
         value: function getSize() {
-            var obj = _pattern.attrs.image;
-            obj.width = _size;
-            obj.height = _size;
+            return _size;
         }
 
         /**
@@ -1898,19 +1921,6 @@ var Crayon = function () {
         key: "getLineType",
         value: function getLineType() {
             return _crayonType;
-        }
-    }, {
-        key: "getCrayonImage",
-        value: function getCrayonImage() {
-            _pattern = new Image();
-            _pattern.onload = function () {
-                var img = new Konva.Image({
-                    image: _pattern
-                });
-                _pattern = img;
-                _pattern.cache();
-            };
-            _pattern.src = _imgSrc[this.getLineType()];
         }
     }]);
     return Crayon;

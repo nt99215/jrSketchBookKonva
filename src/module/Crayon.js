@@ -38,15 +38,15 @@ export default class Crayon {
             isDrawing = true;
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = {points:[pos.x, pos.y]}
-            this.getSize();
-            this.getColor();
+            this.patternColorCheck();
+            this.patternSizeCheck();
         });
 
         _stage.on('mousemove touchmove', (evt) => {
             let pos = this.getRelativePointerPosition(_stage);
             GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
             if (!isDrawing) return;
-            this.imageDraw(pos.x, pos.y);
+            this.patternDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
 
         });
@@ -69,8 +69,34 @@ export default class Crayon {
         return transform.point(pos);
     }
 
+    getCrayonImage() {
+        _pattern = new Image();
+        _pattern.onload =()=> {
+            let img = new Konva.Image({
+                image:_pattern,
+            });
+            _pattern = img;
+            _pattern.cache();
+        }
+        _pattern.src = _imgSrc[this.getLineType()];
+    }
 
-    imageDraw(x, y) {
+
+    patternColorCheck() {
+        let c = Utility.hexToRgb(this.getColor());
+        _pattern.filters([Konva.Filters.RGBA]);
+        _pattern.red(c.r);
+        _pattern.green(c.g);
+        _pattern.blue(c.b);
+    }
+
+    patternSizeCheck() {
+        let obj = _pattern.attrs.image;
+        obj.width = this.getSize();
+        obj.height = this.getSize();
+    }
+
+    patternDraw(x, y) {
 
         let obj = _pattern.attrs.image;
         _clone = _pattern.clone({
@@ -80,6 +106,8 @@ export default class Crayon {
         _clone.cache();
         _drawLayer.add(_clone);
     }
+    
+    
 
     destroy () {
         LayerManager.prototype.init(_drawLayer);
@@ -95,24 +123,14 @@ export default class Crayon {
      * @param color
      */
     setColor(color) {_color = color;}
-    getColor() {
-        let c = Utility.hexToRgb(_color);
-        _pattern.filters([Konva.Filters.RGBA]);
-        _pattern.red(c.r);
-        _pattern.green(c.g);
-        _pattern.blue(c.b);
-    }
+    getColor() { return _color;}
 
     /**
      *
      * @param size
      */
     setSize(size) { _size = size * 2;}
-    getSize() {
-        let obj = _pattern.attrs.image;
-        obj.width = _size;
-        obj.height = _size;
-    }
+    getSize() { return _size;}
 
     /**
      *
@@ -146,20 +164,6 @@ export default class Crayon {
     }
 
     getLineType() {return _crayonType;}
-
-    getCrayonImage() {
-        _pattern = new Image();
-        _pattern.onload =()=> {
-            let img = new Konva.Image({
-                image:_pattern,
-            });
-            _pattern = img;
-            _pattern.cache();
-        }
-        _pattern.src = _imgSrc[this.getLineType()];
-    }
-
-
 
 
 }
