@@ -53,8 +53,8 @@ export default class Brush {
                 _fillRect = new Konva.Rect({
                     x:0,
                     y:0,
-                    width:800,
-                    height:550,
+                    width:GameConfig.STAGE_SIZE.width,
+                    height:GameConfig.STAGE_SIZE.height,
                     fillPatternImage: _patternImage,
                     globalCompositeOperation: 'source-in'
                 });

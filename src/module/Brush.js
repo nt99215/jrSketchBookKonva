@@ -154,36 +154,37 @@ export default class Brush {
      * @param linType
      */
     setLineType(e) {
-        let type = e.target.id.substr(1, e.target.name.length + 1);
+        let type = e.target.id.substr(0, e.target.id.length);
+        type = String(type);
         switch (type)
         {
-            case 'circle' :
+            case '1' :
                 this.setLineCap('round');
                 _shapeEnable = false;
                 break;
-            case 'rect' :
+            case '2' :
                 this.setLineCap('square');
                 _shapeEnable = false;
                 break;
-            case 'diamond' :
+            case '3' :
                 _imgObj.w = 1;
                 _imgObj.h = 1;
                 _imgObj.r = 45;
                 _shapeEnable = true;
                 break;
-            case 'column' :
+            case '4' :
                 _imgObj.w = 1/_angleRatio;
                 _imgObj.h = 1;
                 _imgObj.r = 0;
                 _shapeEnable = true;
                 break;
-            case 'row' :
+            case '5' :
                 _imgObj.w = 1;
                 _imgObj.h = 1/_angleRatio;
                 _imgObj.r = 0;
                 _shapeEnable = true;
                 break;
-            case 'slash' :
+            case '6' :
                 _imgObj.w = 1;
                 _imgObj.h = 1/_angleRatio;
                 _imgObj.r = -35;

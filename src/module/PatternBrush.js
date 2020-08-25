@@ -1,4 +1,5 @@
 import GameConfig from "../data/GameConfig";
+import LayerManager from "../manager/LayerManager";
 
 let _canvas, _stage;
 let _color = '#000000';
@@ -18,32 +19,14 @@ export default class PatternBrush {
         _drawLayer = drawLayer;
         _this = this;
 
-       /* let backgroundLayer = new Konva.Layer();
-        let backgroundColor = new Konva.Image({
-            // width: window.innerWidth,
-            // height: window.innerHeight,
-            width:500,
-            height:400,
-            fill: 'rgb(242,233,226)'
-        })
-        backgroundLayer.add(backgroundColor);
-        stage.add(backgroundLayer);
-        backgroundLayer.draw();*/
-
         this.usePen();
 
     }
 
     getRelativePointerPosition(node) {
-        // the function will return pointer position relative to the passed node
         var transform = node.getAbsoluteTransform().copy();
-        // to detect relative position we need to invert transform
         transform.invert();
-
-        // get pointer (say mouse or touch) position
         var pos = node.getStage().getPointerPosition();
-
-        // now we find relative point
         return transform.point(pos);
     }
 
@@ -53,9 +36,7 @@ export default class PatternBrush {
         let currentLine;
         _stage.on('mousedown', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
-            // Start drawing
             isDrawing = true;
-            // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = new Konva.Line({
                 stroke: _this.getColor(),
@@ -73,7 +54,6 @@ export default class PatternBrush {
                 return;
             }
 
-            // If drawing, add new point to the current line object
             let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
@@ -86,25 +66,13 @@ export default class PatternBrush {
         });
     }
 
-    endPen () {
+    destroy () {
+        LayerManager.prototype.init(_drawLayer);
         if(_stage)_stage.off('mousedown');
         if(_stage)_stage.off('mousemove');
         if(_stage)_stage.off('mouseup');
     }
 
-
-    undo() {
-        /*for(let i = 0; i<_lineArr.length; i++)
-        {
-            // _lineArr[i]
-        }*/
-
-        _lineArr[_currentNum].visible = false;
-    }
-
-    eraseOn() {
-
-    }
 
     /**
      *
