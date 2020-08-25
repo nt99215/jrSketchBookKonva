@@ -1730,7 +1730,7 @@ var _stage = void 0,
 var _color = _GameConfig2.default.DEFAULT_COLOR;
 var _size = _GameConfig2.default.DEFAULT_LINE_SIZE * 2;
 var _opacity = _GameConfig2.default.DEFAULT_OPACITY;
-var _crayonType = 0;
+var _crayonImageType = 0;
 var _imgSrc = ['asset/image/pattern/crayon0/pattern_0.png', 'asset/image/pattern/crayon1/pattern_1.png', 'asset/image/pattern/crayon2/pattern_2.png'];
 
 var Crayon = function () {
@@ -1748,7 +1748,7 @@ var Crayon = function () {
             _stage.add(_drawLayer);
             _GameConfig2.default.CURRENT_LAYER = _drawLayer;
             _this = this;
-            this.getCrayonImage();
+            this.getCrayonType();
             this.useTool();
         }
     }, {
@@ -1764,15 +1764,14 @@ var Crayon = function () {
                 isDrawing = true;
                 var pos = _this2.getRelativePointerPosition(_stage);
                 currentLine = { points: [pos.x, pos.y] };
-                _this2.patternColorCheck();
-                _this2.patternSizeCheck();
+                _this2.getCrayonProp();
             });
 
             _stage.on('mousemove touchmove', function (evt) {
                 var pos = _this2.getRelativePointerPosition(_stage);
                 _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
                 if (!isDrawing) return;
-                _this2.patternDraw(pos.x, pos.y);
+                _this2.crayonDraw(pos.x, pos.y);
                 _drawLayer.batchDraw();
             });
 
@@ -1795,8 +1794,8 @@ var Crayon = function () {
             return transform.point(pos);
         }
     }, {
-        key: "getCrayonImage",
-        value: function getCrayonImage() {
+        key: "getCrayonType",
+        value: function getCrayonType() {
             _pattern = new Image();
             _pattern.onload = function () {
                 var img = new Konva.Image({
@@ -1808,24 +1807,21 @@ var Crayon = function () {
             _pattern.src = _imgSrc[this.getLineType()];
         }
     }, {
-        key: "patternColorCheck",
-        value: function patternColorCheck() {
+        key: "getCrayonProp",
+        value: function getCrayonProp() {
             var c = _utility2.default.hexToRgb(this.getColor());
             _pattern.filters([Konva.Filters.RGBA]);
             _pattern.red(c.r);
             _pattern.green(c.g);
             _pattern.blue(c.b);
-        }
-    }, {
-        key: "patternSizeCheck",
-        value: function patternSizeCheck() {
+
             var obj = _pattern.attrs.image;
             obj.width = this.getSize();
             obj.height = this.getSize();
         }
     }, {
-        key: "patternDraw",
-        value: function patternDraw(x, y) {
+        key: "crayonDraw",
+        value: function crayonDraw(x, y) {
 
             var obj = _pattern.attrs.image;
             _clone = _pattern.clone({
@@ -1903,24 +1899,24 @@ var Crayon = function () {
             var type = e.target.id.substr(1, e.target.name.length + 1);
             switch (type) {
                 case 'cA':
-                    _crayonType = 0;
+                    _crayonImageType = 0;
                     break;
                 case 'cB':
-                    _crayonType = 1;
+                    _crayonImageType = 1;
                     break;
                 case 'cC':
-                    _crayonType = 2;
+                    _crayonImageType = 2;
                     break;
                 default:
-                    _crayonType = 0;
+                    _crayonImageType = 0;
                     break;
             }
-            this.getCrayonImage();
+            this.getCrayonType();
         }
     }, {
         key: "getLineType",
         value: function getLineType() {
-            return _crayonType;
+            return _crayonImageType;
         }
     }]);
     return Crayon;

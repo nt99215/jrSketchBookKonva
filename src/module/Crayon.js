@@ -6,11 +6,12 @@ let _stage, _drawLayer, _this,_pattern, _clone;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE * 2;
 let _opacity = GameConfig.DEFAULT_OPACITY;
-let _crayonType = 0;
+let _crayonImageType = 0;
 let _imgSrc = [
     'asset/image/pattern/crayon0/pattern_0.png',
     'asset/image/pattern/crayon1/pattern_1.png',
-    'asset/image/pattern/crayon2/pattern_2.png'];
+    'asset/image/pattern/crayon2/pattern_2.png'
+];
 
 
 export default class Crayon {
@@ -23,7 +24,7 @@ export default class Crayon {
         _stage.add(_drawLayer);
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
-        this.getCrayonImage();
+        this.getCrayonType();
         this.useTool();
     }
 
@@ -38,15 +39,14 @@ export default class Crayon {
             isDrawing = true;
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = {points:[pos.x, pos.y]}
-            this.patternColorCheck();
-            this.patternSizeCheck();
+            this.getCrayonProp();
         });
 
         _stage.on('mousemove touchmove', (evt) => {
             let pos = this.getRelativePointerPosition(_stage);
             GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
             if (!isDrawing) return;
-            this.patternDraw(pos.x, pos.y);
+            this.crayonDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
 
         });
@@ -69,7 +69,7 @@ export default class Crayon {
         return transform.point(pos);
     }
 
-    getCrayonImage() {
+    getCrayonType() {
         _pattern = new Image();
         _pattern.onload =()=> {
             let img = new Konva.Image({
@@ -82,21 +82,19 @@ export default class Crayon {
     }
 
 
-    patternColorCheck() {
+    getCrayonProp() {
         let c = Utility.hexToRgb(this.getColor());
         _pattern.filters([Konva.Filters.RGBA]);
         _pattern.red(c.r);
         _pattern.green(c.g);
         _pattern.blue(c.b);
-    }
 
-    patternSizeCheck() {
         let obj = _pattern.attrs.image;
         obj.width = this.getSize();
         obj.height = this.getSize();
     }
 
-    patternDraw(x, y) {
+    crayonDraw(x, y) {
 
         let obj = _pattern.attrs.image;
         _clone = _pattern.clone({
@@ -107,7 +105,6 @@ export default class Crayon {
         _drawLayer.add(_clone);
     }
     
-    
 
     destroy () {
         LayerManager.prototype.init(_drawLayer);
@@ -115,7 +112,6 @@ export default class Crayon {
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
     }
-
 
 
     /**
@@ -148,22 +144,22 @@ export default class Crayon {
         switch (type)
         {
             case 'cA' :
-                _crayonType = 0;
+                _crayonImageType = 0;
                 break;
             case 'cB' :
-                _crayonType = 1;
+                _crayonImageType = 1;
                 break;
             case 'cC' :
-                _crayonType = 2
+                _crayonImageType = 2
                 break;
             default :
-                _crayonType = 0;
+                _crayonImageType = 0;
                 break;
         }
-        this.getCrayonImage();
+        this.getCrayonType();
     }
 
-    getLineType() {return _crayonType;}
+    getLineType() {return _crayonImageType;}
 
 
 }
