@@ -15,12 +15,10 @@ let _lineCap = 'round';
 export default class Brush {
 
     init(stage) {
-
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
-        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         _shapeEnable = false;
@@ -45,17 +43,13 @@ export default class Brush {
                     tension:GameConfig.DEFAULT_TENSION,
                     opacity:_this.getOpacity() / 100
                 });
-
                 _drawLayer.add(currentLine);
-
             }
 
             else currentLine = {points:[pos.x, pos.y]}
-
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-
             let pos = this.getRelativePointerPosition(_stage);
             GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
             if (!isDrawing) return;
@@ -81,15 +75,13 @@ export default class Brush {
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
-
-            GameConfig.DRAW_CURSOR._destroy();
-            let pos = this.getRelativePointerPosition(_stage);
-            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+            GameConfig.DRAW_CURSOR._visible(false);
             isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
+            GameConfig.DRAW_CURSOR._visible(true);
 
         });
     }

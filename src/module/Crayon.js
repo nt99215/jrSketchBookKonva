@@ -43,21 +43,22 @@ export default class Crayon {
         });
 
         _stage.on('mousemove touchmove', (evt) => {
-            if (!isDrawing) return;
-
             let pos = this.getRelativePointerPosition(_stage);
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
+            if (!isDrawing) return;
             this.imageDraw(pos.x, pos.y);
             _drawLayer.batchDraw();
 
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
-            // End drawing
+            GameConfig.DRAW_CURSOR._visible(false);
             isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
+            GameConfig.DRAW_CURSOR._visible(true);
         });
     }
 

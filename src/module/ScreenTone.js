@@ -19,7 +19,6 @@ export default class Brush {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
-        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         this.useTool();
@@ -77,14 +76,13 @@ export default class Brush {
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
-            GameConfig.DRAW_CURSOR._destroy();
-            let pos = this.getRelativePointerPosition(_stage);
-            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+            GameConfig.DRAW_CURSOR._visible(false);
             isDrawing = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
+            GameConfig.DRAW_CURSOR._visible(true);
         });
     }
 

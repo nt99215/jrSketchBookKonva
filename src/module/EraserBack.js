@@ -42,11 +42,7 @@ export default class Eraser {
         });
 
         _stage.on('mousemove touchmove', () => {
-            if (!isDrawing) {
-                return;
-            }
-
-            // If drawing, add new point to the current line object
+            if (!isDrawing) return;
             let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);

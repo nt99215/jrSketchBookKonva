@@ -16,9 +16,6 @@ export default class Eraser {
         _stage = stage;
         _drawLayer = drawLayer;
         _this = this;
-
-        // _stage.add(_drawLayer);
-        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         this.useTool();
 
     }
@@ -27,9 +24,7 @@ export default class Eraser {
         isDrawing = false;
         let currentLine;
         _stage.on('mousedown touchstart', (evt) => {
-            // Start drawing
             isDrawing = true;
-            // Create new line object
             let pos = this.getRelativePointerPosition(_stage);
             currentLine = new Konva.Line({
                 stroke: _this.getColor(),
@@ -46,9 +41,7 @@ export default class Eraser {
         _stage.on('mousemove touchmove', () => {
             let pos = this.getRelativePointerPosition(_stage);
             GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
-            if (!isDrawing) {
-                return;
-            }
+            if (!isDrawing) return;
 
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
@@ -56,14 +49,13 @@ export default class Eraser {
         });
 
         _stage.on('mouseup touchend contentTouchend', (evt) => {
-            GameConfig.DRAW_CURSOR._destroy();
-            let pos = this.getRelativePointerPosition(_stage);
-            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+            GameConfig.DRAW_CURSOR._visible(false);
             isDrawing = false;
             /*LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;*/
+            GameConfig.DRAW_CURSOR._visible(true);
         });
     }
 

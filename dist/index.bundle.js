@@ -307,6 +307,7 @@ var LayerManager = function () {
         (0, _createClass3.default)(LayerManager, [{
                 key: "init",
                 value: function init(currentLayer) {
+
                         if (currentLayer === _GameConfig2.default.MAIN_LAYER) return;
                         var _currentLayer = currentLayer;
                         var img = new Konva.Image({
@@ -746,33 +747,30 @@ var SketchBookKonva = function () {
             var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
             var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _Brush2.default;
 
-            // toolsOption.style.display = 'none';
-            // brushTypeEl.style.display = '';
+
+            _GameConfig2.default.IS_DRAWING_MODE = false;
 
             if (id === 'clear') {
                 this._layerClear();
                 return;
             }
+
             this._toolsDestroy();
 
             if (id === 'zoom' || id === 'move') {
-                _GameConfig2.default.IS_DRAWING_MODE = false;
                 obj.prototype.init(_stage);
                 return;
             }
-
-            _GameConfig2.default.IS_DRAWING_MODE = true;
-            // this._toolsDestroy();
-
-            if (id === 'eraser') {
-                _GameConfig2.default.IS_DRAWING_MODE = false;
-                obj.prototype.init(_stage, _mainLayer);
-                return;
-            } else obj.prototype.init(_stage);
+            if (id === 'eraser') obj.prototype.init(_stage, _mainLayer);else {
+                _GameConfig2.default.IS_DRAWING_MODE = true;
+                obj.prototype.init(_stage);
+            }
 
             colorEl.value = obj.prototype.getColor();
             sizeEl.value = obj.prototype.getSize();
             opacityEl.value = obj.prototype.getOpacity();
+
+            _GameConfig2.default.DRAW_CURSOR._drawRect(obj.prototype.getSize());
         }
     }, {
         key: "_layerClear",
@@ -811,7 +809,10 @@ var SketchBookKonva = function () {
     }, {
         key: "_toolsDestroy",
         value: function _toolsDestroy() {
-            if (_GameConfig2.default.CURRENT_TOOL) _GameConfig2.default.CURRENT_TOOL.destroy();
+            if (_GameConfig2.default.CURRENT_TOOL) {
+                _GameConfig2.default.CURRENT_TOOL.destroy();
+                _GameConfig2.default.DRAW_CURSOR._destroy();
+            }
         }
     }]);
     return SketchBookKonva;
@@ -1091,7 +1092,6 @@ var LineDraw = function () {
             _stage = stage;
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
-            _GameConfig2.default.DRAW_CURSOR._drawRect(this.getSize());
             _GameConfig2.default.CURRENT_LAYER = _drawLayer;
             _this = this;
             _dashEnabled = false;
@@ -1101,8 +1101,6 @@ var LineDraw = function () {
     }, {
         key: "useTool",
         value: function useTool() {
-            var _this2 = this;
-
             _stage.on('mousedown touchstart', function () {
                 isPaint = true;
                 var pos = _stage.getPointerPosition();
@@ -1120,28 +1118,24 @@ var LineDraw = function () {
                 _drawLayer.add(_line);
             });
 
-            _stage.on('mouseup touchend contentTouchend', function () {
-                _GameConfig2.default.DRAW_CURSOR._destroy();
-                var pos = _stage.getPointerPosition();
-                _GameConfig2.default.DRAW_CURSOR._drawRect(_this2.getSize(), pos.x, pos.y);
+            _stage.on('mousemove touchmove', function () {
 
+                var pos = _stage.getPointerPosition();
+                _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
+                if (!isPaint) return;
+                var oldPoints = _line.points();
+                _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y]);
+                _drawLayer.draw();
+            });
+
+            _stage.on('mouseup touchend contentTouchend', function () {
+                _GameConfig2.default.DRAW_CURSOR._visible(false);
                 isPaint = false;
                 _LayerManager2.default.prototype.init(_drawLayer);
                 _drawLayer = new Konva.Layer();
                 _stage.add(_drawLayer);
                 _GameConfig2.default.CURRENT_LAYER = _drawLayer;
-            });
-
-            _stage.on('mousemove touchmove', function () {
-
-                // if(!GameConfig.IS_LINE_DRAWING || !isPaint) return;
-                if (!isPaint) return;
-
-                var pos = _stage.getPointerPosition();
-                _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
-                var oldPoints = _line.points();
-                _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y]);
-                _drawLayer.draw();
+                _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
         }
     }, {
@@ -1292,12 +1286,10 @@ var Brush = function () {
     (0, _createClass3.default)(Brush, [{
         key: "init",
         value: function init(stage) {
-
             _GameConfig2.default.CURRENT_TOOL = this;
             _stage = stage;
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
-            _GameConfig2.default.DRAW_CURSOR._drawRect(this.getSize());
             _GameConfig2.default.CURRENT_LAYER = _drawLayer;
             _this = this;
             _shapeEnable = false;
@@ -1323,13 +1315,11 @@ var Brush = function () {
                         tension: _GameConfig2.default.DEFAULT_TENSION,
                         opacity: _this.getOpacity() / 100
                     });
-
                     _drawLayer.add(currentLine);
                 } else currentLine = { points: [pos.x, pos.y] };
             });
 
             _stage.on('mousemove touchmove', function (evt) {
-
                 var pos = _this2.getRelativePointerPosition(_stage);
                 _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
                 if (!isDrawing) return;
@@ -1352,15 +1342,13 @@ var Brush = function () {
             });
 
             _stage.on('mouseup touchend contentTouchend', function (evt) {
-
-                _GameConfig2.default.DRAW_CURSOR._destroy();
-                var pos = _this2.getRelativePointerPosition(_stage);
-                _GameConfig2.default.DRAW_CURSOR._drawRect(_this2.getSize(), pos.x, pos.y);
+                _GameConfig2.default.DRAW_CURSOR._visible(false);
                 isDrawing = false;
                 _LayerManager2.default.prototype.init(_drawLayer);
                 _drawLayer = new Konva.Layer();
                 _stage.add(_drawLayer);
                 _GameConfig2.default.CURRENT_LAYER = _drawLayer;
+                _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
         }
     }, {
@@ -1585,12 +1573,7 @@ var Airbrush = function () {
             });
 
             _stage.on('mousemove touchmove', function (evt) {
-                // if(!GameConfig.IS_DRAWING_MODE) return;
-                if (!isDrawing) {
-                    return;
-                }
-
-                // If drawing, add new point to the current line object
+                if (!isDrawing) return;
                 var pos = _this2.getRelativePointerPosition(_stage);
                 // let newPoints = currentLine.points().concat([pos.x, pos.y]);
                 // currentLine.points(newPoints);
@@ -1786,20 +1769,21 @@ var Crayon = function () {
             });
 
             _stage.on('mousemove touchmove', function (evt) {
-                if (!isDrawing) return;
-
                 var pos = _this2.getRelativePointerPosition(_stage);
+                _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
+                if (!isDrawing) return;
                 _this2.imageDraw(pos.x, pos.y);
                 _drawLayer.batchDraw();
             });
 
             _stage.on('mouseup touchend contentTouchend', function (evt) {
-                // End drawing
+                _GameConfig2.default.DRAW_CURSOR._visible(false);
                 isDrawing = false;
                 _LayerManager2.default.prototype.init(_drawLayer);
                 _drawLayer = new Konva.Layer();
                 _stage.add(_drawLayer);
                 _GameConfig2.default.CURRENT_LAYER = _drawLayer;
+                _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
         }
     }, {
@@ -1988,9 +1972,6 @@ var Eraser = function () {
             _stage = stage;
             _drawLayer = drawLayer;
             _this = this;
-
-            // _stage.add(_drawLayer);
-            _GameConfig2.default.DRAW_CURSOR._drawRect(this.getSize());
             this.useTool();
         }
     }, {
@@ -2001,9 +1982,7 @@ var Eraser = function () {
             isDrawing = false;
             var currentLine = void 0;
             _stage.on('mousedown touchstart', function (evt) {
-                // Start drawing
                 isDrawing = true;
-                // Create new line object
                 var pos = _this2.getRelativePointerPosition(_stage);
                 currentLine = new Konva.Line({
                     stroke: _this.getColor(),
@@ -2020,9 +1999,7 @@ var Eraser = function () {
             _stage.on('mousemove touchmove', function () {
                 var pos = _this2.getRelativePointerPosition(_stage);
                 _GameConfig2.default.DRAW_CURSOR._move(pos.x, pos.y);
-                if (!isDrawing) {
-                    return;
-                }
+                if (!isDrawing) return;
 
                 var newPoints = currentLine.points().concat([pos.x, pos.y]);
                 currentLine.points(newPoints);
@@ -2030,14 +2007,13 @@ var Eraser = function () {
             });
 
             _stage.on('mouseup touchend contentTouchend', function (evt) {
-                _GameConfig2.default.DRAW_CURSOR._destroy();
-                var pos = _this2.getRelativePointerPosition(_stage);
-                _GameConfig2.default.DRAW_CURSOR._drawRect(_this2.getSize(), pos.x, pos.y);
+                _GameConfig2.default.DRAW_CURSOR._visible(false);
                 isDrawing = false;
                 /*LayerManager.prototype.init(_drawLayer);
                 _drawLayer = new Konva.Layer();
                 _stage.add(_drawLayer);
                 GameConfig.CURRENT_LAYER = _drawLayer;*/
+                _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
         }
     }, {
@@ -2392,7 +2368,6 @@ var Brush = function () {
             _stage = stage;
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
-            _GameConfig2.default.DRAW_CURSOR._drawRect(this.getSize());
             _GameConfig2.default.CURRENT_LAYER = _drawLayer;
             _this = this;
             this.useTool();
@@ -2450,14 +2425,13 @@ var Brush = function () {
             });
 
             _stage.on('mouseup touchend contentTouchend', function (evt) {
-                _GameConfig2.default.DRAW_CURSOR._destroy();
-                var pos = _this2.getRelativePointerPosition(_stage);
-                _GameConfig2.default.DRAW_CURSOR._drawRect(_this2.getSize(), pos.x, pos.y);
+                _GameConfig2.default.DRAW_CURSOR._visible(false);
                 isDrawing = false;
                 _LayerManager2.default.prototype.init(_drawLayer);
                 _drawLayer = new Konva.Layer();
                 _stage.add(_drawLayer);
                 _GameConfig2.default.CURRENT_LAYER = _drawLayer;
+                _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
         }
     }, {
@@ -3088,10 +3062,7 @@ var Cursor = function () {
         key: '_move',
         value: function _move(x, y) {
             if (_cursorPointer) {
-                if (x <= 0 || x >= _GameConfig2.default.STAGE_SIZE.width || y <= 0 || y >= _GameConfig2.default.STAGE_SIZE.height) {
-                    console.log(x, y);
-                    _cursorPointer.visible(false);
-                } else {
+                if (x <= 0 || x >= _GameConfig2.default.STAGE_SIZE.width || y <= 0 || y >= _GameConfig2.default.STAGE_SIZE.height) _cursorPointer.visible(false);else {
                     _stage.container().style.cursor = 'crosshair';
                     _cursorPointer.x(x);
                     _cursorPointer.y(y);
@@ -3099,6 +3070,11 @@ var Cursor = function () {
                     _layer.draw();
                 }
             }
+        }
+    }, {
+        key: '_visible',
+        value: function _visible(bool) {
+            if (_cursorPointer) _cursorPointer.visible(bool);
         }
     }, {
         key: '_destroy',

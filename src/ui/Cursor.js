@@ -27,10 +27,7 @@ export default class Cursor {
         if(_cursorPointer)
         {
             if(x <= 0 || x >= GameConfig.STAGE_SIZE.width || y <= 0 || y >= GameConfig.STAGE_SIZE.height)
-            {
-                console.log(x, y)
                 _cursorPointer.visible(false);
-            }
             else
             {
                 _stage.container().style.cursor =  'crosshair';
@@ -39,9 +36,12 @@ export default class Cursor {
                 _cursorPointer.visible(true);
                 _layer.draw();
             }
-
         }
 
+    }
+
+    _visible(bool) {
+        if(_cursorPointer) _cursorPointer.visible(bool);
     }
 
     _destroy() {

@@ -55,11 +55,7 @@ export default class Brush {
 
         _stage.on('mousemove touchmove', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
-            }
-
-            // If drawing, add new point to the current line object
+            if (!isDrawing) return;
             let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);

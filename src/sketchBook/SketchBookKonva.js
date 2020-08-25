@@ -133,28 +133,28 @@ export default class SketchBookKonva {
         /**
          * BRUSH STYLE
          */
-        brushTypeEl.onchange = function(e) {
+        brushTypeEl.onchange = (e)=> {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
         /**
          * LINE STYLE
          */
-        lineTypeEl.onchange = function(e) {
+        lineTypeEl.onchange = (e)=> {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
         /**
          * CRAYON STYLE
          */
-        crayonTypeEl.onchange = function(e) {
+        crayonTypeEl.onchange = (e)=> {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
         /**
          * CRAYON STYLE
          */
-        screenToneTypeEl.onchange = function(e) {
+        screenToneTypeEl.onchange = (e)=> {
             if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.setLineType(e);
         }
 
@@ -164,38 +164,34 @@ export default class SketchBookKonva {
 
 
     _toolSelect(id = '', obj =  Brush) {
-        // toolsOption.style.display = 'none';
-        // brushTypeEl.style.display = '';
+
+        GameConfig.IS_DRAWING_MODE = false;
 
         if(id === 'clear')
         {
             this._layerClear();
             return;
         }
+
         this._toolsDestroy();
 
         if(id === 'zoom' || id === 'move')
         {
-            GameConfig.IS_DRAWING_MODE = false;
             obj.prototype.init(_stage);
             return;
         }
-
-
-        GameConfig.IS_DRAWING_MODE = true;
-        // this._toolsDestroy();
-
-        if(id === 'eraser') {
-            GameConfig.IS_DRAWING_MODE = false;
-            obj.prototype.init(_stage, _mainLayer);
-            return;
+        if(id === 'eraser') obj.prototype.init(_stage, _mainLayer);
+        else
+        {
+            GameConfig.IS_DRAWING_MODE = true;
+            obj.prototype.init(_stage);
         }
-        else obj.prototype.init(_stage);
-
 
         colorEl.value = obj.prototype.getColor();
         sizeEl.value = obj.prototype.getSize();
         opacityEl.value = obj.prototype.getOpacity();
+
+        GameConfig.DRAW_CURSOR._drawRect(obj.prototype.getSize());
 
     }
 
@@ -222,8 +218,6 @@ export default class SketchBookKonva {
         _mainLayer.draw();
     }
 
-
-
     _createImg() {
         const imageURL = 'asset/image/sampleImg.jpg';
         const layer = new Konva.Layer();
@@ -236,9 +230,12 @@ export default class SketchBookKonva {
 
     }
 
-
     _toolsDestroy() {
-        if(GameConfig.CURRENT_TOOL) GameConfig.CURRENT_TOOL.destroy();
+        if(GameConfig.CURRENT_TOOL)
+        {
+            GameConfig.CURRENT_TOOL.destroy();
+            GameConfig.DRAW_CURSOR._destroy();
+        }
     }
 
 

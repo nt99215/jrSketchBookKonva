@@ -2,7 +2,7 @@ let _stage;
 export default class ConvertJson {
 
     convertJson(){
-        /* let width = window.innerWidth;
+         let width = window.innerWidth;
          let height = window.innerHeight;
 
          let stage = new Konva.Stage({
@@ -22,15 +22,9 @@ export default class ConvertJson {
              strokeWidth: 4,
          });
 
-         // add the shape to the layer
          layer.add(hexagon);
-
-         // add the layer to the stage
-         stage.add(layer);*/
-
-        // save stage as a json string
+         stage.add(layer);
         let json = _stage.toJSON();
-        console.log(json);
 
     }
 

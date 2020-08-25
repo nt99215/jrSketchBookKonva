@@ -2,6 +2,7 @@ import GameConfig from "../data/GameConfig";
 
 export default class LayerManager {
         init(currentLayer) {
+
         if(currentLayer === GameConfig.MAIN_LAYER)
         return;
         let _currentLayer = currentLayer;

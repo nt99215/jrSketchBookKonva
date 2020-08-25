@@ -15,7 +15,6 @@ export default class LineDraw {
         _stage = stage;
         _drawLayer = new Konva.Layer();
         _stage.add(_drawLayer);
-        GameConfig.DRAW_CURSOR._drawRect(this.getSize());
         GameConfig.CURRENT_LAYER = _drawLayer;
         _this = this;
         _dashEnabled = false;
@@ -41,29 +40,27 @@ export default class LineDraw {
             _drawLayer.add(_line);
         });
 
-        _stage.on('mouseup touchend contentTouchend', ()=> {
-            GameConfig.DRAW_CURSOR._destroy();
-            let pos = _stage.getPointerPosition();
-            GameConfig.DRAW_CURSOR._drawRect(this.getSize(), pos.x, pos.y);
+        _stage.on('mousemove touchmove', function () {
 
+            let pos = _stage.getPointerPosition();
+            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
+            if(!isPaint) return;
+            let oldPoints = _line.points();
+            _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y])
+            _drawLayer.draw();
+        });
+
+        _stage.on('mouseup touchend contentTouchend', ()=> {
+            GameConfig.DRAW_CURSOR._visible(false);
             isPaint = false;
             LayerManager.prototype.init(_drawLayer);
             _drawLayer = new Konva.Layer();
             _stage.add(_drawLayer);
             GameConfig.CURRENT_LAYER = _drawLayer;
+            GameConfig.DRAW_CURSOR._visible(true);
         });
 
-        _stage.on('mousemove touchmove', function () {
 
-            // if(!GameConfig.IS_LINE_DRAWING || !isPaint) return;
-            if(!isPaint) return;
-
-            let pos = _stage.getPointerPosition();
-            GameConfig.DRAW_CURSOR._move(pos.x, pos.y);
-            let oldPoints = _line.points();
-            _line.points([oldPoints[0], oldPoints[1], pos.x, pos.y])
-            _drawLayer.draw();
-        });
     }
 
 

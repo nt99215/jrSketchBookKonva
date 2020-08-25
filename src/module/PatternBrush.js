@@ -50,10 +50,7 @@ export default class PatternBrush {
 
         _stage.on('mousemove', (evt) => {
             // if(!GameConfig.IS_DRAWING_MODE) return;
-            if (!isDrawing) {
-                return;
-            }
-
+            if (!isDrawing) return;
             let pos = this.getRelativePointerPosition(_stage);
             let newPoints = currentLine.points().concat([pos.x, pos.y]);
             currentLine.points(newPoints);
@@ -61,7 +58,6 @@ export default class PatternBrush {
         });
 
         _stage.on('mouseup', (evt) => {
-            // End drawing
             isDrawing = false;
         });
     }
