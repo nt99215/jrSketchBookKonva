@@ -1250,6 +1250,7 @@ var _stage = void 0,
 var _color = _GameConfig2.default.DEFAULT_COLOR;
 var _size = _GameConfig2.default.DEFAULT_LINE_SIZE;
 var _opacity = _GameConfig2.default.DEFAULT_OPACITY;
+var _blur = 0;
 var _typeConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
 var _img = void 0,
     _brushType = void 0,
@@ -1282,9 +1283,11 @@ var Brush = function () {
             var _this2 = this;
 
             var isDrawing = false;
-            var currentLine = void 0;
+            var currentLine = void 0,
+                blurEnable = void 0;
             _stage.on('mousedown touchstart', function (evt) {
                 isDrawing = true;
+                blurEnable = _this2.getBlur();
                 var pos = _this2.getRelativePointerPosition(_stage);
                 if (!_shapeEnable) {
                     currentLine = new Konva.Line({
@@ -1295,7 +1298,8 @@ var Brush = function () {
                         lineJoin: 'round',
                         lineCap: _this.getLineCap(),
                         tension: _GameConfig2.default.DEFAULT_TENSION,
-                        opacity: _this.getOpacity() / 100
+                        opacity: _this.getOpacity() / 100,
+                        blurRadius: 20
 
                     });
                     _drawLayer.add(currentLine);
@@ -1309,6 +1313,7 @@ var Brush = function () {
                 if (!_shapeEnable) {
                     var newPoints = currentLine.points().concat([pos.x, pos.y]);
                     currentLine.points(newPoints);
+                    _this2.setBlurFilter(currentLine, true);
                 } else {
                     var obj = _imgObj;
                     _img = new Konva.Rect({
@@ -1319,6 +1324,7 @@ var Brush = function () {
                     });
 
                     _img.cache();
+                    _this2.setBlurFilter(_img, false);
                     _this2.imageDraw(pos.x, pos.y);
                 }
                 _drawLayer.batchDraw();
@@ -1333,6 +1339,13 @@ var Brush = function () {
                 _GameConfig2.default.CURRENT_LAYER = _drawLayer;
                 _GameConfig2.default.DRAW_CURSOR._visible(true);
             });
+        }
+    }, {
+        key: "setBlurFilter",
+        value: function setBlurFilter(obj, cacheEnable) {
+            if (cacheEnable) obj.cache();
+            obj.blurRadius(this.getBlur());
+            obj.filters([Konva.Filters.Blur]);
         }
     }, {
         key: "getRelativePointerPosition",
@@ -1409,6 +1422,22 @@ var Brush = function () {
         key: "getOpacity",
         value: function getOpacity() {
             return _opacity;
+        }
+
+        /**
+         *
+         * @param opacity
+         */
+
+    }, {
+        key: "setBlur",
+        value: function setBlur(blur) {
+            _blur = blur;
+        }
+    }, {
+        key: "getBlur",
+        value: function getBlur() {
+            return _blur;
         }
 
         /**

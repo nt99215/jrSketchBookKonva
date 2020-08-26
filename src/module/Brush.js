@@ -5,6 +5,7 @@ let _stage, _drawLayer, _this;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
+let _blur = 0;
 const _typeConfigArr = [[0,0], [0, 0, 15], [0, 10]];
 let _img, _brushType,_clone, _shapeEnable;
 const _imgObj = {w:0, h:0, r:0};
@@ -28,9 +29,10 @@ export default class Brush {
 
     useTool () {
         let isDrawing = false;
-        let currentLine;
+        let currentLine, blurEnable;
         _stage.on('mousedown touchstart', (evt) => {
             isDrawing = true;
+            blurEnable = this.getBlur();
             let pos = this.getRelativePointerPosition(_stage);
             if(! _shapeEnable)
             {
@@ -43,6 +45,7 @@ export default class Brush {
                     lineCap:_this.getLineCap(),
                     tension:GameConfig.DEFAULT_TENSION,
                     opacity:_this.getOpacity() / 100,
+                    blurRadius:20,
 
                 });
                 _drawLayer.add(currentLine);
@@ -59,6 +62,7 @@ export default class Brush {
             {
                 let newPoints = currentLine.points().concat([pos.x, pos.y]);
                 currentLine.points(newPoints);
+                this.setBlurFilter(currentLine, true);
             }
             else
             {
@@ -71,6 +75,7 @@ export default class Brush {
                 })
 
                 _img.cache();
+                this.setBlurFilter(_img, false);
                 this.imageDraw(pos.x, pos.y);
             }
             _drawLayer.batchDraw();
@@ -86,6 +91,13 @@ export default class Brush {
             GameConfig.DRAW_CURSOR._visible(true);
 
         });
+    }
+
+    setBlurFilter(obj, cacheEnable) {
+        if(cacheEnable) obj.cache();
+        obj.blurRadius(this.getBlur());
+        obj.filters([Konva.Filters.Blur]);
+
     }
 
     getRelativePointerPosition(node) {
@@ -135,6 +147,13 @@ export default class Brush {
      */
     setOpacity(opacity) { _opacity = opacity;}
     getOpacity() { return _opacity;}
+
+    /**
+     *
+     * @param opacity
+     */
+    setBlur(blur) { _blur = blur;}
+    getBlur() { return _blur;}
 
     /**
      *
