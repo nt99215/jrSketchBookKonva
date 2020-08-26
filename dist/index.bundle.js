@@ -775,36 +775,16 @@ var SketchBookKonva = function () {
     }, {
         key: "_layerClear",
         value: function _layerClear() {
-            _stage.remove(_GameConfig2.default.MAIN_LAYER);
-            // GameConfig.MAIN_LAYER.clear();
+
             if (_GameConfig2.default.MAIN_LAYER) {
-                _GameConfig2.default.MAIN_LAYER.remove();
+                _stage.remove(_GameConfig2.default.MAIN_LAYER);
                 _GameConfig2.default.MAIN_LAYER.destroy();
                 _GameConfig2.default.MAIN_LAYER = null;
-            }
-            if (_GameConfig2.default.CURRENT_LAYER) {
-                _stage.remove(_GameConfig2.default.CURRENT_LAYER);
-                _GameConfig2.default.CURRENT_LAYER.clear();
-                _GameConfig2.default.CURRENT_LAYER.remove();
-                _GameConfig2.default.CURRENT_LAYER.destroy();
-                _GameConfig2.default.CURRENT_LAYER = null;
             }
             _mainLayer = new Konva.Layer();
             _stage.add(_mainLayer);
             _GameConfig2.default.MAIN_LAYER = _mainLayer;
             _mainLayer.draw();
-        }
-    }, {
-        key: "_createImg",
-        value: function _createImg() {
-            var imageURL = 'asset/image/sampleImg.jpg';
-            var layer = new Konva.Layer();
-            Konva.Image.fromURL(imageURL, function (image) {
-
-                layer.add(image);
-                layer.draw();
-            });
-            _stage.add(layer);
         }
     }, {
         key: "_toolsDestroy",
