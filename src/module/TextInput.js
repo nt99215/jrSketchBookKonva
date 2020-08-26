@@ -6,7 +6,6 @@ let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
 const _defaultText = '글을 입력하세요';
-// const _defaultText = '글을';
 const _fontFamily = [
     'Nanum Brush Script',
     'Nanum Pen Script',
@@ -101,8 +100,6 @@ export default class TextInput {
         _textarea.style.width = _textNode.width() + 'px';
         _textarea.style.height = _textNode.height() + 'px';
 
-        // console.log(_textarea.value);
-
         if(_textarea.value)
         {
             _textNode.text(_textarea.value);
@@ -117,21 +114,6 @@ export default class TextInput {
         return transform.point(pos);
     }
 
-    textInput(x, y) {
-        let text = new Konva.Text({
-            x: x,
-            y: y,
-            text: '나눔스퀘어',
-            fontSize: 30,
-            fontFamily: '나눔고딕',
-            // fontFamily: '나눔스퀘어',
-            fill: this.getColor()
-        });
-        _drawLayer.add(text);
-        _drawLayer.batchDraw();
-
-    }
-
     destroy () {
         LayerManager.prototype.init(_drawLayer);
         if(_textarea) document.body.removeChild(_textarea);
@@ -139,7 +121,6 @@ export default class TextInput {
         if(_stage)_stage.off('mousemove touchmove');
         if(_stage)_stage.off('mouseup touchend contentTouchend');
     }
-
 
 
     /**

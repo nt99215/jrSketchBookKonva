@@ -6,8 +6,7 @@ let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
 let _blur = 0;
-const _typeConfigArr = [[0,0], [0, 0, 15], [0, 10]];
-let _img, _brushType,_clone, _shapeEnable;
+let _img, _clone, _shapeEnable;
 const _imgObj = {w:0, h:0, r:0};
 const _angleRatio = 4;
 let _lineCap = 'round';
@@ -62,7 +61,7 @@ export default class Brush {
             {
                 let newPoints = currentLine.points().concat([pos.x, pos.y]);
                 currentLine.points(newPoints);
-                this.setBlurFilter(currentLine, true);
+                if(blurEnable) this.setBlurFilter(currentLine, true);
             }
             else
             {
@@ -97,7 +96,6 @@ export default class Brush {
         if(cacheEnable) obj.cache();
         obj.blurRadius(this.getBlur());
         obj.filters([Konva.Filters.Blur]);
-
     }
 
     getRelativePointerPosition(node) {
@@ -206,7 +204,4 @@ export default class Brush {
 
         }
     }
-    getLineType() { return _brushType;}
-
-
 }

@@ -1251,9 +1251,7 @@ var _color = _GameConfig2.default.DEFAULT_COLOR;
 var _size = _GameConfig2.default.DEFAULT_LINE_SIZE;
 var _opacity = _GameConfig2.default.DEFAULT_OPACITY;
 var _blur = 0;
-var _typeConfigArr = [[0, 0], [0, 0, 15], [0, 10]];
 var _img = void 0,
-    _brushType = void 0,
     _clone = void 0,
     _shapeEnable = void 0;
 var _imgObj = { w: 0, h: 0, r: 0 };
@@ -1313,7 +1311,7 @@ var Brush = function () {
                 if (!_shapeEnable) {
                     var newPoints = currentLine.points().concat([pos.x, pos.y]);
                     currentLine.points(newPoints);
-                    _this2.setBlurFilter(currentLine, true);
+                    if (blurEnable) _this2.setBlurFilter(currentLine, true);
                 } else {
                     var obj = _imgObj;
                     _img = new Konva.Rect({
@@ -1501,11 +1499,6 @@ var Brush = function () {
                     break;
 
             }
-        }
-    }, {
-        key: "getLineType",
-        value: function getLineType() {
-            return _brushType;
         }
     }]);
     return Brush;
@@ -2596,7 +2589,6 @@ var _color = _GameConfig2.default.DEFAULT_COLOR;
 var _size = _GameConfig2.default.DEFAULT_LINE_SIZE;
 var _opacity = _GameConfig2.default.DEFAULT_OPACITY;
 var _defaultText = '글을 입력하세요';
-// const _defaultText = '글을';
 var _fontFamily = ['Nanum Brush Script', 'Nanum Pen Script', 'NanumBarunGothic', 'NanumBarunGothic YetHangul', 'NanumBarunpen', 'NanumGothic', 'NanumGothic Eco', 'NanumGothicCoding', 'NanumMyeongjo', 'NanumMyeongjo Eco', 'NanumMyeongjo YetHangul', 'NanumSquare', 'NanumSquare_ac', 'NanumSquareRound'];
 
 var TextInput = function () {
@@ -2677,8 +2669,6 @@ var TextInput = function () {
             _textarea.style.width = _textNode.width() + 'px';
             _textarea.style.height = _textNode.height() + 'px';
 
-            // console.log(_textarea.value);
-
             if (_textarea.value) {
                 _textNode.text(_textarea.value);
                 _drawLayer.draw();
@@ -2691,21 +2681,6 @@ var TextInput = function () {
             transform.invert();
             var pos = node.getStage().getPointerPosition();
             return transform.point(pos);
-        }
-    }, {
-        key: "textInput",
-        value: function textInput(x, y) {
-            var text = new Konva.Text({
-                x: x,
-                y: y,
-                text: '나눔스퀘어',
-                fontSize: 30,
-                fontFamily: '나눔고딕',
-                // fontFamily: '나눔스퀘어',
-                fill: this.getColor()
-            });
-            _drawLayer.add(text);
-            _drawLayer.batchDraw();
         }
     }, {
         key: "destroy",
