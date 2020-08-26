@@ -39,9 +39,11 @@ export default class Brush {
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
                     globalCompositeOperation:'source-over',
+                    lineJoin:'round',
                     lineCap:_this.getLineCap(),
                     tension:GameConfig.DEFAULT_TENSION,
-                    opacity:_this.getOpacity() / 100
+                    opacity:_this.getOpacity() / 100,
+
                 });
                 _drawLayer.add(currentLine);
             }

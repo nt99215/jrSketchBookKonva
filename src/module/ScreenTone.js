@@ -43,6 +43,7 @@ export default class Brush {
                     stroke: _this.getColor(),
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
+                    lineJoin:'round',
                     lineCap:_this.getLineCap(),
                     tension:GameConfig.DEFAULT_TENSION,
                     fill:'#ffcc00',

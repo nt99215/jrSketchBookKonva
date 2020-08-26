@@ -30,6 +30,7 @@ export default class Eraser {
                 stroke: _this.getColor(),
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
+                lineJoin:'round',
                 lineCap:'round',
                 tension:GameConfig.DEFAULT_TENSION,
                 opacity:_this.getOpacity() / 100,

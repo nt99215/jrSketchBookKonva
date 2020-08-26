@@ -30,6 +30,7 @@ export default class LineDraw {
                 points: [pos.x, pos.y, pos.x, pos.y],
                 // pointerLength: 20,
                 // pointerWidth: 20,
+                lineJoin:'round',
                 lineCap:'round',
                 opacity:_this.getOpacity() / 100,
                 stroke: _this.getColor(),

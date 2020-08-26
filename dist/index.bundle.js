@@ -1088,6 +1088,7 @@ var LineDraw = function () {
                     points: [pos.x, pos.y, pos.x, pos.y],
                     // pointerLength: 20,
                     // pointerWidth: 20,
+                    lineJoin: 'round',
                     lineCap: 'round',
                     opacity: _this.getOpacity() / 100,
                     stroke: _this.getColor(),
@@ -1291,9 +1292,11 @@ var Brush = function () {
                         strokeWidth: _this.getSize(),
                         points: [pos.x, pos.y],
                         globalCompositeOperation: 'source-over',
+                        lineJoin: 'round',
                         lineCap: _this.getLineCap(),
                         tension: _GameConfig2.default.DEFAULT_TENSION,
                         opacity: _this.getOpacity() / 100
+
                     });
                     _drawLayer.add(currentLine);
                 } else currentLine = { points: [pos.x, pos.y] };
@@ -1974,6 +1977,7 @@ var Eraser = function () {
                     stroke: _this.getColor(),
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
+                    lineJoin: 'round',
                     lineCap: 'round',
                     tension: _GameConfig2.default.DEFAULT_TENSION,
                     opacity: _this.getOpacity() / 100,
@@ -2379,6 +2383,7 @@ var Brush = function () {
                         stroke: _this.getColor(),
                         strokeWidth: _this.getSize(),
                         points: [pos.x, pos.y],
+                        lineJoin: 'round',
                         lineCap: _this.getLineCap(),
                         tension: _GameConfig2.default.DEFAULT_TENSION,
                         fill: '#ffcc00',
