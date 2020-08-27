@@ -1,17 +1,13 @@
 import GameConfig from "../data/GameConfig";
 import LayerManager from "../manager/LayerManager";
 
-let _stage, _this, _mode, _currentNum, _drawLayer, isDrawing, _lineCap;
-let _lineArr = [];
+let _stage, _this, _drawLayer, isDrawing, _lineCap;
 let _color = GameConfig.DEFAULT_COLOR;
 let _size = GameConfig.DEFAULT_LINE_SIZE;
 let _opacity = GameConfig.DEFAULT_OPACITY;
 
 export default class Eraser {
-
-
     init(stage, drawLayer) {
-
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
         _drawLayer = drawLayer;
@@ -31,7 +27,7 @@ export default class Eraser {
                 strokeWidth: _this.getSize(),
                 points: [pos.x, pos.y],
                 lineJoin:'round',
-                lineCap:'round',
+                lineCap:_this.getLineCap(),
                 tension:GameConfig.DEFAULT_TENSION,
                 opacity:_this.getOpacity() / 100,
                 globalCompositeOperation:'destination-out'

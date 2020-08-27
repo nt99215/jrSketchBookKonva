@@ -13,7 +13,6 @@ let _lineCap = 'round';
 
 
 export default class Brush {
-
     init(stage) {
         GameConfig.CURRENT_TOOL = this;
         _stage = stage;
@@ -39,17 +38,14 @@ export default class Brush {
                     stroke: _this.getColor(),
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
-                    globalCompositeOperation:'source-over',
                     lineJoin:'round',
                     lineCap:_this.getLineCap(),
                     tension:GameConfig.DEFAULT_TENSION,
                     opacity:_this.getOpacity() / 100,
-                    blurRadius:20,
-
+                    globalCompositeOperation:'source-over',
                 });
                 _drawLayer.add(currentLine);
             }
-
             else currentLine = {points:[pos.x, pos.y]}
         });
 
