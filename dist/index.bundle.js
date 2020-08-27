@@ -1292,13 +1292,11 @@ var Brush = function () {
                         stroke: _this.getColor(),
                         strokeWidth: _this.getSize(),
                         points: [pos.x, pos.y],
-                        globalCompositeOperation: 'source-over',
                         lineJoin: 'round',
                         lineCap: _this.getLineCap(),
                         tension: _GameConfig2.default.DEFAULT_TENSION,
                         opacity: _this.getOpacity() / 100,
-                        blurRadius: 20
-
+                        globalCompositeOperation: 'source-over'
                     });
                     _drawLayer.add(currentLine);
                 } else currentLine = { points: [pos.x, pos.y] };
@@ -1960,12 +1958,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var _stage = void 0,
     _this = void 0,
-    _mode = void 0,
-    _currentNum = void 0,
     _drawLayer = void 0,
     isDrawing = void 0,
     _lineCap = void 0;
-var _lineArr = [];
 var _color = _GameConfig2.default.DEFAULT_COLOR;
 var _size = _GameConfig2.default.DEFAULT_LINE_SIZE;
 var _opacity = _GameConfig2.default.DEFAULT_OPACITY;
@@ -1978,7 +1973,6 @@ var Eraser = function () {
     (0, _createClass3.default)(Eraser, [{
         key: "init",
         value: function init(stage, drawLayer) {
-
             _GameConfig2.default.CURRENT_TOOL = this;
             _stage = stage;
             _drawLayer = drawLayer;
@@ -2000,7 +1994,7 @@ var Eraser = function () {
                     strokeWidth: _this.getSize(),
                     points: [pos.x, pos.y],
                     lineJoin: 'round',
-                    lineCap: 'round',
+                    lineCap: _this.getLineCap(),
                     tension: _GameConfig2.default.DEFAULT_TENSION,
                     opacity: _this.getOpacity() / 100,
                     globalCompositeOperation: 'destination-out'
